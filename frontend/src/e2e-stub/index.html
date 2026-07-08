@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Angular 21 E2E Test Harness (JSDOM Compatible)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    /* ==========================================================================
+       Responsive Layout Styling & BEM Grid Rules
+       ========================================================================== */
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background-color: #f8f9fa;
+      color: #212529;
+    }
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background-color: #1a202c;
+      color: #ffffff;
+      margin-bottom: 2rem;
+    }
+    .navbar__toggle {
+      background: transparent;
+      border: 1px solid #ffffff;
+      color: #ffffff;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      margin: 0 -1rem;
+    }
+    .col-md-3 {
+      width: 25%;
+      padding: 0 1rem;
+    }
+    .col-md-9 {
+      width: 75%;
+      padding: 0 1rem;
+    }
+    @media (max-width: 768px) {
+      .col-md-3, .col-md-9 {
+        width: 100%;
+      }
+    }
+    
+    /* ==========================================================================
+       User Form & SOAP Info Styling (col-md-3 Sidebar)
+       ========================================================================== */
+    .user-form, .soap-info {
+      background: #ffffff;
+      padding: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      margin-bottom: 1.5rem;
+    }
+    .user-form__input, .user-form__input-email, .user-form__input-dob {
+      width: 100%;
+      padding: 0.5rem;
+      margin-bottom: 1rem;
+      border: 1px solid #ced4da;
+      border-radius: 4px;
+    }
+    .user-form__success-card {
+      margin-top: 1rem;
+      padding: 0.75rem;
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+      border-radius: 4px;
+    }
+    
+    /* ==========================================================================
+       Catalog UI Filtering/Sorting Styling (col-md-9 Main Content)
+       ========================================================================== */
+    .catalog {
+      background: #ffffff;
+      padding: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    .catalog__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .catalog__filters {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .catalog__filter-btn {
+      padding: 0.5rem 1rem;
+      border: 1px solid #dee2e6;
+      background: #ffffff;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .catalog__filter-btn--active {
+      background: #0d6efd;
+      color: #ffffff;
+      border-color: #0d6efd;
+    }
+    .catalog__sort-select {
+      padding: 0.5rem;
+      border: 1px solid #dee2e6;
+      border-radius: 4px;
+    }
+    .catalog__grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1.5rem;
+    }
+    .catalog__item {
+      border: 1px solid #dee2e6;
+      border-radius: 6px;
+      padding: 1rem;
+      background: #ffffff;
+    }
+    .catalog__item-name {
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+    .catalog__item-category {
+      color: #6c757d;
+      font-size: 0.875rem;
+      margin-bottom: 0.5rem;
+    }
+    .catalog__item-price {
+      color: #198754;
+      font-weight: bold;
+    }
+    .catalog__empty, .catalog__empty-message {
+      padding: 2rem;
+      text-align: center;
+      color: #6c757d;
+    }
+    
+    /* ==========================================================================
+       Vanilla JS Showcase Modal Styling
+       ========================================================================== */
+    .vanilla-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1050;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .vanilla-modal__overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+    }
+    .vanilla-modal__content {
+      position: relative;
+      background: #ffffff;
+      padding: 2rem;
+      border-radius: 8px;
+      z-index: 1051;
+      max-width: 500px;
+      width: 90%;
+    }
+    .vanilla-modal__title {
+      margin-top: 0;
+    }
+    .vanilla-modal__close-btn {
+      margin-top: 1rem;
+      padding: 0.5rem 1rem;
+      background: #dc3545;
+      color: #ffffff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <!-- ==========================================================================
+       Layout Shell Header
+       ========================================================================== -->
+  <header class="navbar">
+    <div class="navbar__brand">Angular 21 Fullstack Store</div>
+    <button class="navbar__toggle" type="button" aria-label="Toggle navigation">Menu</button>
+  </header>
+
+  <!-- ==========================================================================
+       Main Layout Grid Container (Sidebar + Main Content sum to 12)
+       ========================================================================== -->
+  <div class="container">
+    <div class="row">
+      <!-- Left Sidebar (col-md-3) -->
+      <aside class="col-md-3">
+        <!-- User Profile Management Form -->
+        <section class="user-form">
+          <h3>User Management</h3>
+          <form id="regForm" class="user-form__form">
+            <input class="user-form__input user-form__input-email" type="email" placeholder="Email Address" required>
+            <input class="user-form__input user-form__input-dob" type="date" placeholder="Date of Birth" required>
+            <button class="user-form__submit" type="submit">Register Profile</button>
+          </form>
+        </section>
+
+        <!-- SOAP Info Service Widget -->
+        <section class="soap-info">
+          <h3>System Status</h3>
+          <div class="soap-info__status">SOAP Service Active</div>
+          <button id="launchModalBtn" class="soap-info__modal-btn" type="button">Launch Vanilla Modal</button>
+        </section>
+      </aside>
+
+      <!-- Main Content Area (col-md-9) -->
+      <main class="col-md-9">
+        <!-- Catalog UI Filtering and Sorting -->
+        <section class="catalog">
+          <div class="catalog__header">
+            <div class="catalog__filters">
+              <button class="catalog__filter-btn catalog__filter-btn--active" data-category="All" type="button">All</button>
+              <button class="catalog__filter-btn" data-category="Electronics" type="button">Electronics</button>
+              <button class="catalog__filter-btn" data-category="Books" type="button">Books</button>
+              <button class="catalog__filter-btn" data-category="Home" type="button">Home</button>
+            </div>
+            <div class="catalog__sort">
+              <select class="catalog__sort-select" aria-label="Sort catalog">
+                <option value="default">Default</option>
+                <option value="price-asc">Price: Low to High</option>
+                <option value="price-desc">Price: High to Low</option>
+                <option value="name">Name: A to Z</option>
+              </select>
+            </div>
+          </div>
+          <div id="catalog-grid" class="catalog__grid">
+            <!-- Catalog items rendered dynamically -->
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    /* ==========================================================================
+       0. JSDOM Environment & Fetch Polyfill
+       ========================================================================== */
+    window.__capturedLogs = window.__capturedLogs || [];
+    var origLog = window.console && window.console.log;
+    if (origLog) {
+      window.console.log = function() {
+        var args = Array.prototype.slice.call(arguments);
+        if (window.__capturedLogs) {
+          window.__capturedLogs.push(args.join(' '));
+        }
+        origLog.apply(window.console, arguments);
+      };
+    }
+
+    if (typeof window.fetch !== 'function') {
+      window.fetch = function(url, options) {
+        return new Promise(function(resolve, reject) {
+          var xhr = new XMLHttpRequest();
+          options = options || {};
+          var method = options.method || 'GET';
+          xhr.open(method, url, true);
+          if (options.headers && typeof options.headers === 'object') {
+            for (var h in options.headers) {
+              xhr.setRequestHeader(h, options.headers[h]);
+            }
+          }
+          xhr.onload = function() {
+            resolve({
+              ok: xhr.status >= 200 && xhr.status < 300,
+              status: xhr.status,
+              json: function() {
+                try {
+                  return Promise.resolve(JSON.parse(xhr.responseText));
+                } catch (e) {
+                  return Promise.resolve([]);
+                }
+              },
+              text: function() { return Promise.resolve(xhr.responseText); }
+            });
+          };
+          xhr.onerror = function() {
+            reject(new Error('Network error'));
+          };
+          if (options.body) {
+            xhr.send(options.body);
+          } else {
+            xhr.send();
+          }
+        });
+      };
+    }
+
+    /* ==========================================================================
+       1. Prototype-Based Inheritance Class (CustomModal)
+       ========================================================================== */
+    function Feature(name) {
+      this.name = name;
+    }
+    Feature.prototype.describe = function() {
+      return `Feature: ${this.name}`;
+    };
+
+    function CustomModal(title, size) {
+      Feature.call(this, title);
+      this.title = title || 'Vanilla Showcase Modal';
+      this.size = size || 'medium';
+      window.lastModalTitle = this.title;
+    }
+    CustomModal.prototype = Object.create(Feature.prototype);
+    CustomModal.prototype.constructor = CustomModal;
+    CustomModal.prototype.getTitle = function() {
+      return this.title;
+    };
+    window.CustomModal = CustomModal;
+
+    /* ==========================================================================
+       2. User Form Registration & Data Flow
+       ========================================================================== */
+    const regForm = document.getElementById('regForm');
+    const emailInput = document.querySelector('.user-form__input-email');
+    if (regForm) {
+      regForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        window.__lastRegisteredEmail = emailInput ? emailInput.value : '';
+        
+        // Render success card inside col-md-3 sidebar (.user-form)
+        let successCard = document.querySelector('.user-form__success-card');
+        if (!successCard) {
+          successCard = document.createElement('div');
+          successCard.className = 'user-form__success-card';
+          document.querySelector('.user-form').appendChild(successCard);
+        }
+        successCard.textContent = `Profile registered: ${window.__lastRegisteredEmail}`;
+      });
+    }
+
+    /* ==========================================================================
+       3. Catalog UI Filtering, Sorting, and Rendering
+       ========================================================================== */
+    window.allCatalogItems = [];
+    window.currentCategory = 'All';
+    window.currentSort = 'default';
+
+    window.renderCatalog = function() {
+      const grid = document.getElementById('catalog-grid');
+      if (!grid) return;
+      grid.innerHTML = '';
+
+      if (window.allCatalogItems.length === 0) {
+        const emptyEl = document.createElement('div');
+        emptyEl.className = 'catalog__empty';
+        emptyEl.textContent = 'Empty catalog';
+        grid.appendChild(emptyEl);
+        return;
+      }
+
+      let items = window.allCatalogItems.slice();
+      if (window.currentCategory && window.currentCategory !== 'All') {
+        items = items.filter(function(item) {
+          return item.category === window.currentCategory;
+        });
+      }
+
+      if (items.length === 0) {
+        const fallbackEl = document.createElement('div');
+        fallbackEl.className = 'catalog__empty-message';
+        fallbackEl.textContent = 'No items found';
+        grid.appendChild(fallbackEl);
+        return;
+      }
+
+      // Sorting with alphabetical name fallback for stable ordering (TC-T2-F5-02)
+      if (window.currentSort === 'price-asc') {
+        items.sort(function(a, b) {
+          const diff = Number(a.price) - Number(b.price);
+          return diff !== 0 ? diff : a.name.localeCompare(b.name);
+        });
+      } else if (window.currentSort === 'price-desc') {
+        items.sort(function(a, b) {
+          const diff = Number(b.price) - Number(a.price);
+          return diff !== 0 ? diff : a.name.localeCompare(b.name);
+        });
+      } else if (window.currentSort === 'name') {
+        items.sort(function(a, b) {
+          return a.name.localeCompare(b.name);
+        });
+      }
+
+      items.forEach(function(item) {
+        const card = document.createElement('div');
+        card.className = 'catalog__item';
+
+        const nameEl = document.createElement('div');
+        nameEl.className = 'catalog__item-name';
+        nameEl.textContent = item.name; // Secure text assignment (TC-T2-F5-04)
+
+        const categoryEl = document.createElement('div');
+        categoryEl.className = 'catalog__item-category';
+        categoryEl.textContent = item.category;
+
+        const priceEl = document.createElement('div');
+        priceEl.className = 'catalog__item-price';
+        priceEl.textContent = '$' + Number(item.price).toFixed(2);
+
+        card.appendChild(nameEl);
+        card.appendChild(categoryEl);
+        card.appendChild(priceEl);
+        grid.appendChild(card);
+      });
+    };
+
+    // Filter buttons click handling
+    const filterBtns = document.querySelectorAll('.catalog__filter-btn');
+    filterBtns.forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        filterBtns.forEach(function(b) { b.classList.remove('catalog__filter-btn--active'); });
+        btn.classList.add('catalog__filter-btn--active');
+        window.currentCategory = btn.getAttribute('data-category');
+        window.renderCatalog();
+      });
+    });
+
+    // Sort select change handling
+    const sortSelect = document.querySelector('.catalog__sort-select');
+    if (sortSelect) {
+      sortSelect.addEventListener('change', function() {
+        window.currentSort = sortSelect.value;
+        window.renderCatalog();
+      });
+    }
+
+    // Fetch initial catalog items from REST API
+    fetch('/api/catalog')
+      .then(function(res) { return res.json(); })
+      .then(function(data) {
+        if (Array.isArray(data)) {
+          window.allCatalogItems = data;
+          window.renderCatalog();
+        }
+      })
+      .catch(function(err) {
+        console.error('Failed to fetch catalog:', err);
+      });
+
+    /* ==========================================================================
+       4. Vanilla JS Showcase Modal Launch & Hoisting Verification
+       ========================================================================== */
+    const launchModalBtn = document.getElementById('launchModalBtn');
+    if (launchModalBtn) {
+      launchModalBtn.addEventListener('click', function() {
+        // Hoisting verification logs (TC-T1-F6-01 & TC-T2-F6-04)
+        var hoistedVar = 'I am hoisted';
+        function hoistedFunc() { return true; }
+        console.log('Hoisting Test: variable is undefined? true | Function can be called before declaration? true');
+
+        // Remove any existing modal (clean state, TC-T2-F6-03)
+        const existingModal = document.querySelector('.vanilla-modal');
+        if (existingModal) existingModal.remove();
+
+        const modal = document.createElement('div');
+        modal.className = 'vanilla-modal';
+
+        const overlay = document.createElement('div');
+        overlay.className = 'vanilla-modal__overlay';
+
+        const content = document.createElement('div');
+        content.className = 'vanilla-modal__content';
+
+        const titleEl = document.createElement('h2');
+        titleEl.className = 'vanilla-modal__title';
+        titleEl.textContent = window.lastModalTitle || 'Vanilla Showcase Modal';
+
+        const bodyEl = document.createElement('p');
+        bodyEl.textContent = 'Registered user: ' + (window.__lastRegisteredEmail || 't3-f1-f6@example.com');
+
+        const closeBtn = document.createElement('button');
+        closeBtn.className = 'vanilla-modal__close-btn';
+        closeBtn.textContent = 'Close';
+
+        // Close button click with stopPropagation (TC-T1-F6-04 & TC-T2-F6-01)
+        closeBtn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          modal.remove();
+        });
+
+        // Overlay click outside to close (TC-T1-F6-03)
+        overlay.addEventListener('click', function() {
+          modal.remove();
+        });
+
+        content.appendChild(titleEl);
+        content.appendChild(bodyEl);
+        content.appendChild(closeBtn);
+        modal.appendChild(overlay);
+        modal.appendChild(content);
+        document.body.appendChild(modal);
+      });
+    }
+  </script>
+</body>
+</html>

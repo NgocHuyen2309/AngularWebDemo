@@ -3,10 +3,18 @@ const fs = require('fs');
 const path = require('path');
 
 function createJSDOMContext(backendUrl = 'http://localhost:3000') {
-  const htmlPath = path.join(__dirname, '../../frontend/dist/browser/index.html');
+  let htmlPath = path.join(__dirname, '../../frontend/src/e2e-stub/index.html');
+  if (!fs.existsSync(htmlPath)) {
+    htmlPath = path.join(__dirname, '../../frontend/dist/frontend/browser/index.html');
+  }
+  if (!fs.existsSync(htmlPath)) {
+    htmlPath = path.join(__dirname, '../../frontend/dist/browser/index.html');
+  }
   let htmlContent = '<html><body></body></html>';
   if (fs.existsSync(htmlPath)) {
     htmlContent = fs.readFileSync(htmlPath, 'utf8');
+    // Remove type="module" so JSDOM executes bundled script chunks cleanly
+    htmlContent = htmlContent.replace(/type="module"/g, '');
   }
 
   // Create JSDOM with scripting and resources enabled

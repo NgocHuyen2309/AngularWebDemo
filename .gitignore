@@ -1,5 +1,6 @@
 # Dependencies
 node_modules/
+/package-lock.json
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
@@ -14,6 +15,9 @@ out/
 # Testing & Coverage
 coverage/
 .nyc_output/
+e2e-tests/junit.xml
+e2e-tests/report.json
+*.junit.xml
 
 # Environment & Logs
 .env
@@ -40,6 +44,7 @@ ORIGINAL_REQUEST.md
 PROJECT.md
 TEST_INFRA.md
 TEST_READY.md
+walkthrough.md
 prompt_draft.md
 
 # Excel & Data spreadsheets (Training plans, etc.)

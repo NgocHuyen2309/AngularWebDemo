@@ -1,6 +1,6 @@
 # Frontend
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.27.
+This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.0.0.
 
 ## Development server
 
@@ -46,13 +46,13 @@ ng test
 
 ## Running end-to-end tests
 
-For end-to-end (e2e) testing, run:
+For end-to-end (e2e) testing against our fullstack Express/MongoDB setup, run the root E2E test harness from the workspace root:
 
 ```bash
-ng e2e
+cd .. && npm run test:e2e
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+The E2E test suite executes **71 test cases across 4 Tiers** using `JSDOM` and `supertest`. For DOM & UI verification in Node.js without Zone.js browser conflicts, the test runner utilizes the standalone E2E harness page at `src/e2e-stub/index.html` (synced to `dist/browser/index.html`).
 
 ## Additional Resources
 

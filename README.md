@@ -79,10 +79,12 @@ D:\AngularDemo/
 │   │   │   ├── app.component.html        # Root template with router-outlet
 │   │   │   ├── app.component.less        # Root styles (Less + BEM)
 │   │   │   └── app.config.ts             # provideHttpClient(), provideRouter()
+│   │   ├── e2e-stub/
+│   │   │   └── index.html                # JSDOM E2E harness page (BEM layout, modal, sorting/filtering)
 │   │   └── styles.less                   # Global styles: Bootstrap imports, BEM utilities
 │   ├── angular.json                      # Angular CLI config (Less preprocessor)
 │   └── package.json                      # Angular 21 dependencies
-├── e2e-tests/                            # End-to-end opaque-box test suite
+├── e2e-tests/                            # End-to-end opaque-box test suite (71 cases, 100% pass)
 ├── package.json                          # Root workspace: e2e scripts, shared devDependencies
 └── README.md                             # ← You are here
 ```

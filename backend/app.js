@@ -27,6 +27,17 @@ app.use('/api/soap', soapRoutes);
 // Simple healthcheck
 app.get('/health', (req, res) => res.json({ status: 'UP' }));
 
+// Serve static frontend build if available
+const path = require('path');
+const fs = require('fs');
+const distPath = path.join(__dirname, '../frontend/dist/frontend/browser');
+const altDistPath = path.join(__dirname, '../frontend/dist/browser');
+if (fs.existsSync(distPath)) {
+  app.use(express.static(distPath));
+} else if (fs.existsSync(altDistPath)) {
+  app.use(express.static(altDistPath));
+}
+
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error('Express Error:', err.stack);
