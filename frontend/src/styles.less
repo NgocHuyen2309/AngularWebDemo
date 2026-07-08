@@ -1,0 +1,130 @@
+// =============================================
+// Global Styles — Less with BEM conventions
+// =============================================
+
+// Variables
+@color-primary: #0d6efd;
+@color-secondary: #6c757d;
+@color-success: #198754;
+@color-danger: #dc3545;
+@color-warning: #ffc107;
+@color-info: #0dcaf0;
+@color-light: #f8f9fa;
+@color-dark: #212529;
+@color-bg: #f5f6fa;
+@color-text: #333;
+@color-text-muted: #6c757d;
+
+@spacing-xs: 0.25rem;
+@spacing-sm: 0.5rem;
+@spacing-md: 1rem;
+@spacing-lg: 1.5rem;
+@spacing-xl: 2rem;
+
+@border-radius-sm: 4px;
+@border-radius-md: 8px;
+@border-radius-lg: 12px;
+
+@font-family-base: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+  'Helvetica Neue', Arial, sans-serif;
+
+// Global Resets & Base Styles
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: @font-family-base;
+  color: @color-text;
+  background-color: @color-bg;
+  margin: 0;
+  padding: 0;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+// Global BEM Utility Classes
+.app {
+  &__container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 @spacing-md;
+  }
+
+  &__section {
+    padding: @spacing-xl 0;
+  }
+
+  &__heading {
+    font-weight: 700;
+    color: @color-dark;
+    margin-bottom: @spacing-lg;
+  }
+}
+
+// Card base styles
+.card {
+  border: none;
+  border-radius: @border-radius-md;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  transition: box-shadow 0.2s ease;
+}
+
+// Form controls refinement
+.form-control,
+.form-select {
+  border-radius: @border-radius-sm;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+
+  &:focus {
+    border-color: @color-primary;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15);
+  }
+}
+
+// Button base enhancements
+.btn {
+  border-radius: @border-radius-sm;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+// Scrollbar styling
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: @color-light;
+}
+
+::-webkit-scrollbar-thumb {
+  background: darken(@color-light, 25%);
+  border-radius: @border-radius-sm;
+}
+
+// Responsive breakpoints
+@media (max-width: 768px) {
+  html {
+    font-size: 14px;
+  }
+
+  .container-fluid {
+    padding-left: @spacing-md;
+    padding-right: @spacing-md;
+  }
+}
+
+@media (max-width: 576px) {
+  html {
+    font-size: 13px;
+  }
+}

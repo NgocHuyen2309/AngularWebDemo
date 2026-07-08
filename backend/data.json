@@ -1,0 +1,23 @@
+[
+  { "id": 1, "name": "Wireless Headphones", "category": "Electronics", "description": "High-quality wireless headphones with noise cancellation.", "price": 99.99, "imageUrl": "https://example.com/headphones.jpg" },
+  { "id": 2, "name": "Smart Watch", "category": "Electronics", "description": "Features fitness tracking, heart rate monitor, and notifications.", "price": 199.99, "imageUrl": "https://example.com/watch.jpg" },
+  { "id": 3, "name": "Bluetooth Speaker", "category": "Electronics", "description": "Portable bluetooth speaker with deep bass and waterproof design.", "price": 49.99, "imageUrl": "https://example.com/speaker.jpg" },
+  { "id": 4, "name": "Laptop Stand", "category": "Electronics", "description": "Ergonomic aluminum stand for laptops up to 15.6 inches.", "price": 29.99, "imageUrl": "https://example.com/stand.jpg" },
+  { "id": 5, "name": "Mechanical Keyboard", "category": "Electronics", "description": "RGB mechanical keyboard with blue switches.", "price": 79.99, "imageUrl": "https://example.com/keyboard.jpg" },
+  { "id": 6, "name": "Leather Jacket", "category": "Clothing", "description": "Classic black leather jacket for men.", "price": 120.00, "imageUrl": "https://example.com/jacket.jpg" },
+  { "id": 7, "name": "Running Shoes", "category": "Clothing", "description": "Lightweight and breathable running shoes.", "price": 85.00, "imageUrl": "https://example.com/shoes.jpg" },
+  { "id": 8, "name": "Denim Jeans", "category": "Clothing", "description": "Slim fit blue denim jeans.", "price": 45.00, "imageUrl": "https://example.com/jeans.jpg" },
+  { "id": 9, "name": "Cotton T-Shirt", "category": "Clothing", "description": "Comfortable 100% cotton crewneck t-shirt.", "price": 15.00, "imageUrl": "https://example.com/tshirt.jpg" },
+  { "id": 10, "name": "Woolen Scarf", "category": "Clothing", "description": "Soft and warm woolen winter scarf.", "price": 20.00, "imageUrl": "https://example.com/scarf.jpg" },
+  { "id": 11, "name": "Coffee Maker", "category": "Home", "description": "Programmable drip coffee maker with thermal carafe.", "price": 59.99, "imageUrl": "https://example.com/coffeemaker.jpg" },
+  { "id": 12, "name": "Desk Lamp", "category": "Home", "description": "LED desk lamp with adjustable brightness and USB port.", "price": 24.99, "imageUrl": "https://example.com/lamp.jpg" },
+  { "id": 13, "name": "Memory Foam Pillow", "category": "Home", "description": "Ergonomic pillow for neck support and comfort.", "price": 35.00, "imageUrl": "https://example.com/pillow.jpg" },
+  { "id": 14, "name": "Air Purifier", "category": "Home", "description": "HEPA air purifier for home and office.", "price": 129.99, "imageUrl": "https://example.com/purifier.jpg" },
+  { "id": 15, "name": "Vacuum Cleaner", "category": "Home", "description": "Cordless stick vacuum cleaner with strong suction.", "price": 149.99, "imageUrl": "https://example.com/vacuum.jpg" },
+  { "id": 16, "name": "The Great Gatsby", "category": "Books", "description": "Classic novel by F. Scott Fitzgerald.", "price": 10.99, "imageUrl": "https://example.com/gatsby.jpg" },
+  { "id": 17, "name": "1984", "category": "Books", "description": "Dystopian novel by George Orwell.", "price": 9.99, "imageUrl": "https://example.com/1984.jpg" },
+  { "id": 18, "name": "Sapiens", "category": "Books", "description": "A brief history of humankind by Yuval Noah Harari.", "price": 18.99, "imageUrl": "https://example.com/sapiens.jpg" },
+  { "id": 19, "name": "Atomic Habits", "category": "Books", "description": "Easy and proven way to build good habits by James Clear.", "price": 16.20, "imageUrl": "https://example.com/habits.jpg" },
+  { "id": 20, "name": "Educated", "category": "Books", "description": "A memoir by Tara Westover.", "price": 14.50, "imageUrl": "https://example.com/educated.jpg" },
+  { "id": 21, "name": "Luxury Fountain Pen", "category": "Books", "description": "High-end fountain pen for calligraphy.", "price": 250.00, "imageUrl": "https://example.com/pen.jpg" }
+]

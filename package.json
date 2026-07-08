@@ -1,0 +1,21 @@
+{
+  "name": "angulardemo-e2e-workspace",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build:frontend": "echo 'Stub build'",
+    "test:e2e": "cross-env NODE_ENV=test nyc node e2e-tests/runner.js"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3",
+    "fast-xml-parser": "^4.3.6",
+    "jsdom": "^24.0.0",
+    "mongodb-memory-server": "^9.1.8",
+    "nyc": "^15.1.0",
+    "supertest": "^6.3.4"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "mongoose": "^8.2.0"
+  }
+}

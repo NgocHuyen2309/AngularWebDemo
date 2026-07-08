@@ -1,0 +1,59 @@
+<div class="catalog">
+  <h2 class="catalog__title mb-4">Product Catalog</h2>
+
+  <!-- Filter and Sort Controls -->
+  <div class="catalog__controls d-flex flex-wrap align-items-center gap-3 mb-4">
+    <div class="catalog__filters d-flex flex-wrap gap-2">
+      <button
+        *ngFor="let category of categories"
+        class="catalog__filter-btn btn btn-sm"
+        [class.catalog__filter-btn--active]="selectedCategory === category"
+        [class.btn-primary]="selectedCategory === category"
+        [class.btn-outline-primary]="selectedCategory !== category"
+        (click)="filterByCategory(category)"
+      >
+        {{ category }}
+      </button>
+    </div>
+
+    <div class="catalog__sort ms-auto">
+      <select
+        class="catalog__sort-select form-select form-select-sm"
+        [ngModel]="sortBy"
+        (ngModelChange)="sortItems($event)"
+      >
+        <option value="name">Sort by Name</option>
+        <option value="price-asc">Price: Low to High</option>
+        <option value="price-desc">Price: High to Low</option>
+        <option value="category">Sort by Category</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="filteredItems.length === 0" class="catalog__empty alert alert-info">
+    <p class="mb-0">No items found. Try adjusting your filters.</p>
+  </div>
+
+  <!-- Catalog Grid -->
+  <div class="row g-4">
+    <div *ngFor="let item of filteredItems" class="col-sm-6 col-md-4 col-lg-3">
+      <div class="catalog__item card h-100 shadow-sm">
+        <img
+          [src]="item.imageUrl"
+          [alt]="item.name"
+          class="catalog__item-image card-img-top"
+          loading="lazy"
+        />
+        <div class="card-body d-flex flex-column">
+          <h5 class="catalog__item-name card-title">{{ item.name }}</h5>
+          <span class="catalog__item-category badge bg-secondary mb-2">{{ item.category }}</span>
+          <p class="catalog__item-description card-text text-muted flex-grow-1">{{ item.description }}</p>
+          <p class="catalog__item-price fw-bold text-primary mt-2 mb-0">
+            {{ item.price | currency:'USD' }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

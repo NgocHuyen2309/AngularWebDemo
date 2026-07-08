@@ -1,0 +1,24 @@
+<div class="soap-info card shadow-sm mt-4">
+  <div class="card-header bg-secondary text-white">
+    <h5 class="mb-0">SOAP Service</h5>
+  </div>
+  <div class="card-body">
+    <button
+      class="soap-info__btn btn btn-outline-secondary w-100"
+      (click)="fetchSoapInfo()"
+      [disabled]="loading"
+    >
+      <span *ngIf="loading" class="spinner-border spinner-border-sm me-2" role="status"></span>
+      {{ loading ? 'Fetching...' : 'Get Project Info' }}
+    </button>
+
+    <div *ngIf="soapResponse" class="soap-info__response mt-3">
+      <label class="form-label fw-bold">XML Response:</label>
+      <pre class="bg-light p-3 rounded border"><code>{{ soapResponse }}</code></pre>
+    </div>
+
+    <div *ngIf="error" class="alert alert-danger mt-3 mb-0">
+      {{ error }}
+    </div>
+  </div>
+</div>
