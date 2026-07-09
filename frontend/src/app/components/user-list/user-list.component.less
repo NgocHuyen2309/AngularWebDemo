@@ -2,6 +2,8 @@
   background-color: var(--bg-card) !important;
   border: 1px solid var(--border) !important;
   transition: background-color 0.3s ease, border-color 0.3s ease;
+  margin-top: 0 !important;
+  margin-bottom: 24px !important;
 
   &__header {
     background: var(--accent-gradient) !important;
@@ -11,6 +13,11 @@
     h5 {
       color: #1c1c1e !important;
       letter-spacing: 0.3px;
+      font-size: 1.1rem;
+
+      @media (max-width: 1399px) {
+        font-size: 0.95rem;
+      }
     }
   }
 
@@ -29,10 +36,27 @@
     border: 1px solid rgba(28, 28, 30, 0.3) !important;
     font-weight: 600;
     transition: all 0.2s ease;
+    border-radius: 6px;
+    padding: 0.35rem 0.65rem;
 
     &:hover:not(:disabled) {
-      background-color: #1c1c1e !important;
-      color: var(--text-primary) !important;
+      background-color: rgba(255, 255, 255, 0.75) !important;
+      color: #1c1c1e !important;
+      border-color: #1c1c1e !important;
+      transform: translateY(-1px);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    }
+  }
+
+  @media (max-width: 1399px) {
+    .user-list__refresh-text {
+      display: none !important;
+    }
+
+    .user-list__refresh-btn {
+      padding: 0.35rem 0.5rem !important;
+      min-width: 32px;
+      height: 32px;
     }
   }
 

@@ -1,21 +1,21 @@
 <div class="user-list card shadow-lg border-0 rounded-4 overflow-hidden mb-4">
-  <div class="user-list__header card-header p-4 d-flex justify-content-between align-items-center">
-    <div class="d-flex align-items-center gap-2">
-      <h5 class="mb-0 fw-bold">Account Users</h5>
-      <span class="user-list__badge badge">{{ users.length }}</span>
+  <div class="user-list__header card-header p-3 p-xl-4 d-flex justify-content-between align-items-center gap-2">
+    <div class="d-flex align-items-center gap-2 overflow-hidden">
+      <h5 class="mb-0 fw-bold user-list__title text-truncate">Account Users</h5>
+      <span class="user-list__badge badge flex-shrink-0">{{ users.length }}</span>
     </div>
     <button
       type="button"
-      class="user-list__refresh-btn btn btn-sm d-flex align-items-center gap-1"
+      class="user-list__refresh-btn btn btn-sm d-flex align-items-center justify-content-center gap-1 flex-shrink-0"
       (click)="loadUsers()"
       [disabled]="loading"
       title="Refresh Users List"
     >
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M23 4v6h-6"/>
         <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
       </svg>
-      <span>Refresh</span>
+      <span class="user-list__refresh-text">Refresh</span>
     </button>
   </div>
 
