@@ -1,89 +1,167 @@
-@catalog-primary: #0d6efd;
-@catalog-bg: #f8f9fa;
-@catalog-shadow: rgba(0, 0, 0, 0.08);
-@catalog-border-radius: 8px;
-@catalog-spacing: 1rem;
+// =============================================
+// Catalog Component Styles — Crypto Vault Theme
+// =============================================
+
+@catalog-spacing: 1.5rem;
 
 .catalog {
   padding: @catalog-spacing 0;
 
   &__title {
     font-weight: 700;
-    color: #333;
+    color: var(--text-primary);
+    font-size: 1.8rem;
+    letter-spacing: 0.5px;
   }
 
   &__controls {
-    padding: @catalog-spacing;
-    background-color: @catalog-bg;
-    border-radius: @catalog-border-radius;
+    padding: 1.25rem 1.5rem;
+    background-color: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    box-shadow: 0 4px 16px var(--shadow);
   }
 
   &__filters {
     display: flex;
     flex-wrap: wrap;
+    gap: 0.5rem;
   }
 
   &__filter-btn {
-    border-radius: 20px;
-    padding: 0.25rem 1rem;
+    border-radius: 20px !important;
+    padding: 0.35rem 1.15rem !important;
     font-size: 0.875rem;
-    transition: all 0.2s ease;
-
-    &--active {
-      font-weight: 600;
-    }
+    font-weight: 500;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    background: transparent !important;
+    border: 1px solid var(--border) !important;
+    color: var(--text-secondary) !important;
 
     &:hover {
+      background-color: var(--bg-card-hover) !important;
+      border-color: var(--accent-copper) !important;
+      color: var(--text-primary) !important;
       transform: translateY(-1px);
+    }
+
+    &--active {
+      background: var(--accent-gradient) !important;
+      border-color: transparent !important;
+      color: #1c1c1e !important;
+      font-weight: 700;
+      box-shadow: 0 4px 12px rgba(184, 115, 51, 0.35);
+
+      &:hover {
+        background: var(--accent-gradient-hover) !important;
+        color: #1c1c1e !important;
+      }
     }
   }
 
   &__sort-select {
-    min-width: 180px;
-    border-radius: @catalog-border-radius;
+    min-width: 200px;
+    border-radius: 8px !important;
+    background-color: var(--bg-card) !important;
+    border: 1px solid var(--border) !important;
+    color: var(--text-primary) !important;
+    padding: 0.4rem 2rem 0.4rem 0.8rem !important;
+    color-scheme: inherit !important;
+    accent-color: #daa57a !important;
+
+    &:focus,
+    &:active,
+    &:focus-visible {
+      border-color: #daa57a !important;
+      box-shadow: 0 0 0 0.2rem rgba(218, 165, 122, 0.35) !important;
+      outline: none !important;
+    }
+
+    option {
+      background-color: var(--bg-card) !important;
+      color: var(--text-primary) !important;
+      padding: 10px 14px !important;
+
+      &:checked,
+      &:hover,
+      &:focus,
+      &:active {
+        background-color: #daa57a !important;
+        background: #daa57a !important;
+        color: #1c1c1e !important;
+      }
+    }
   }
 
   &__empty {
     text-align: center;
-    padding: 2rem;
+    padding: 3rem 2rem;
+    background-color: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    color: var(--text-secondary);
   }
 
   &__item {
-    border: none;
-    border-radius: @catalog-border-radius;
+    background-color: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
     overflow: hidden;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 14px var(--shadow);
 
     &:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 8px 25px @catalog-shadow;
+      transform: translateY(-6px);
+      border-color: var(--accent-copper);
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.5);
+
+      .catalog__item-image {
+        transform: scale(1.08);
+      }
     }
   }
 
   &__item-image {
-    height: 200px;
-    object-fit: cover;
-    background-color: #e9ecef;
+    height: 220px;
+    width: 100%;
+    object-fit: contain; // Lấy được hết hình ảnh sản phẩm, không bị cắt
+    object-position: center; // Sản phẩm nằm ngay chính giữa
+    padding: 1.25rem; // Tạo khoảng đệm để sản phẩm hiển thị sang trọng rõ ràng
+    background-color: rgba(255, 255, 255, 0.03);
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   &__item-name {
-    font-size: 1rem;
-    font-weight: 600;
-    color: #333;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.3rem;
   }
 
   &__item-category {
     align-self: flex-start;
     font-size: 0.75rem;
+    font-weight: 600;
+    background-color: var(--bg-secondary) !important;
+    color: var(--accent-copper-light) !important;
+    border: 1px solid var(--border);
+    padding: 0.3rem 0.65rem;
+    border-radius: 6px;
+    letter-spacing: 0.3px;
   }
 
   &__item-description {
-    font-size: 0.85rem;
+    font-size: 0.88rem;
     line-height: 1.5;
+    color: var(--text-secondary) !important;
+    margin-top: 0.5rem;
   }
 
   &__item-price {
-    font-size: 1.1rem;
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: var(--accent-copper) !important;
+    margin-top: 0.5rem;
   }
 }
 
@@ -96,6 +174,7 @@
 
     &__sort {
       margin-left: 0 !important;
+      margin-top: 0.75rem;
     }
 
     &__sort-select {

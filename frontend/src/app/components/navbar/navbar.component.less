@@ -1,20 +1,92 @@
 .navbar {
-  margin-bottom: 0;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: var(--bg-card) !important;
+  border-bottom: 1px solid var(--border);
+  padding: 0.8rem 0;
+  box-shadow: 0 4px 20px var(--shadow);
 
   &__brand {
-    font-size: 1.5rem;
+    font-size: 1.4rem;
     font-weight: 700;
+    color: var(--text-primary) !important;
+    display: flex;
+    align-items: center;
+    gap: 10px;
     letter-spacing: 0.5px;
+
+    &::before {
+      content: 'CV';
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      background: var(--accent-gradient);
+      color: #1c1c1e;
+      font-size: 0.9rem;
+      font-weight: 800;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(184, 115, 51, 0.3);
+    }
+
+    &:hover {
+      color: var(--accent-copper-light) !important;
+    }
   }
 
   &__toggle {
-    border: none;
-    padding: 0.25rem 0.5rem;
+    border: 1px solid var(--border);
+    padding: 0.35rem 0.6rem;
+    border-radius: 6px;
+    background-color: var(--bg-secondary);
 
     &:focus {
-      box-shadow: none;
+      box-shadow: 0 0 0 0.2rem rgba(184, 115, 51, 0.25);
       outline: none;
+      border-color: var(--accent-copper);
     }
+  }
+}
+
+.nav-link {
+  color: var(--text-secondary) !important;
+  font-weight: 500;
+  padding: 0.5rem 1.1rem !important;
+  border-radius: 8px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  margin: 0 4px;
+
+  &:hover {
+    color: var(--text-primary) !important;
+    background-color: var(--bg-card-hover);
+  }
+
+  &.active {
+    color: #1c1c1e !important;
+    background: var(--accent-gradient);
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(184, 115, 51, 0.25);
+  }
+}
+
+.theme-toggle-btn {
+  width: 42px;
+  height: 42px;
+  background-color: var(--bg-secondary) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 10px !important;
+  color: var(--text-primary) !important;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &:hover {
+    background-color: var(--bg-card-hover) !important;
+    border-color: var(--accent-copper) !important;
+    color: var(--accent-copper) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px var(--shadow);
+  }
+
+  svg {
+    stroke: currentColor;
   }
 }

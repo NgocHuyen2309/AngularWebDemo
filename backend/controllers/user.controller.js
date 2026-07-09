@@ -48,6 +48,21 @@ exports.createUser = async (req, res) => {
   }
 };
 
+exports.getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find({}).sort({ id: 1 });
+    return res.status(200).json(
+      users.map(u => ({
+        id: u.id,
+        email: u.email,
+        date_of_birth: u.date_of_birth ? u.date_of_birth.toISOString() : null
+      }))
+    );
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
+};
+
 exports.getUser = async (req, res) => {
   try {
     const userId = Number(req.params.id);

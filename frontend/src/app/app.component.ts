@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { CatalogComponent } from './components/catalog/catalog.component';
 import { UserFormComponent } from './components/user-form/user-form.component';
-import { SoapInfoComponent } from './components/soap-info/soap-info.component';
+import { UserListComponent } from './components/user-list/user-list.component';
 
 @Component({
   selector: 'app-root',
@@ -11,7 +11,7 @@ import { SoapInfoComponent } from './components/soap-info/soap-info.component';
     NavbarComponent,
     CatalogComponent,
     UserFormComponent,
-    SoapInfoComponent
+    UserListComponent
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.less'

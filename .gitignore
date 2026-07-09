@@ -36,16 +36,10 @@ e2e-tests/report.json
 .DS_Store
 Thumbs.db
 
-# Agent, System Prompt & Training Setup files
+# Agent, System & Temporary files
 .agents/
 .gemini/
 scratch/
-ORIGINAL_REQUEST.md
-PROJECT.md
-TEST_INFRA.md
-TEST_READY.md
-walkthrough.md
-prompt_draft.md
 
 # Excel & Data spreadsheets (Training plans, etc.)
 *.xlsx

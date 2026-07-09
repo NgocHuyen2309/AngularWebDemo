@@ -35,6 +35,7 @@ export class UserFormComponent {
         this.successMessage = `User registered successfully! ID: ${user.id}`;
         this.email = '';
         this.dateOfBirth = '';
+        this.userService.notifyUserAdded();
       },
       error: (err) => {
         this.errorMessage = err.error?.message || 'Registration failed. Please try again.';
