@@ -122,12 +122,12 @@
   }
 
   &__item-image {
-    height: 220px;
+    height: 230px;
     width: 100%;
     object-fit: contain; // Lấy được hết hình ảnh sản phẩm, không bị cắt
     object-position: center; // Sản phẩm nằm ngay chính giữa
-    padding: 1.25rem; // Tạo khoảng đệm để sản phẩm hiển thị sang trọng rõ ràng
-    background-color: rgba(255, 255, 255, 0.03);
+    padding: 0.5rem; // Giảm padding từ 1.25rem xuống 0.5rem để ảnh to rõ ràng, không bị thu nhỏ
+    background-color: transparent !important; // Nền trong suốt hòa cùng thẻ Card
     transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
@@ -181,4 +181,10 @@
       width: 100%;
     }
   }
+}
+
+// Ensure product images with near-white/light-gray backgrounds blend seamlessly in Light Mode
+:host-context([data-theme="light"]) .catalog__item-image,
+[data-theme="light"] .catalog__item-image {
+  mix-blend-mode: multiply !important;
 }
