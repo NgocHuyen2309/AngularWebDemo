@@ -24,4 +24,17 @@ describe('UserListComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should start and cancel editing', () => {
+    const mockUser = { id: 1, email: 'test@gmail.com', date_of_birth: '2000-01-01T00:00:00.000Z' };
+    component.startEdit(mockUser);
+    expect(component.editingId).toBe(1);
+    expect(component.editEmail).toBe('test@gmail.com');
+    expect(component.editDob).toBe('2000-01-01');
+
+    component.cancelEdit();
+    expect(component.editingId).toBeNull();
+    expect(component.editEmail).toBe('');
+    expect(component.editDob).toBe('');
+  });
 });

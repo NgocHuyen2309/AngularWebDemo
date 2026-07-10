@@ -115,6 +115,25 @@
     color: var(--text-secondary);
   }
 
+  &__item--editing {
+    border-color: var(--accent-copper) !important;
+    box-shadow: 0 4px 14px var(--shadow) !important;
+    background-color: var(--bg-card) !important;
+  }
+
+  &__edit-btn {
+    background-color: transparent !important;
+    color: var(--accent-copper, #b87333) !important;
+    border: 1px solid transparent !important;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background-color: rgba(184, 115, 51, 0.15) !important;
+      border-color: var(--accent-copper, #b87333) !important;
+      transform: scale(1.05);
+    }
+  }
+
   &__delete-btn {
     background-color: transparent !important;
     color: var(--loss, #c27878) !important;
@@ -125,6 +144,45 @@
       background-color: rgba(194, 120, 120, 0.15) !important;
       border-color: var(--loss, #c27878) !important;
       transform: scale(1.05);
+    }
+  }
+
+  &__edit-input {
+    background-color: var(--bg-primary, #1c1c1e) !important;
+    border: 1px solid var(--border) !important;
+    color: var(--text-primary) !important;
+    border-radius: 6px;
+
+    &:focus {
+      border-color: var(--accent-copper) !important;
+      box-shadow: 0 0 0 0.15rem rgba(184, 115, 51, 0.25) !important;
+      outline: none;
+    }
+  }
+
+  &__btn-cancel {
+    background-color: transparent !important;
+    border: 1px solid var(--border) !important;
+    color: var(--text-secondary) !important;
+    transition: all 0.2s ease;
+
+    &:hover:not(:disabled) {
+      background-color: var(--bg-secondary) !important;
+      color: var(--text-primary) !important;
+      border-color: var(--text-primary) !important;
+    }
+  }
+
+  &__btn-save {
+    background: var(--accent-gradient) !important;
+    border: 1px solid var(--accent-copper) !important;
+    color: #1c1c1e !important;
+    font-weight: 700;
+    transition: all 0.2s ease;
+
+    &:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 2px 8px rgba(184, 115, 51, 0.35);
     }
   }
 }
