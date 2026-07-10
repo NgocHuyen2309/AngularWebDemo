@@ -29,6 +29,7 @@ graph TD
 | 5 | **E2E Testing Track** | Independent design and implementation of 4-tier opaque-box E2E test suite, publishing `TEST_READY.md`. Runs in parallel to milestones 1-4. | None | DONE |
 | 6 | **E2E Verification & Hardening** | Pass 100% of E2E tests (Tiers 1-4) and complete white-box Adversarial Coverage Hardening (Tier 5). | M4, M5 | DONE |
 | 7 | **v3.0 Live Sync & Dynamic Theme** | Account User List (`UserListComponent`) with real-time RxJS Subject (`userAdded$`) updates, SPA smooth scrolling navigation (`scrollToSection`), SOAP UI removal, and dynamic Light/Dark mode switcher with copper accents and calendar indicator contrast optimization. | M6 | DONE |
+| 8 | **v3.2 Inline User Editing & UI Polish** | Inline account editing inside `UserListComponent` cards with edit pen icon (`PUT /api/users/:id`), margin separation (`22px`) between sidebar forms, refresh button hover contrast, responsive icon-only layout (`<= 1399px`), and 100% unit test coverage (`ng test`). | M7 | DONE |
 
 ## Interface Contracts
 

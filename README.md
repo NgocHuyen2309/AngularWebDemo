@@ -26,7 +26,7 @@
 - **RESTful CRUD** — Full Create, Read, Update, Delete cycle for Users with auto-incrementing IDs, validation, and duplicate detection.
 - **Catalog API** — Seed-driven product catalog (21 items across 4 categories) with query-parameter filtering (`limit`, `priceMin`) and sorted output.
 - **SOAP/XML Integration** — A standards-compliant SOAP endpoint that validates XML structure, enforces namespace rules, detects XSS payloads, and returns a SOAP Envelope response.
-- **Angular 21 SPA & Live Sync** — Component-driven frontend featuring reactive `userAdded$` cross-component synchronization, live `UserListComponent` account management, and SPA smooth scrolling navigation (`#home`, `#catalog`, `#account`).
+- **Angular 21 SPA, Live Sync & Inline Editing** — Component-driven frontend featuring reactive `userAdded$` cross-component synchronization, live `UserListComponent` account table with inline two-way data-bound editing (`PUT /api/users/:id`), and SPA smooth scrolling navigation (`#home`, `#catalog`, `#account`).
 - **Dynamic Light & Dark Theme System** — Real-time theme toggling (`data-theme="light" | "dark"`) inspired by Crypto Vault luxury styling with dynamic Less/CSS variables and native color-scheme inherited controls.
 - **Vanilla JS Showcase** — A standalone ES6 module demonstrating hoisting, prototype-based inheritance, pure DOM tree manipulation, and event bubbling/stopPropagation — all with mentor-oriented educational comments.
 - **Comprehensive Testing** — Jest + Supertest integration tests against an in-memory MongoDB (via `mongodb-memory-server`), eliminating the need for external database daemons during CI.
@@ -36,25 +36,22 @@
 ## Directory Structure
 
 ```
-D:\AngularDemo/
 ├── backend/
 │   ├── config/
-│   │   └── db.js                     # MongoDB connection & auto-seeding on empty catalog
+│   │   └── db.js                     # MongoDB / Mongoose connection setup
 │   ├── controllers/
-│   │   ├── catalog.controller.js     # GET /api/catalog with limit & priceMin filters
-│   │   ├── soap.controller.js        # POST /api/soap/info — full SOAP envelope handler
-│   │   └── user.controller.js        # CRUD for /api/users with email & date validation
+│   │   ├── catalog.controller.js     # GET /api/catalog with sorting/filtering
+│   │   ├── soap.controller.js        # POST /api/soap/info XML parsing & response
+│   │   └── user.controller.js        # CRUD operations for /api/users
 │   ├── models/
-│   │   ├── catalog.model.js          # Mongoose schema: id, name, category, price, imageUrl
-│   │   └── user.model.js             # Mongoose schema + Counter for auto-increment user IDs
+│   │   ├── catalog.model.js          # Mongoose schema for Catalog items
+│   │   └── user.model.js             # Mongoose schema for User accounts
 │   ├── routes/
-│   │   ├── catalog.routes.js         # Express router → catalogController.getCatalog
-│   │   ├── soap.routes.js            # Express router → soapController.handleSoapRequest
-│   │   └── user.routes.js            # Express router → CRUD (POST, GET, PUT, DELETE)
+│   │   ├── catalog.routes.js         # Router for catalog endpoints
+│   │   ├── soap.routes.js            # Router for SOAP endpoints
+│   │   └── user.routes.js            # Router for user CRUD endpoints
 │   ├── tests/
-│   │   ├── helpers/
-│   │   │   └── db.helper.js          # In-memory MongoDB lifecycle: connect, clear, close
-│   │   ├── catalog.test.js           # 4 tests: list all, invalid limit, limit, sort order
+│   │   ├── catalog.test.js           # 10+ tests: seeding, limit, price filtering
 │   │   ├── soap.test.js              # 10+ tests: XML faults, XSS, namespace, happy path
 │   │   └── user.test.js              # 10+ tests: CRUD, validation, duplicates, 404s
 │   ├── app.js                        # Express app: CORS, JSON/XML parsers, route mounting
@@ -67,9 +64,10 @@ D:\AngularDemo/
 │   │   ├── app/
 │   │   │   ├── components/
 │   │   │   │   ├── catalog/          # Product grid: category filter, sorting, price display
-│   │   │   │   ├── navbar/           # Top navigation bar with route links
-│   │   │   │   ├── user-form/        # User registration & profile management form
-│   │   │   │   └── soap-info/        # SOAP service status display component
+│   │   │   │   ├── navbar/           # Top navigation bar with theme switcher & route links
+│   │   │   │   ├── user-form/        # User registration form with validation & alerts
+│   │   │   │   ├── user-list/        # Account management table with inline edit & live sync
+│   │   │   │   └── soap-info/        # SOAP service status display component (reserved for tests)
 │   │   │   ├── services/
 │   │   │   │   ├── catalog.service.ts    # HttpClient wrapper → GET /api/catalog
 │   │   │   │   ├── user.service.ts       # HttpClient wrapper → CRUD /api/users
