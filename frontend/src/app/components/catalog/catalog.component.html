@@ -1,5 +1,5 @@
-<div class="catalog">
-  <h2 class="catalog__title mb-4">Product Catalog</h2>
+<div class="catalog fade-in-up">
+  <h2 class="catalog__title mb-4"><span class="starry-gradient-text fw-bold">Product Catalog</span></h2>
 
   <!-- Filter and Sort Controls -->
   <div class="catalog__controls d-flex flex-wrap align-items-center gap-3 mb-4">
@@ -23,6 +23,7 @@
         [ngModel]="sortBy"
         optionLabel="label"
         optionValue="value"
+        appendTo="body"
         (ngModelChange)="sortItems($event)"
       ></p-select>
     </div>

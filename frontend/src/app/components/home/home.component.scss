@@ -1,83 +1,236 @@
 // =============================================
-// Home Component Styles — Crown & Velvet Theme (SCSS without !important)
+// Home Component Styles — Starry Night Van Gogh Theme
 // =============================================
 
 .home-dashboard {
-  padding: 2rem 0;
+  padding: 2.2rem 0;
+  animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .hero-section {
   background: var(--accent-gradient);
-  border-radius: 16px;
-  padding: 3rem 2.5rem;
-  color: #1c1c1e;
-  box-shadow: 0 10px 30px var(--shadow);
-  margin-bottom: 2.5rem;
+  border: 1px solid rgba(236, 180, 77, 0.4);
+  border-radius: 20px;
+  padding: 3.2rem 2.8rem;
+  color: #191939;
+  box-shadow: 0 16px 40px var(--shadow), 0 0 30px rgba(236, 180, 77, 0.2);
+  margin-bottom: 2.8rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: 2rem;
+  gap: 2.2rem;
+  position: relative;
+  overflow: hidden;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -10%;
+    width: 320px;
+    height: 320px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+    pointer-events: none;
+    filter: blur(40px);
+  }
 
   h1 {
     font-weight: 800;
-    font-size: 2.4rem;
-    margin-bottom: 0.5rem;
-    color: #1c1c1e;
+    font-size: 2.5rem;
+    margin-bottom: 0.6rem;
+    color: #191939;
+    letter-spacing: -0.5px;
   }
 
   p {
     font-size: 1.15rem;
     font-weight: 600;
-    margin-bottom: 1.5rem;
-    max-width: 600px;
-    color: #1c1c1e;
+    margin-bottom: 1.6rem;
+    max-width: 620px;
+    color: #191939;
+    line-height: 1.65;
   }
 
   &__badge {
-    background-color: #1c1c1e;
-    color: var(--accent-copper-light);
-    padding: 0.4rem 1rem;
+    background-color: #191939;
+    color: #F2E199;
+    padding: 0.45rem 1.15rem;
     border-radius: 30px;
     font-weight: 800;
     font-size: 0.85rem;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 1.2px;
     display: inline-block;
-    margin-bottom: 1rem;
+    margin-bottom: 1.2rem;
+    box-shadow: 0 4px 12px rgba(25, 25, 57, 0.3);
+  }
+
+  .btn-dark {
+    background-color: #191939;
+    color: #F5F0E8;
+    border: none;
+    border-radius: 12px;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 6px 18px rgba(25, 25, 57, 0.35);
+
+    &:hover {
+      background-color: #234880;
+      color: #F2E199;
+      transform: translateY(-3px);
+      box-shadow: 0 10px 24px rgba(25, 25, 57, 0.5);
+    }
+  }
+
+  .btn-outline-dark {
+    border: 2px solid #191939;
+    color: #191939;
+    border-radius: 12px;
+    font-weight: 700;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+
+    &:hover {
+      background-color: #191939;
+      color: #F5F0E8;
+      transform: translateY(-3px);
+    }
+  }
+
+  :host-context([data-theme="light"]) & {
+    background: linear-gradient(135deg, #2A6FDB 0%, #4FA3F7 50%, #F2C14E 100%);
+    color: #FFFFFF;
+    box-shadow: 0 12px 36px rgba(42, 111, 219, 0.3);
+
+    h1, h1 .starry-gradient-text {
+      color: #FFFFFF;
+      background: none;
+      -webkit-text-fill-color: #FFFFFF;
+      text-shadow: 0 2px 6px rgba(16, 36, 72, 0.35);
+    }
+
+    p {
+      color: #FFFBEB;
+      text-shadow: 0 1px 4px rgba(16, 36, 72, 0.45);
+    }
+
+    .hero-section__badge {
+      background-color: #FFFFFF;
+      color: #0A1128;
+      -webkit-text-fill-color: #0A1128;
+      font-weight: 800;
+      text-shadow: none;
+      box-shadow: 0 4px 14px rgba(30, 64, 175, 0.3);
+    }
+
+    .btn-dark {
+      background-color: #FFFFFF;
+      color: #1E40AF;
+      font-weight: 800;
+      text-shadow: none;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+
+      &:hover {
+        background-color: #F2C14E;
+        color: #0A1128;
+      }
+    }
+
+    .btn-outline-dark {
+      border: 2px solid #FFFFFF;
+      color: #FFFFFF;
+      text-shadow: 0 1px 3px rgba(16, 36, 72, 0.35);
+
+      &:hover {
+        background-color: #FFFFFF;
+        color: #1E40AF;
+        text-shadow: none;
+      }
+    }
   }
 }
 
 .dashboard-card {
   background-color: var(--bg-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 1.8rem;
+  border-radius: 20px;
+  padding: 2.2rem;
   height: 100%;
-  box-shadow: 0 4px 16px var(--shadow);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 8px 24px var(--shadow);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   display: flex;
   flex-direction: column;
+  position: relative;
+  overflow: hidden;
 
   &:hover {
-    border-color: var(--accent-copper);
-    transform: translateY(-4px);
-    box-shadow: 0 8px 24px var(--shadow);
+    border-color: rgba(236, 180, 77, 0.5);
+    transform: translateY(-6px);
+    box-shadow: 0 18px 38px var(--shadow), 0 0 24px rgba(236, 180, 77, 0.18);
+  }
+
+  [data-theme="light"] &:hover {
+    border-color: #3C8CC4;
+    box-shadow: 0 14px 32px rgba(27, 58, 104, 0.12), 0 0 18px rgba(111, 184, 230, 0.25);
   }
 
   h4 {
     color: var(--text-primary);
     font-weight: 700;
-    margin-bottom: 0.75rem;
+    font-size: 1.35rem;
+    margin-bottom: 0.85rem;
   }
 
   p {
     color: var(--text-secondary);
-    font-size: 0.95rem;
+    font-size: 1rem;
+    line-height: 1.6;
     flex-grow: 1;
+    margin-bottom: 1.5rem;
   }
 
   .btn {
     align-self: flex-start;
+    border-radius: 10px;
+    font-weight: 600;
+    padding: 0.55rem 1.4rem;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .btn-primary {
+    background: var(--accent-gradient);
+    color: #191939;
+    border: none;
+    font-weight: 700;
+
+    &:hover {
+      background: var(--accent-gradient-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(236, 180, 77, 0.35);
+    }
+  }
+
+  .btn-outline-primary {
+    border: 1.5px solid var(--accent-skies);
+    color: var(--accent-skies);
+
+    &:hover {
+      background-color: var(--accent-skies);
+      color: #191939;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(111, 184, 230, 0.3);
+    }
+
+    :host-context([data-theme="light"]) & {
+      border-color: #2A6FDB;
+      color: #2A6FDB;
+
+      &:hover {
+        background-color: #2A6FDB;
+        color: #FFFFFF;
+        box-shadow: 0 6px 18px rgba(42, 111, 219, 0.35);
+      }
+    }
   }
 }

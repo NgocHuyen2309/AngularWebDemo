@@ -1,17 +1,20 @@
 // =============================================
-// User Form Component Styles — Crown & Velvet Theme (SCSS without !important)
+// User Form Component Styles — Starry Night Van Gogh Theme
 // =============================================
 
-$form-border-radius: 0.875rem;
-$form-spacing: 1.5rem;
+$form-border-radius: 1.25rem;
+$form-spacing: 1.8rem;
 
 .user-form {
   background-color: var(--bg-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--border);
   border-radius: $form-border-radius;
   overflow: hidden;
   padding: 0;
-  box-shadow: 0 0.25rem 1rem var(--shadow);
+  box-shadow: 0 10px 32px var(--shadow);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 
   &--embedded {
     border: none;
@@ -21,15 +24,31 @@ $form-spacing: 1.5rem;
   }
 
   .card-header {
-    background: var(--accent-gradient);
-    border-bottom: 1px solid var(--border);
-    padding: 1.1rem 1.4rem;
+    background: linear-gradient(135deg, #15284C 0%, #0F1E38 100%);
+    border-bottom: 2px solid rgba(236, 180, 77, 0.5);
+    padding: 1.6rem 1.6rem;
 
-    h5, h4, h3 {
-      color: #1c1c1e;
-      font-weight: 800;
+    h5, h4, h3, h5 .starry-gradient-text, h3 .starry-gradient-text {
+      color: #FFFFFF;
+      background: none;
+      -webkit-text-fill-color: #FFFFFF;
+      font-weight: 900;
       margin: 0;
-      letter-spacing: 0.03125rem;
+      letter-spacing: -0.5px;
+      text-shadow: 0 2px 6px rgba(0, 0, 0, 0.65);
+    }
+
+    :host-context([data-theme="light"]) & {
+      background: linear-gradient(135deg, #2A6FDB 0%, #1E40AF 100%);
+      color: #FFFFFF;
+      border-bottom: 2px solid rgba(242, 193, 78, 0.6);
+
+      h5, h4, h3, h5 .starry-gradient-text, h3 .starry-gradient-text {
+        color: #FFFFFF;
+        background: none;
+        -webkit-text-fill-color: #FFFFFF;
+        text-shadow: 0 2px 6px rgba(16, 36, 72, 0.45);
+      }
     }
   }
 
@@ -40,17 +59,17 @@ $form-spacing: 1.5rem;
   &__input,
   formly-form .form-control,
   formly-form .form-select {
-    border-radius: 0.5rem;
-    background-color: var(--bg-card);
+    border-radius: 0.6rem;
+    background-color: var(--bg-secondary);
     border: 1px solid var(--border);
     color: var(--text-primary);
     color-scheme: inherit;
-    padding: 0.6rem 0.9rem;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    padding: 0.65rem 0.95rem;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
 
     &:focus {
       border-color: var(--accent-copper);
-      box-shadow: 0 0 0 0.2rem rgba(184, 115, 51, 0.25);
+      box-shadow: 0 0 0 0.2rem rgba(236, 180, 77, 0.25);
       outline: none;
     }
 
@@ -63,16 +82,27 @@ $form-spacing: 1.5rem;
     }
 
     &[type="date"]::-webkit-calendar-picker-indicator {
-      filter: var(--calendar-icon-filter);
+      filter: invert(0.75) sepia(0.6) saturate(3.5) hue-rotate(185deg) brightness(1.2);
       cursor: pointer;
-      opacity: 0.85;
+      opacity: 1;
       transition: opacity 0.2s ease, transform 0.2s ease, filter 0.2s ease;
 
       &:hover {
         opacity: 1;
-        transform: scale(1.1);
+        transform: scale(1.15);
+      }
+
+      :host-context([data-theme="light"]) & {
+        filter: invert(0.12) sepia(0.9) saturate(8) hue-rotate(200deg) brightness(0.65);
       }
     }
+  }
+
+  .password-hint,
+  .form-label .text-muted,
+  .form-text.text-muted,
+  small.text-muted {
+    color: var(--text-secondary) !important;
   }
 
   formly-validation-message,
@@ -84,55 +114,67 @@ $form-spacing: 1.5rem;
   }
 
   &__submit-btn {
-    border-radius: 0.5rem;
-    padding: 0.7rem 1.4rem;
-    font-weight: 700;
+    border-radius: 0.75rem;
+    padding: 0.85rem 1.6rem;
+    font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: 0.05rem;
-    background: var(--accent-gradient);
-    color: #1c1c1e;
+    letter-spacing: 0.06rem;
+    background: linear-gradient(135deg, #ECB44D 0%, #F2E199 50%, #E6AA45 100%);
+    color: #0A1128;
     border: none;
-    box-shadow: 0 0.25rem 0.875rem rgba(184, 115, 51, 0.3);
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 16px rgba(236, 180, 77, 0.45);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     cursor: pointer;
 
     &:hover:not(:disabled) {
-      transform: translateY(-0.125rem);
-      box-shadow: 0 0.375rem 1.25rem rgba(184, 115, 51, 0.45);
-      background: var(--accent-gradient-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(236, 180, 77, 0.65);
+      background: linear-gradient(135deg, #F2E199 0%, #FFFBEB 50%, #ECB44D 100%);
+    }
+
+    :host-context([data-theme="light"]) & {
+      background: linear-gradient(135deg, #2A6FDB 0%, #3B82F6 50%, #1D4ED8 100%);
+      color: #FFFFFF;
+      box-shadow: 0 4px 18px rgba(42, 111, 219, 0.4);
+
+      &:hover:not(:disabled) {
+        background: linear-gradient(135deg, #3B82F6 0%, #60A5FA 50%, #2A6FDB 100%);
+        color: #FFFFFF;
+        box-shadow: 0 8px 26px rgba(42, 111, 219, 0.6);
+      }
     }
 
     &:disabled {
-      background: var(--border);
-      color: var(--text-muted);
-      box-shadow: none;
+      background: var(--border) !important;
+      color: var(--text-muted) !important;
+      box-shadow: none !important;
       transform: none;
       cursor: not-allowed;
     }
   }
 
   &__success-card {
-    border-radius: 0.5rem;
-    border: 1px solid rgba(107, 142, 107, 0.4);
-    background-color: rgba(107, 142, 107, 0.1);
+    border-radius: 0.6rem;
+    border: 1px solid rgba(107, 142, 107, 0.5);
+    background-color: rgba(107, 142, 107, 0.15);
     color: #8fbc8f;
     padding: 1rem;
   }
 
   &__error-card {
-    border-radius: 0.5rem;
-    border: 1px solid rgba(194, 120, 120, 0.4);
-    background-color: rgba(194, 120, 120, 0.1);
+    border-radius: 0.6rem;
+    border: 1px solid rgba(194, 120, 120, 0.5);
+    background-color: rgba(194, 120, 120, 0.15);
     color: #e69999;
     padding: 1rem;
   }
 
   &__secure-badge {
-    background: rgba(184, 115, 51, 0.15);
+    background: rgba(236, 180, 77, 0.18);
     color: var(--accent-copper);
-    border: 1px solid rgba(184, 115, 51, 0.4);
-    font-size: 0.75rem;
-    padding: 0.35rem 0.65rem;
+    border: 1px solid rgba(236, 180, 77, 0.45);
+    font-size: 0.78rem;
+    padding: 0.38rem 0.75rem;
     border-radius: 2rem;
   }
 
@@ -141,26 +183,47 @@ $form-spacing: 1.5rem;
     display: flex;
     align-items: stretch;
     width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 0.6rem;
+    background-color: var(--bg-secondary);
+    transition: all 0.25s ease;
+    overflow: hidden;
 
-    .form-control {
-      border-top-right-radius: 0;
-      border-bottom-right-radius: 0;
-      border-right: none;
+    &:focus-within {
+      border-color: var(--accent-copper) !important;
+      box-shadow: 0 0 0 0.2rem rgba(236, 180, 77, 0.25) !important;
+    }
+
+    .form-control,
+    .user-form__input {
+      border: none !important;
+      box-shadow: none !important;
+      background: transparent !important;
+      border-radius: 0 !important;
+      flex-grow: 1;
+
+      &:focus {
+        border: none !important;
+        box-shadow: none !important;
+        outline: none !important;
+      }
     }
 
     .eye-btn {
-      border-top-left-radius: 0;
-      border-bottom-left-radius: 0;
-      border: 1px solid var(--border);
-      border-left: none;
-      background: var(--bg-card);
+      border: none !important;
+      box-shadow: none !important;
+      background: transparent !important;
+      border-radius: 0 !important;
       color: var(--text-muted);
-      padding: 0 0.85rem;
+      padding: 0 0.95rem;
       transition: color 0.2s ease, background 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
 
       &:hover {
-        color: var(--accent-copper);
-        background: rgba(184, 115, 51, 0.08);
+        color: var(--accent-copper) !important;
+        background: rgba(236, 180, 77, 0.15) !important;
       }
     }
   }
@@ -168,11 +231,11 @@ $form-spacing: 1.5rem;
   .password-strength {
     background: var(--strength-box-bg);
     border: 1px solid var(--strength-box-border);
-    border-radius: 0.625rem;
-    padding: 0.85rem 1rem;
+    border-radius: 0.75rem;
+    padding: 0.95rem 1.15rem;
 
     .strength-title {
-      font-size: 0.85rem;
+      font-size: 0.88rem;
       color: var(--strength-title-color);
       font-weight: 700;
     }
@@ -180,10 +243,10 @@ $form-spacing: 1.5rem;
     .strength-badge {
       font-size: 0.75rem;
       font-weight: 700;
-      padding: 0.25rem 0.6rem;
+      padding: 0.28rem 0.65rem;
       border-radius: 0.375rem;
       text-transform: uppercase;
-      letter-spacing: 0.04rem;
+      letter-spacing: 0.05rem;
 
       &.strength-none { background: var(--strength-meter-bg); color: var(--strength-item-color); }
       &.strength-weak { background: var(--strength-weak-bg); color: var(--strength-weak-color); }
@@ -193,11 +256,11 @@ $form-spacing: 1.5rem;
     }
 
     .strength-meter-bar {
-      height: 0.375rem;
+      height: 0.45rem;
       background: var(--strength-meter-bg);
       border-radius: 0.25rem;
       overflow: hidden;
-      margin-top: 0.4rem;
+      margin-top: 0.5rem;
 
       .strength-meter-fill {
         height: 100%;
@@ -213,14 +276,14 @@ $form-spacing: 1.5rem;
 
     .password-checklist {
       .checklist-item {
-        font-size: 0.75rem;
+        font-size: 0.78rem;
         font-weight: 600;
         color: var(--strength-item-color);
         display: inline-flex;
         align-items: center;
-        gap: 0.3rem;
+        gap: 0.35rem;
         background: var(--strength-item-bg);
-        padding: 0.25rem 0.6rem;
+        padding: 0.28rem 0.65rem;
         border-radius: 0.375rem;
         border: 1px solid var(--strength-item-border);
         transition: all 0.2s ease;

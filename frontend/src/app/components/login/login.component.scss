@@ -1,38 +1,61 @@
 // =============================================
-// Login Component Styles — Crown & Velvet Theme (SCSS without !important)
+// Login Component Styles — Starry Night Van Gogh Theme
 // =============================================
 
 .login-container {
-  max-width: 33.75rem;
-  margin: 3rem auto;
+  max-width: 32.5rem;
+  margin: 3.2rem auto;
   padding: 0 1rem;
 }
 
 .login-card {
   background-color: var(--bg-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--border);
-  border-radius: 1rem;
-  box-shadow: 0 0.5rem 2rem var(--shadow);
+  border-radius: 1.25rem;
+  box-shadow: 0 12px 36px var(--shadow), 0 0 24px rgba(236, 180, 77, 0.15);
   overflow: hidden;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 
   &__header {
     background: var(--accent-gradient);
-    padding: 1.5rem;
+    padding: 2.2rem 1.6rem;
     text-align: center;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid rgba(236, 180, 77, 0.35);
 
-    h3 {
-      color: #1c1c1e;
-      font-weight: 800;
+    h3, h3 .starry-gradient-text {
+      color: #0A1128 !important;
+      background: none !important;
+      -webkit-text-fill-color: #0A1128 !important;
+      font-weight: 900 !important;
       margin: 0;
-      letter-spacing: 0.03125rem;
+      letter-spacing: -0.5px;
+      text-shadow: 0 1px 2px rgba(255, 255, 255, 0.45);
     }
 
     p {
-      color: #1c1c1e;
-      margin: 0.3rem 0 0;
-      font-weight: 600;
-      font-size: 0.9rem;
+      color: #101828 !important;
+      margin: 0.45rem 0 0;
+      font-weight: 700 !important;
+      font-size: 1rem;
+    }
+
+    :host-context([data-theme="light"]) & {
+      background: linear-gradient(135deg, #2A6FDB 0%, #4FA3F7 50%, #F2C14E 100%) !important;
+      color: #FFFFFF !important;
+
+      h3, h3 .starry-gradient-text {
+        color: #FFFFFF !important;
+        background: none !important;
+        -webkit-text-fill-color: #FFFFFF !important;
+        text-shadow: 0 2px 6px rgba(16, 36, 72, 0.35) !important;
+      }
+
+      p {
+        color: #FFFBEB !important;
+        text-shadow: 0 1px 4px rgba(16, 36, 72, 0.45) !important;
+      }
     }
   }
 
@@ -44,12 +67,12 @@
 
   &__tab-btn {
     flex: 1;
-    padding: 1rem;
+    padding: 1.1rem;
     background: transparent;
     border: none;
     color: var(--text-secondary);
     font-weight: 600;
-    transition: all 0.25s ease;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     cursor: pointer;
 
     &:hover {
@@ -59,39 +82,87 @@
 
     &--active {
       color: var(--accent-copper);
-      border-bottom: 0.1875rem solid var(--accent-copper);
+      border-bottom: 3px solid var(--accent-copper);
       background-color: var(--bg-card);
+      font-weight: 700;
+      box-shadow: inset 0 -4px 12px rgba(236, 180, 77, 0.15);
+
+      :host-context([data-theme="light"]) & {
+        color: #1E40AF !important;
+        background-color: #FFFFFF !important;
+        border-bottom: 3px solid #D4952B !important;
+      }
     }
   }
 
   &__body {
-    padding: 2rem;
+    padding: 2.2rem;
+
+    .login-input {
+      background-color: var(--bg-secondary);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      border-radius: 0.6rem;
+      padding: 0.65rem 0.9rem;
+      transition: all 0.25s ease;
+
+      &:focus {
+        border-color: var(--accent-copper);
+        box-shadow: 0 0 0 0.2rem rgba(236, 180, 77, 0.25);
+        outline: none;
+      }
+
+      &::placeholder {
+        color: var(--text-muted);
+      }
+    }
 
     .password-group {
       position: relative;
       display: flex;
       align-items: stretch;
       width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 0.6rem;
+      background-color: var(--bg-secondary);
+      transition: all 0.25s ease;
+      overflow: hidden;
 
-      .form-control {
-        border-top-right-radius: 0;
-        border-bottom-right-radius: 0;
-        border-right: none;
+      &:focus-within {
+        border-color: var(--accent-copper) !important;
+        box-shadow: 0 0 0 0.2rem rgba(236, 180, 77, 0.25) !important;
+      }
+
+      .form-control,
+      .login-input {
+        border: none !important;
+        box-shadow: none !important;
+        background: transparent !important;
+        border-radius: 0 !important;
+        flex-grow: 1;
+
+        &:focus {
+          border: none !important;
+          box-shadow: none !important;
+          outline: none !important;
+        }
       }
 
       .eye-btn {
-        border-top-left-radius: 0;
-        border-bottom-left-radius: 0;
-        border: 1px solid var(--border);
-        border-left: none;
-        background: var(--bg-card);
+        border: none !important;
+        box-shadow: none !important;
+        background: transparent !important;
+        border-radius: 0 !important;
         color: var(--text-muted);
-        padding: 0 0.85rem;
+        padding: 0 0.95rem;
         transition: color 0.2s ease, background 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
 
         &:hover {
-          color: var(--accent-copper);
-          background: rgba(184, 115, 51, 0.08);
+          color: var(--accent-copper) !important;
+          background: rgba(236, 180, 77, 0.15) !important;
         }
       }
     }
@@ -99,41 +170,53 @@
 
   &__submit-btn {
     width: 100%;
-    border-radius: 0.5rem;
-    padding: 0.8rem;
-    font-weight: 700;
+    border-radius: 0.75rem;
+    padding: 0.95rem;
+    font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: 0.05rem;
-    background: var(--accent-gradient);
-    color: #1c1c1e;
+    letter-spacing: 0.06rem;
+    background: linear-gradient(135deg, #ECB44D 0%, #F2E199 50%, #E6AA45 100%) !important;
+    color: #0A1128 !important;
     border: none;
-    box-shadow: 0 0.25rem 0.875rem rgba(184, 115, 51, 0.3);
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 16px rgba(236, 180, 77, 0.45);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     cursor: pointer;
-    margin-top: 1rem;
+    margin-top: 1.2rem;
 
     &:hover:not(:disabled) {
-      transform: translateY(-0.125rem);
-      box-shadow: 0 0.375rem 1.25rem rgba(184, 115, 51, 0.45);
-      background: var(--accent-gradient-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(236, 180, 77, 0.65);
+      background: linear-gradient(135deg, #F2E199 0%, #FFFBEB 50%, #ECB44D 100%) !important;
+    }
+
+    :host-context([data-theme="light"]) & {
+      background: linear-gradient(135deg, #2A6FDB 0%, #3B82F6 50%, #1D4ED8 100%) !important;
+      color: #FFFFFF !important;
+      box-shadow: 0 4px 18px rgba(42, 111, 219, 0.4);
+
+      &:hover:not(:disabled) {
+        background: linear-gradient(135deg, #3B82F6 0%, #60A5FA 50%, #2A6FDB 100%) !important;
+        color: #FFFFFF !important;
+        box-shadow: 0 8px 26px rgba(42, 111, 219, 0.6);
+      }
     }
 
     &:disabled {
-      background: var(--border);
-      color: var(--text-muted);
-      box-shadow: none;
+      background: var(--border) !important;
+      color: var(--text-muted) !important;
+      box-shadow: none !important;
       transform: none;
       cursor: not-allowed;
     }
   }
 
   &__error {
-    background-color: rgba(194, 120, 120, 0.1);
-    border: 1px solid rgba(194, 120, 120, 0.4);
+    background-color: rgba(194, 120, 120, 0.15);
+    border: 1px solid rgba(194, 120, 120, 0.45);
     color: #e69999;
-    padding: 0.75rem 1rem;
-    border-radius: 0.5rem;
-    margin-bottom: 1rem;
-    font-size: 0.9rem;
+    padding: 0.85rem 1rem;
+    border-radius: 0.6rem;
+    margin-bottom: 1.2rem;
+    font-size: 0.92rem;
   }
 }
