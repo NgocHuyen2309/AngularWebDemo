@@ -1,0 +1,392 @@
+// =============================================
+// Global Styles — Crown & Velvet Dark Copper Theme (SCSS Migration)
+// =============================================
+
+// Variables (SCSS syntax)
+$color-primary: #b87333;
+$color-primary-light: #c9845a;
+$color-secondary: #a8a8a8;
+$color-success: #6b8e6b;
+$color-danger: #c27878;
+$color-warning: #d4945a;
+$color-info: #0dcaf0;
+$color-light: #f5f0e8;
+$color-dark: #1c1c1e;
+$color-bg: #1c1c1e;
+$color-bg-secondary: #232325;
+$color-card: #2c2c2e;
+$color-card-hover: #343436;
+$color-border: #3a3a3c;
+$color-text: #f5f0e8;
+$color-text-muted: #8e8e93;
+
+$spacing-xs: 0.25rem;
+$spacing-sm: 0.5rem;
+$spacing-md: 1rem;
+$spacing-lg: 1.5rem;
+$spacing-xl: 2rem;
+
+$border-radius-sm: 0.375rem;
+$border-radius-md: 0.75rem;
+$border-radius-lg: 1rem;
+
+$font-family-base: 'Instrument Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+
+// CSS Variables for dynamic usage
+:root, [data-theme="dark"] {
+  --bg-primary: #{$color-bg};
+  --bg-secondary: #{$color-bg-secondary};
+  --bg-card: #{$color-card};
+  --bg-card-hover: #{$color-card-hover};
+  --accent-copper: #{$color-primary};
+  --accent-copper-light: #{$color-primary-light};
+  --accent-gradient: linear-gradient(135deg, #{$color-primary} 0%, #{$color-warning} 50%, #{$color-primary-light} 100%);
+  --accent-gradient-hover: linear-gradient(135deg, #{$color-primary-light} 0%, #daa57a 50%, #{$color-warning} 100%);
+  --text-primary: #{$color-text};
+  --text-secondary: #{$color-secondary};
+  --text-muted: #{$color-text-muted};
+  --border: #{$color-border};
+  --shadow: rgba(0, 0, 0, 0.4);
+  --calendar-icon-filter: invert(1) brightness(1.2);
+
+  --strength-box-bg: rgba(28, 28, 30, 0.45);
+  --strength-box-border: #3a3a3c;
+  --strength-title-color: #f5f0e8;
+  --strength-item-bg: rgba(255, 255, 255, 0.05);
+  --strength-item-border: rgba(255, 255, 255, 0.08);
+  --strength-item-color: #8e8e93;
+  --strength-item-checked-bg: rgba(107, 142, 107, 0.18);
+  --strength-item-checked-border: rgba(107, 142, 107, 0.45);
+  --strength-item-checked-color: #8fbc8f;
+  --strength-meter-bg: #3a3a3c;
+  --strength-weak-color: #f28b8b;
+  --strength-weak-bg: rgba(194, 120, 120, 0.25);
+  --strength-med-color: #f5ba82;
+  --strength-med-bg: rgba(212, 148, 90, 0.25);
+  --strength-strong-color: #8fbc8f;
+  --strength-strong-bg: rgba(107, 142, 107, 0.25);
+  --strength-vstrong-color: #48d8f0;
+  --strength-vstrong-bg: rgba(13, 202, 240, 0.25);
+
+  color-scheme: dark;
+  accent-color: #{$color-warning};
+}
+
+[data-theme="light"] {
+  --bg-primary: #f5f5f7;
+  --bg-secondary: #ffffff;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f0f0f2;
+  --accent-copper: #d4945a;
+  --accent-copper-light: #e8b88a;
+  --accent-gradient: linear-gradient(135deg, #d4945a 0%, #e8b88a 50%, #f0c89a 100%);
+  --accent-gradient-hover: linear-gradient(135deg, #e8b88a 0%, #f0c89a 50%, #f5d4a8 100%);
+  --text-primary: #1c1c1e;
+  --text-secondary: #6e6e6e;
+  --text-muted: #9a9a9a;
+  --border: #e0e0e2;
+  --shadow: rgba(0, 0, 0, 0.08);
+  --calendar-icon-filter: invert(0) brightness(0);
+
+  --strength-box-bg: #f3f4f6;
+  --strength-box-border: #dcdde1;
+  --strength-title-color: #1c1c1e;
+  --strength-item-bg: #ffffff;
+  --strength-item-border: #dcdde1;
+  --strength-item-color: #555555;
+  --strength-item-checked-bg: #e8f5e9;
+  --strength-item-checked-border: #a5d6a7;
+  --strength-item-checked-color: #1b5e20;
+  --strength-meter-bg: #dcdde1;
+  --strength-weak-color: #b71c1c;
+  --strength-weak-bg: #ffebee;
+  --strength-med-color: #e65100;
+  --strength-med-bg: #fff3e0;
+  --strength-strong-color: #1b5e20;
+  --strength-strong-bg: #e8f5e9;
+  --strength-vstrong-color: #01579b;
+  --strength-vstrong-bg: #e1f5fe;
+
+  color-scheme: light;
+  accent-color: #d4945a;
+}
+
+// Global Resets & Base Styles
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+::selection {
+  background-color: #d4945a;
+  color: #1c1c1e;
+}
+
+html {
+  font-size: 100%;
+  scroll-behavior: smooth;
+  color-scheme: inherit;
+  accent-color: #d4945a;
+}
+
+body {
+  font-family: $font-family-base;
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
+  margin: 0;
+  padding: 0;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color-scheme: inherit;
+  accent-color: #d4945a;
+}
+
+// Global BEM Utility Classes
+.app {
+  &__container {
+    max-width: 87.5rem;
+    margin: 0 auto;
+    padding: 0 $spacing-md;
+  }
+
+  &__section {
+    padding: $spacing-xl 0;
+  }
+
+  &__heading {
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: $spacing-lg;
+    letter-spacing: 0.03125rem;
+  }
+}
+
+// Card base styles — Crown & Velvet luxury cards
+.card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: $border-radius-lg;
+  box-shadow: 0 0.25rem 1rem var(--shadow);
+  color: var(--text-primary);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &:hover {
+    border-color: var(--accent-copper);
+    box-shadow: 0 0.5rem 1.5rem var(--shadow);
+  }
+}
+
+// Form controls refinement for dark theme (Higher specificity without !important)
+body .form-control,
+body .form-select,
+body select {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  border-radius: $border-radius-sm;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  color-scheme: inherit;
+  accent-color: #daa57a;
+
+  &:focus,
+  &:active,
+  &:focus-visible {
+    background-color: var(--bg-card);
+    color: var(--text-primary);
+    border-color: var(--accent-copper);
+    box-shadow: 0 0 0 0.2rem rgba(184, 115, 51, 0.25);
+    outline: none;
+  }
+
+  &::placeholder {
+    color: var(--text-muted);
+  }
+
+  &[type="date"]::-webkit-calendar-picker-indicator {
+    filter: var(--calendar-icon-filter);
+    cursor: pointer;
+    opacity: 0.85;
+    transition: opacity 0.2s ease, transform 0.2s ease, filter 0.2s ease;
+
+    &:hover {
+      opacity: 1;
+      transform: scale(1.1);
+    }
+  }
+}
+
+body input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: var(--calendar-icon-filter);
+  cursor: pointer;
+  opacity: 0.85;
+  transition: opacity 0.2s ease, transform 0.2s ease, filter 0.2s ease;
+
+  &:hover {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+}
+
+body .form-select {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23a8a8a8' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+}
+
+// Button base enhancements
+.btn {
+  border-radius: $border-radius-sm;
+  font-weight: 600;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 0.5rem 1.25rem;
+}
+
+body .btn-primary,
+body .btn.btn-primary {
+  background: var(--accent-gradient);
+  border: none;
+  color: #1c1c1e;
+  font-weight: 700;
+  box-shadow: 0 0.25rem 0.75rem rgba(184, 115, 51, 0.25);
+
+  &:hover,
+  &:focus,
+  &:active {
+    background: var(--accent-gradient-hover);
+    color: #1c1c1e;
+    transform: translateY(-0.0625rem);
+    box-shadow: 0 0.375rem 1rem rgba(184, 115, 51, 0.35);
+  }
+}
+
+body .btn-outline-primary,
+body .btn.btn-outline-primary {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+
+  &:hover,
+  &:focus,
+  &:active {
+    background-color: var(--bg-card-hover);
+    border-color: var(--accent-copper);
+    color: var(--text-primary);
+  }
+}
+
+// Global Bootstrap Utility Class Overrides for Crown & Velvet Theme
+body .bg-primary {
+  background: var(--accent-gradient);
+  color: #1c1c1e;
+}
+
+body .bg-secondary {
+  background-color: var(--bg-secondary);
+  color: var(--accent-copper-light);
+  border: 1px solid var(--border);
+}
+
+body .bg-light {
+  background-color: #1c1c1e;
+  color: var(--text-primary);
+  border-color: var(--border);
+}
+
+body .text-primary {
+  color: var(--accent-copper);
+}
+
+body .text-white {
+  color: var(--text-primary);
+}
+
+body .card-header {
+  background: var(--accent-gradient);
+  color: #1c1c1e;
+  border-bottom: 1px solid var(--border);
+  padding: 1rem 1.25rem;
+
+  h5, h4, h3, h2, h1 {
+    color: #1c1c1e;
+    font-weight: 700;
+    letter-spacing: 0.03125rem;
+    margin: 0;
+  }
+}
+
+input[type="date"] {
+  color-scheme: inherit;
+}
+
+[data-theme="light"] input[type="date"]::-webkit-calendar-picker-indicator,
+[data-theme="dark"] input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: 0.85;
+}
+
+body select option,
+body .form-select option {
+  background-color: var(--bg-card);
+  color: var(--text-primary);
+  padding: 0.625rem 0.875rem;
+
+  &:checked,
+  &:hover,
+  &:focus,
+  &:active {
+    background-color: #daa57a;
+    background: #daa57a;
+    color: #1c1c1e;
+  }
+}
+
+// PrimeNG component styling adjustments without !important
+body .p-select,
+body .p-dropdown {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: $border-radius-sm;
+  color: var(--text-primary);
+  
+  .p-select-label,
+  .p-dropdown-label {
+    color: var(--text-primary);
+  }
+}
+
+// Scrollbar styling — Copper theme
+::-webkit-scrollbar {
+  width: 0.5rem;
+  height: 0.5rem;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: $border-radius-sm;
+
+  &:hover {
+    background: var(--accent-copper);
+  }
+}
+
+// Responsive breakpoints
+@media (max-width: 768px) {
+  html {
+    font-size: 87.5%;
+  }
+
+  .container-fluid {
+    padding-left: $spacing-md;
+    padding-right: $spacing-md;
+  }
+}
+
+@media (max-width: 576px) {
+  html {
+    font-size: 81.25%;
+  }
+}

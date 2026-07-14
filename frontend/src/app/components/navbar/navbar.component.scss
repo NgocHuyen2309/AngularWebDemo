@@ -1,17 +1,18 @@
 .navbar {
-  background-color: var(--bg-card) !important;
-  border-bottom: 1px solid var(--border);
+  background-color: #1c1c1e;
+  border-bottom: 1px solid #3a3a3c;
   padding: 0.8rem 0;
-  box-shadow: 0 4px 20px var(--shadow);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 
   &__brand {
     font-size: 1.4rem;
     font-weight: 700;
-    color: var(--text-primary) !important;
+    color: #ffffff;
     display: flex;
     align-items: center;
     gap: 10px;
     letter-spacing: 0.5px;
+    text-decoration: none;
 
     &::before {
       content: 'CV';
@@ -29,15 +30,15 @@
     }
 
     &:hover {
-      color: var(--accent-copper-light) !important;
+      color: var(--accent-copper-light);
     }
   }
 
   &__toggle {
-    border: 1px solid var(--border);
+    border: 1px solid #3a3a3c;
     padding: 0.35rem 0.6rem;
     border-radius: 6px;
-    background-color: var(--bg-secondary);
+    background-color: #232325;
 
     &:focus {
       box-shadow: 0 0 0 0.2rem rgba(184, 115, 51, 0.25);
@@ -45,23 +46,43 @@
       border-color: var(--accent-copper);
     }
   }
+
+  &__badge {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.6rem;
+    border-radius: 20px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-left: 0.5rem;
+    background: #232325;
+    border: 1px solid #3a3a3c;
+    color: var(--accent-copper-light);
+
+    &--admin {
+      background: var(--accent-gradient);
+      color: #1c1c1e;
+      border: none;
+    }
+  }
 }
 
-.nav-link {
-  color: var(--text-secondary) !important;
+.navbar .navbar-nav .nav-link {
+  color: #d1d1d6;
   font-weight: 500;
-  padding: 0.5rem 1.1rem !important;
+  padding: 0.5rem 1.1rem;
   border-radius: 8px;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   margin: 0 4px;
+  cursor: pointer;
 
   &:hover {
-    color: var(--text-primary) !important;
-    background-color: var(--bg-card-hover);
+    color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.08);
   }
 
   &.active {
-    color: #1c1c1e !important;
+    color: #1c1c1e;
     background: var(--accent-gradient);
     font-weight: 600;
     box-shadow: 0 2px 8px rgba(184, 115, 51, 0.25);
@@ -71,17 +92,20 @@
 .theme-toggle-btn {
   width: 42px;
   height: 42px;
-  background-color: var(--bg-secondary) !important;
-  border: 1px solid var(--border) !important;
-  border-radius: 10px !important;
-  color: var(--text-primary) !important;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text-primary);
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   &:hover {
-    background-color: var(--bg-card-hover) !important;
-    border-color: var(--accent-copper) !important;
-    color: var(--accent-copper) !important;
+    background-color: var(--bg-card-hover);
+    border-color: var(--accent-copper);
+    color: var(--accent-copper);
     transform: translateY(-1px);
     box-shadow: 0 4px 12px var(--shadow);
   }

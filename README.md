@@ -25,9 +25,8 @@
 
 - **RESTful CRUD** — Full Create, Read, Update, Delete cycle for Users with auto-incrementing IDs, validation, and duplicate detection.
 - **Catalog API** — Seed-driven product catalog (21 items across 4 categories) with query-parameter filtering (`limit`, `priceMin`) and sorted output.
-- **SOAP/XML Integration** — A standards-compliant SOAP endpoint that validates XML structure, enforces namespace rules, detects XSS payloads, and returns a SOAP Envelope response.
 - **Angular 21 SPA, Live Sync & Inline Editing** — Component-driven frontend featuring reactive `userAdded$` cross-component synchronization, live `UserListComponent` account table with inline two-way data-bound editing (`PUT /api/users/:id`), and SPA smooth scrolling navigation (`#home`, `#catalog`, `#account`).
-- **Dynamic Light & Dark Theme System** — Real-time theme toggling (`data-theme="light" | "dark"`) inspired by Crypto Vault luxury styling with dynamic Less/CSS variables and native color-scheme inherited controls.
+- **Dynamic Light & Dark Theme System** — Real-time theme toggling (`data-theme="light" | "dark"`) inspired by Crown & Velvet luxury styling with dynamic Less/CSS variables and native color-scheme inherited controls.
 - **Vanilla JS Showcase** — A standalone ES6 module demonstrating hoisting, prototype-based inheritance, pure DOM tree manipulation, and event bubbling/stopPropagation — all with mentor-oriented educational comments.
 - **Comprehensive Testing** — Jest + Supertest integration tests against an in-memory MongoDB (via `mongodb-memory-server`), eliminating the need for external database daemons during CI.
 

@@ -15,30 +15,50 @@ beforeEach(async () => {
   await dbHelper.clear();
 });
 
-describe('User CRUD API', () => {
+describe('User CRUD API & Authentication', () => {
   test('POST /api/users - success', async () => {
     const res = await request(app)
       .post('/api/users')
-      .send({ email: 'test@example.com', date_of_birth: '1990-01-01' });
+      .send({ email: 'test@gmail.com', password: 'TestPass123!', date_of_birth: '1990-01-01' });
     expect(res.statusCode).toBe(201);
     expect(res.body).toHaveProperty('id');
-    expect(res.body.email).toBe('test@example.com');
+    expect(res.body.email).toBe('test@gmail.com');
+    expect(res.body).not.toHaveProperty('password');
   });
 
   test('POST /api/users - invalid email', async () => {
     const res = await request(app)
       .post('/api/users')
-      .send({ email: 'invalid-email', date_of_birth: '1990-01-01' });
+      .send({ email: 'invalid-email', password: 'TestPass123!', date_of_birth: '1990-01-01' });
+    expect(res.statusCode).toBe(400);
+  });
+
+  test('POST /api/users - short or missing password', async () => {
+    let res = await request(app)
+      .post('/api/users')
+      .send({ email: 'testpass@gmail.com', password: '123', date_of_birth: '1990-01-01' });
+    expect(res.statusCode).toBe(400);
+
+    res = await request(app)
+      .post('/api/users')
+      .send({ email: 'testpass@gmail.com', date_of_birth: '1990-01-01' });
+    expect(res.statusCode).toBe(400);
+  });
+
+  test('POST /api/users - confirm password mismatch', async () => {
+    const res = await request(app)
+      .post('/api/users')
+      .send({ email: 'testpass@gmail.com', password: 'TestPass123!', confirm_password: 'DifferentPass!', date_of_birth: '1990-01-01' });
     expect(res.statusCode).toBe(400);
   });
 
   test('POST /api/users - duplicate email', async () => {
     await request(app)
       .post('/api/users')
-      .send({ email: 'test@example.com', date_of_birth: '1990-01-01' });
+      .send({ email: 'test@gmail.com', password: 'TestPass123!', date_of_birth: '1990-01-01' });
     const res = await request(app)
       .post('/api/users')
-      .send({ email: 'test@example.com', date_of_birth: '1995-05-05' });
+      .send({ email: 'test@gmail.com', password: 'TestPass123!', date_of_birth: '1995-05-05' });
     expect(res.statusCode).toBe(409);
   });
 
@@ -47,19 +67,50 @@ describe('User CRUD API', () => {
     futureDate.setFullYear(futureDate.getFullYear() + 1);
     const res = await request(app)
       .post('/api/users')
-      .send({ email: 'future@example.com', date_of_birth: futureDate.toISOString() });
+      .send({ email: 'future@gmail.com', password: 'TestPass123!', date_of_birth: futureDate.toISOString() });
     expect(res.statusCode).toBe(400);
+  });
+
+  test('POST /api/users/login - valid login and invalid credentials', async () => {
+    await request(app)
+      .post('/api/users')
+      .send({ email: 'authuser@gmail.com', password: 'SecurePassword456', date_of_birth: '1990-01-01' });
+
+    // Valid login
+    let res = await request(app)
+      .post('/api/users/login')
+      .send({ email: 'authuser@gmail.com', password: 'SecurePassword456' });
+    expect(res.statusCode).toBe(200);
+    expect(res.body.email).toBe('authuser@gmail.com');
+
+    // Wrong password
+    res = await request(app)
+      .post('/api/users/login')
+      .send({ email: 'authuser@gmail.com', password: 'WrongPassword' });
+    expect(res.statusCode).toBe(401);
+
+    // Missing password
+    res = await request(app)
+      .post('/api/users/login')
+      .send({ email: 'authuser@gmail.com' });
+    expect(res.statusCode).toBe(400);
+
+    // Non-existent user
+    res = await request(app)
+      .post('/api/users/login')
+      .send({ email: 'nobody@gmail.com', password: 'SecurePassword456' });
+    expect(res.statusCode).toBe(401);
   });
 
   test('GET /api/users/:id - success', async () => {
     const createRes = await request(app)
       .post('/api/users')
-      .send({ email: 'test@example.com', date_of_birth: '1990-01-01' });
+      .send({ email: 'test@gmail.com', password: 'TestPass123!', date_of_birth: '1990-01-01' });
     const userId = createRes.body.id;
 
     const res = await request(app).get(`/api/users/${userId}`);
     expect(res.statusCode).toBe(200);
-    expect(res.body.email).toBe('test@example.com');
+    expect(res.body.email).toBe('test@gmail.com');
   });
 
   test('GET /api/users/:id - not found', async () => {
@@ -80,40 +131,46 @@ describe('User CRUD API', () => {
   });
 
   // PUT tests
-  test('PUT /api/users/:id - success', async () => {
+  test('PUT /api/users/:id - success including password update', async () => {
     const createRes = await request(app)
       .post('/api/users')
-      .send({ email: 'original@example.com', date_of_birth: '1990-01-01' });
+      .send({ email: 'original@gmail.com', password: 'TestPass123!', date_of_birth: '1990-01-01' });
     const userId = createRes.body.id;
 
     const res = await request(app)
       .put(`/api/users/${userId}`)
-      .send({ email: 'updated@example.com', date_of_birth: '1995-05-05' });
+      .send({ email: 'updated@gmail.com', password: 'NewSecurePass888!', date_of_birth: '1995-05-05' });
     
     expect(res.statusCode).toBe(200);
-    expect(res.body.email).toBe('updated@example.com');
+    expect(res.body.email).toBe('updated@gmail.com');
     expect(new Date(res.body.date_of_birth).toISOString().split('T')[0]).toBe('1995-05-05');
+
+    // Verify login works with new password
+    const loginRes = await request(app)
+      .post('/api/users/login')
+      .send({ email: 'updated@gmail.com', password: 'NewSecurePass888!' });
+    expect(loginRes.statusCode).toBe(200);
   });
 
   test('PUT /api/users/:id - email conflict', async () => {
     await request(app)
       .post('/api/users')
-      .send({ email: 'user1@example.com', date_of_birth: '1990-01-01' });
+      .send({ email: 'user1@gmail.com', password: 'TestPass123!', date_of_birth: '1990-01-01' });
     const createRes2 = await request(app)
       .post('/api/users')
-      .send({ email: 'user2@example.com', date_of_birth: '1990-01-01' });
+      .send({ email: 'user2@gmail.com', password: 'TestPass123!', date_of_birth: '1990-01-01' });
     const user2Id = createRes2.body.id;
 
     const res = await request(app)
       .put(`/api/users/${user2Id}`)
-      .send({ email: 'user1@example.com' });
+      .send({ email: 'user1@gmail.com' });
     expect(res.statusCode).toBe(409);
   });
 
   test('PUT /api/users/:id - invalid validation (email, birth date, ID)', async () => {
     const createRes = await request(app)
       .post('/api/users')
-      .send({ email: 'user@example.com', date_of_birth: '1990-01-01' });
+      .send({ email: 'user@gmail.com', password: 'TestPass123!', date_of_birth: '1990-01-01' });
     const userId = createRes.body.id;
 
     // Invalid email
@@ -133,14 +190,14 @@ describe('User CRUD API', () => {
     // Invalid user ID
     res = await request(app)
       .put('/api/users/abc')
-      .send({ email: 'valid@example.com' });
+      .send({ email: 'valid@gmail.com' });
     expect(res.statusCode).toBe(400);
   });
 
   test('PUT /api/users/:id - non-existent user', async () => {
     const res = await request(app)
       .put('/api/users/999')
-      .send({ email: 'doesnotexist@example.com' });
+      .send({ email: 'doesnotexist@gmail.com' });
     expect(res.statusCode).toBe(404);
   });
 
@@ -148,7 +205,7 @@ describe('User CRUD API', () => {
   test('DELETE /api/users/:id - success', async () => {
     const createRes = await request(app)
       .post('/api/users')
-      .send({ email: 'delete@example.com', date_of_birth: '1990-01-01' });
+      .send({ email: 'delete@gmail.com', password: 'TestPass123!', date_of_birth: '1990-01-01' });
     const userId = createRes.body.id;
 
     const deleteRes = await request(app).delete(`/api/users/${userId}`);

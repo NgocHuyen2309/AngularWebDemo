@@ -32,40 +32,69 @@ describe('UserFormComponent', () => {
   });
 
   it('should show error when submitting empty form', () => {
-    component.email = '';
-    component.dateOfBirth = '';
+    component.model.email = '';
+    component.model.date_of_birth = '';
+    component.model.password = '';
     component.onSubmit();
     expect(component.errorMessage).toBe('Please fill in all fields.');
+  });
+
+  it('should show error when password confirmation mismatch', () => {
+    component.model.email = 'test@gmail.com';
+    component.model.date_of_birth = '1990-01-15';
+    component.model.password = 'SecurePass123!';
+    component.model.confirm_password = 'DifferentPass123!';
+    component.onSubmit();
+    expect(component.errorMessage).toBe('Password and confirmation do not match.');
+  });
+
+  it('should calculate password strength accurately', () => {
+    component.checkPasswordStrength('');
+    expect(component.strengthScore).toBe(0);
+
+    component.checkPasswordStrength('123');
+    expect(component.strengthScore).toBe(1);
+
+    component.checkPasswordStrength('abcDEF123!');
+    expect(component.strengthScore).toBe(4);
+    expect(component.strengthLabel).toBe('Very Strong');
   });
 
   it('should call createUser and show success on valid submission', () => {
     const mockUser = {
       id: 1,
-      email: 'test@example.com',
+      email: 'test@gmail.com',
       date_of_birth: '1990-01-15'
     };
 
-    component.email = 'test@example.com';
-    component.dateOfBirth = '1990-01-15';
+    component.model.email = 'test@gmail.com';
+    component.model.password = 'SecurePass123!';
+    component.model.confirm_password = 'SecurePass123!';
+    component.model.date_of_birth = '1990-01-15';
     component.onSubmit();
 
     const req = httpMock.expectOne('http://localhost:3000/api/users');
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual({
-      email: 'test@example.com',
-      date_of_birth: '1990-01-15'
+      email: 'test@gmail.com',
+      password: 'SecurePass123!',
+      confirm_password: 'SecurePass123!',
+      date_of_birth: '1990-01-15',
+      role: undefined
     });
     req.flush(mockUser);
 
     expect(component.successMessage).toContain('User registered successfully');
     expect(component.createdUser).toEqual(mockUser);
-    expect(component.email).toBe('');
-    expect(component.dateOfBirth).toBe('');
+    expect(component.model.email).toBe('');
+    expect(component.model.password).toBe('');
   });
 
   it('should show error message on API failure', () => {
-    component.email = 'test@example.com';
-    component.dateOfBirth = '1990-01-15';
+    component.model.email = 'test@gmail.com';
+    component.model.password = 'SecurePass123!';
+    component.model.confirm_password = 'SecurePass123!';
+    component.model.date_of_birth = '1990-01-15';
     component.onSubmit();
 
     const req = httpMock.expectOne('http://localhost:3000/api/users');
@@ -77,14 +106,16 @@ describe('UserFormComponent', () => {
     expect(component.errorMessage).toBe('Email already exists');
   });
 
-  it('should render the form with email and date inputs', () => {
+  it('should render the form inputs including password', () => {
     const compiled = fixture.nativeElement as HTMLElement;
     const emailInput = compiled.querySelector('input[type="email"]');
     const dateInput = compiled.querySelector('input[type="date"]');
+    const passwordInputs = compiled.querySelectorAll('input[type="password"]');
     const submitBtn = compiled.querySelector('.user-form__submit-btn');
 
     expect(emailInput).toBeTruthy();
     expect(dateInput).toBeTruthy();
+    expect(passwordInputs.length).toBe(2); // password & confirm password
     expect(submitBtn).toBeTruthy();
   });
 });

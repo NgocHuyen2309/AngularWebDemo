@@ -24,6 +24,10 @@ const connectDB = async () => {
         }
       }
     }
+
+    // Auto-seed initial admin user account
+    const userController = require('../controllers/user.controller');
+    await userController.seedAdminUser();
   } catch (error) {
     console.error('Database connection / seeding failed:', error);
     throw error;

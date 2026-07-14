@@ -1,0 +1,139 @@
+// =============================================
+// Login Component Styles — Crown & Velvet Theme (SCSS without !important)
+// =============================================
+
+.login-container {
+  max-width: 33.75rem;
+  margin: 3rem auto;
+  padding: 0 1rem;
+}
+
+.login-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  box-shadow: 0 0.5rem 2rem var(--shadow);
+  overflow: hidden;
+
+  &__header {
+    background: var(--accent-gradient);
+    padding: 1.5rem;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+
+    h3 {
+      color: #1c1c1e;
+      font-weight: 800;
+      margin: 0;
+      letter-spacing: 0.03125rem;
+    }
+
+    p {
+      color: #1c1c1e;
+      margin: 0.3rem 0 0;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+  }
+
+  &__tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border);
+    background-color: var(--bg-secondary);
+  }
+
+  &__tab-btn {
+    flex: 1;
+    padding: 1rem;
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font-weight: 600;
+    transition: all 0.25s ease;
+    cursor: pointer;
+
+    &:hover {
+      color: var(--text-primary);
+      background-color: var(--bg-card-hover);
+    }
+
+    &--active {
+      color: var(--accent-copper);
+      border-bottom: 0.1875rem solid var(--accent-copper);
+      background-color: var(--bg-card);
+    }
+  }
+
+  &__body {
+    padding: 2rem;
+
+    .password-group {
+      position: relative;
+      display: flex;
+      align-items: stretch;
+      width: 100%;
+
+      .form-control {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+        border-right: none;
+      }
+
+      .eye-btn {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+        border: 1px solid var(--border);
+        border-left: none;
+        background: var(--bg-card);
+        color: var(--text-muted);
+        padding: 0 0.85rem;
+        transition: color 0.2s ease, background 0.2s ease;
+
+        &:hover {
+          color: var(--accent-copper);
+          background: rgba(184, 115, 51, 0.08);
+        }
+      }
+    }
+  }
+
+  &__submit-btn {
+    width: 100%;
+    border-radius: 0.5rem;
+    padding: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05rem;
+    background: var(--accent-gradient);
+    color: #1c1c1e;
+    border: none;
+    box-shadow: 0 0.25rem 0.875rem rgba(184, 115, 51, 0.3);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    margin-top: 1rem;
+
+    &:hover:not(:disabled) {
+      transform: translateY(-0.125rem);
+      box-shadow: 0 0.375rem 1.25rem rgba(184, 115, 51, 0.45);
+      background: var(--accent-gradient-hover);
+    }
+
+    &:disabled {
+      background: var(--border);
+      color: var(--text-muted);
+      box-shadow: none;
+      transform: none;
+      cursor: not-allowed;
+    }
+  }
+
+  &__error {
+    background-color: rgba(194, 120, 120, 0.1);
+    border: 1px solid rgba(194, 120, 120, 0.4);
+    color: #e69999;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+  }
+}

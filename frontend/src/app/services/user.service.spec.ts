@@ -34,7 +34,7 @@ describe('UserService', () => {
       date_of_birth: '1990-01-15'
     };
 
-    service.createUser('test@example.com', '1990-01-15').subscribe(user => {
+    service.createUser('test@example.com', 'SecurePass123!', 'SecurePass123!', '1990-01-15').subscribe(user => {
       expect(user).toEqual(mockUser);
     });
 
@@ -42,7 +42,10 @@ describe('UserService', () => {
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual({
       email: 'test@example.com',
-      date_of_birth: '1990-01-15'
+      password: 'SecurePass123!',
+      confirm_password: 'SecurePass123!',
+      date_of_birth: '1990-01-15',
+      role: undefined
     });
     req.flush(mockUser);
   });

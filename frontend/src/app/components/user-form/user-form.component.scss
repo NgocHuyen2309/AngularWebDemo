@@ -1,0 +1,237 @@
+// =============================================
+// User Form Component Styles — Crown & Velvet Theme (SCSS without !important)
+// =============================================
+
+$form-border-radius: 0.875rem;
+$form-spacing: 1.5rem;
+
+.user-form {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: $form-border-radius;
+  overflow: hidden;
+  padding: 0;
+  box-shadow: 0 0.25rem 1rem var(--shadow);
+
+  &--embedded {
+    border: none;
+    box-shadow: none;
+    background: transparent;
+    border-radius: 0;
+  }
+
+  .card-header {
+    background: var(--accent-gradient);
+    border-bottom: 1px solid var(--border);
+    padding: 1.1rem 1.4rem;
+
+    h5, h4, h3 {
+      color: #1c1c1e;
+      font-weight: 800;
+      margin: 0;
+      letter-spacing: 0.03125rem;
+    }
+  }
+
+  .card-body {
+    padding: $form-spacing;
+  }
+
+  &__input,
+  formly-form .form-control,
+  formly-form .form-select {
+    border-radius: 0.5rem;
+    background-color: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    color-scheme: inherit;
+    padding: 0.6rem 0.9rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+    &:focus {
+      border-color: var(--accent-copper);
+      box-shadow: 0 0 0 0.2rem rgba(184, 115, 51, 0.25);
+      outline: none;
+    }
+
+    &--active {
+      border-color: var(--accent-copper);
+    }
+
+    &::placeholder {
+      color: var(--text-muted);
+    }
+
+    &[type="date"]::-webkit-calendar-picker-indicator {
+      filter: var(--calendar-icon-filter);
+      cursor: pointer;
+      opacity: 0.85;
+      transition: opacity 0.2s ease, transform 0.2s ease, filter 0.2s ease;
+
+      &:hover {
+        opacity: 1;
+        transform: scale(1.1);
+      }
+    }
+  }
+
+  formly-validation-message,
+  .invalid-feedback {
+    color: #e69999;
+    font-size: 0.85rem;
+    margin-top: 0.35rem;
+    display: block;
+  }
+
+  &__submit-btn {
+    border-radius: 0.5rem;
+    padding: 0.7rem 1.4rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05rem;
+    background: var(--accent-gradient);
+    color: #1c1c1e;
+    border: none;
+    box-shadow: 0 0.25rem 0.875rem rgba(184, 115, 51, 0.3);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+
+    &:hover:not(:disabled) {
+      transform: translateY(-0.125rem);
+      box-shadow: 0 0.375rem 1.25rem rgba(184, 115, 51, 0.45);
+      background: var(--accent-gradient-hover);
+    }
+
+    &:disabled {
+      background: var(--border);
+      color: var(--text-muted);
+      box-shadow: none;
+      transform: none;
+      cursor: not-allowed;
+    }
+  }
+
+  &__success-card {
+    border-radius: 0.5rem;
+    border: 1px solid rgba(107, 142, 107, 0.4);
+    background-color: rgba(107, 142, 107, 0.1);
+    color: #8fbc8f;
+    padding: 1rem;
+  }
+
+  &__error-card {
+    border-radius: 0.5rem;
+    border: 1px solid rgba(194, 120, 120, 0.4);
+    background-color: rgba(194, 120, 120, 0.1);
+    color: #e69999;
+    padding: 1rem;
+  }
+
+  &__secure-badge {
+    background: rgba(184, 115, 51, 0.15);
+    color: var(--accent-copper);
+    border: 1px solid rgba(184, 115, 51, 0.4);
+    font-size: 0.75rem;
+    padding: 0.35rem 0.65rem;
+    border-radius: 2rem;
+  }
+
+  .password-group {
+    position: relative;
+    display: flex;
+    align-items: stretch;
+    width: 100%;
+
+    .form-control {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+      border-right: none;
+    }
+
+    .eye-btn {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+      border: 1px solid var(--border);
+      border-left: none;
+      background: var(--bg-card);
+      color: var(--text-muted);
+      padding: 0 0.85rem;
+      transition: color 0.2s ease, background 0.2s ease;
+
+      &:hover {
+        color: var(--accent-copper);
+        background: rgba(184, 115, 51, 0.08);
+      }
+    }
+  }
+
+  .password-strength {
+    background: var(--strength-box-bg);
+    border: 1px solid var(--strength-box-border);
+    border-radius: 0.625rem;
+    padding: 0.85rem 1rem;
+
+    .strength-title {
+      font-size: 0.85rem;
+      color: var(--strength-title-color);
+      font-weight: 700;
+    }
+
+    .strength-badge {
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.25rem 0.6rem;
+      border-radius: 0.375rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04rem;
+
+      &.strength-none { background: var(--strength-meter-bg); color: var(--strength-item-color); }
+      &.strength-weak { background: var(--strength-weak-bg); color: var(--strength-weak-color); }
+      &.strength-medium { background: var(--strength-med-bg); color: var(--strength-med-color); }
+      &.strength-strong { background: var(--strength-strong-bg); color: var(--strength-strong-color); }
+      &.strength-verystrong { background: var(--strength-vstrong-bg); color: var(--strength-vstrong-color); }
+    }
+
+    .strength-meter-bar {
+      height: 0.375rem;
+      background: var(--strength-meter-bg);
+      border-radius: 0.25rem;
+      overflow: hidden;
+      margin-top: 0.4rem;
+
+      .strength-meter-fill {
+        height: 100%;
+        transition: width 0.3s ease, background-color 0.3s ease;
+
+        &.strength-none { width: 0%; background: transparent; }
+        &.strength-weak { background: var(--strength-weak-color); }
+        &.strength-medium { background: var(--strength-med-color); }
+        &.strength-strong { background: var(--strength-strong-color); }
+        &.strength-verystrong { background: var(--strength-vstrong-color); }
+      }
+    }
+
+    .password-checklist {
+      .checklist-item {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--strength-item-color);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        background: var(--strength-item-bg);
+        padding: 0.25rem 0.6rem;
+        border-radius: 0.375rem;
+        border: 1px solid var(--strength-item-border);
+        transition: all 0.2s ease;
+
+        &.checked {
+          color: var(--strength-item-checked-color);
+          border-color: var(--strength-item-checked-border);
+          background: var(--strength-item-checked-bg);
+          font-weight: 700;
+        }
+      }
+    }
+  }
+}

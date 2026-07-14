@@ -1,16 +1,27 @@
-<app-navbar></app-navbar>
+<app-navbar
+  [userRole]="userRole"
+  [isLoggedIn]="isLoggedIn"
+  [currentUserEmail]="currentUser ? currentUser.email : null"
+  [currentUsername]="currentUser ? (currentUser.username || currentUser.email.split('@')[0]) : null"
+  (logoutEvent)="handleLogout()"
+  (editProfileEvent)="showProfileModal = true"
+></app-navbar>
 
-<div class="container-fluid py-4">
-  <div class="row">
-    <!-- Left Sidebar -->
-    <div class="col-md-3 mb-4">
-      <app-user-form id="home" class="d-block" style="margin-bottom: 22px;"></app-user-form>
-      <app-user-list id="account" class="d-block"></app-user-list>
-    </div>
+<div class="app__container app__section">
+  <router-outlet></router-outlet>
+</div>
 
-    <!-- Main Content -->
-    <div class="col-md-9">
-      <app-catalog id="catalog"></app-catalog>
+<!-- Profile Edit Modal Overlay -->
+<div *ngIf="showProfileModal" class="modal fade show d-block profile-modal-overlay" tabindex="-1" role="dialog" style="background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(0.25rem); -webkit-backdrop-filter: blur(0.25rem); z-index: 1055;">
+  <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 33.75rem; width: 100%;">
+    <div class="modal-content border-0 shadow-lg" style="background: transparent;">
+      <app-user-form
+        [isModal]="true"
+        [isEditMode]="true"
+        [editUserId]="currentUser ? currentUser.id : null"
+        (closeModalEvent)="showProfileModal = false"
+        (userUpdated)="onProfileUpdated($event)"
+      ></app-user-form>
     </div>
   </div>
 </div>

@@ -4,8 +4,10 @@ import { Observable, Subject } from 'rxjs';
 
 export interface User {
   id: number;
+  username?: string;
   email: string;
   date_of_birth: string;
+  role?: string;
 }
 
 @Injectable({
@@ -25,10 +27,14 @@ export class UserService {
     return this.http.get<User[]>(this.apiUrl);
   }
 
-  createUser(email: string, dateOfBirth: string): Observable<User> {
+  createUser(email: string, password: string, confirmPassword: string, dateOfBirth: string, role?: string, username?: string): Observable<User> {
     return this.http.post<User>(this.apiUrl, {
+      username,
       email,
-      date_of_birth: dateOfBirth
+      password,
+      confirm_password: confirmPassword,
+      date_of_birth: dateOfBirth,
+      role
     });
   }
 

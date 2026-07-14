@@ -8,20 +8,55 @@ const Counter = mongoose.model('Counter', CounterSchema);
 
 const UserSchema = new mongoose.Schema({
   id: { type: Number, unique: true },
+  username: {
+    type: String,
+    trim: true,
+    default: function() {
+      if (this.email && typeof this.email === 'string') {
+        return this.email.split('@')[0];
+      }
+      return 'user';
+    }
+  },
   email: {
     type: String,
-    required: true,
+    required: [true, 'Email address is required'],
     unique: true,
+    trim: true,
     validate: {
       validator: function(v) {
-        return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(v);
+        // Enforces valid email strictly ending in @gmail.com (or @enterprise.com for internal enterprise admin)
+        return /^[a-zA-Z0-9._%+-]+@(gmail\.com|enterprise\.com)$/i.test(v);
       },
-      message: props => `${props.value} is not a valid email!`
+      message: () => 'Email address must strictly end with @gmail.com (e.g., yourname@gmail.com)'
     }
   },
   date_of_birth: {
     type: Date,
-    required: true
+    required: [true, 'Date of birth is required'],
+    validate: {
+      validator: function(v) {
+        if (!v) return false;
+        const dob = new Date(v);
+        const today = new Date();
+        let age = today.getFullYear() - dob.getFullYear();
+        const m = today.getMonth() - dob.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+          age--;
+        }
+        return age >= 16;
+      },
+      message: () => 'User must be at least 16 years old to register'
+    }
+  },
+  role: {
+    type: String,
+    enum: ['user', 'admin'],
+    default: 'user'
+  },
+  password: {
+    type: String,
+    required: [true, 'Password is required']
   }
 });
 

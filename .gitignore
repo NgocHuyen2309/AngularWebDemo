@@ -46,3 +46,6 @@ scratch/
 *.xls
 *.csv
 "Web Development Training Plan.xlsx"
+
+# Reference/Theme images
+color-theme.jpg

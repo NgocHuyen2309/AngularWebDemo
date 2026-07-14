@@ -1,0 +1,261 @@
+// =============================================
+// User List Component Styles — Crown & Velvet Theme (SCSS without !important)
+// =============================================
+
+.user-list {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  border-radius: 0.875rem;
+  overflow: hidden;
+
+  &__header {
+    background: var(--accent-gradient);
+    color: #1c1c1e;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 1rem 1.25rem;
+
+    h5 {
+      color: #1c1c1e;
+      letter-spacing: 0.02rem;
+      font-size: 1.1rem;
+      margin: 0;
+      font-weight: 700;
+
+      @media (max-width: 1399px) {
+        font-size: 0.95rem;
+      }
+    }
+  }
+
+  &__badge {
+    background-color: #1c1c1e;
+    color: var(--accent-copper-light);
+    font-size: 0.75rem;
+    padding: 0.35em 0.65em;
+    border-radius: 0.375rem;
+    font-weight: 700;
+  }
+
+  &__refresh-btn {
+    background-color: rgba(28, 28, 30, 0.15);
+    color: #1c1c1e;
+    border: 1px solid rgba(28, 28, 30, 0.3);
+    font-weight: 600;
+    transition: all 0.2s ease;
+    border-radius: 0.375rem;
+    padding: 0.35rem 0.65rem;
+    cursor: pointer;
+
+    &:hover:not(:disabled) {
+      background-color: rgba(255, 255, 255, 0.75);
+      color: #1c1c1e;
+      border-color: #1c1c1e;
+      transform: translateY(-0.0625rem);
+      box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.15);
+    }
+  }
+
+  @media (max-width: 1399px) {
+    .user-list__refresh-text {
+      display: none;
+    }
+
+    .user-list__refresh-btn {
+      padding: 0.35rem 0.5rem;
+      min-width: 2rem;
+      height: 2rem;
+    }
+  }
+
+  &__body {
+    background-color: var(--bg-card);
+    color: var(--text-primary);
+    padding: 1.25rem;
+  }
+
+  &__empty-icon {
+    color: var(--accent-copper);
+    opacity: 0.7;
+  }
+
+  &__items {
+    max-height: 30rem;
+    overflow-y: auto;
+    padding-right: 0.25rem;
+
+    &::-webkit-scrollbar {
+      width: 0.375rem;
+    }
+    &::-webkit-scrollbar-track {
+      background: var(--bg-secondary);
+      border-radius: 0.25rem;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 0.25rem;
+    }
+  }
+
+  &__item {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border);
+    transition: all 0.2s ease;
+    color: var(--text-primary);
+    border-radius: 0.625rem;
+
+    &:hover {
+      border-color: var(--accent-copper);
+      transform: translateY(-0.0625rem);
+      box-shadow: 0 0.25rem 0.75rem var(--shadow);
+    }
+  }
+
+  &__id {
+    color: var(--accent-copper);
+    font-size: 0.9rem;
+  }
+
+  &__email {
+    color: var(--text-primary);
+    font-size: 0.95rem;
+  }
+
+  &__dob {
+    color: var(--text-secondary);
+  }
+
+  &__item--editing {
+    border-color: var(--accent-copper);
+    box-shadow: 0 0.25rem 0.875rem var(--shadow);
+    background-color: var(--bg-card);
+  }
+
+  &__edit-btn {
+    background-color: transparent;
+    color: var(--accent-copper, #b87333);
+    border: 1px solid transparent;
+    transition: all 0.2s ease;
+    cursor: pointer;
+
+    &:hover {
+      background-color: rgba(184, 115, 51, 0.15);
+      border-color: var(--accent-copper, #b87333);
+      transform: scale(1.05);
+    }
+  }
+
+  &__delete-btn {
+    background-color: transparent;
+    color: var(--loss, #c27878);
+    border: 1px solid transparent;
+    transition: all 0.2s ease;
+    cursor: pointer;
+
+    &:hover {
+      background-color: rgba(194, 120, 120, 0.15);
+      border-color: var(--loss, #c27878);
+      transform: scale(1.05);
+    }
+  }
+
+  &__edit-input,
+  formly-form .form-control {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    border-radius: 0.375rem;
+
+    &:focus {
+      border-color: var(--accent-copper);
+      box-shadow: 0 0 0 0.15rem rgba(184, 115, 51, 0.25);
+      outline: none;
+    }
+
+    &[type="date"]::-webkit-calendar-picker-indicator {
+      filter: var(--calendar-icon-filter);
+      cursor: pointer;
+      opacity: 0.85;
+      transition: opacity 0.2s ease, transform 0.2s ease, filter 0.2s ease;
+
+      &:hover {
+        opacity: 1;
+        transform: scale(1.1);
+      }
+    }
+  }
+
+  &__btn-cancel {
+    background-color: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    transition: all 0.2s ease;
+    cursor: pointer;
+
+    &:hover:not(:disabled) {
+      background-color: var(--bg-secondary);
+      color: var(--text-primary);
+      border-color: var(--text-primary);
+    }
+  }
+
+  &__btn-save {
+    background: var(--accent-gradient);
+    border: 1px solid var(--accent-copper);
+    color: #1c1c1e;
+    font-weight: 700;
+    transition: all 0.2s ease;
+    cursor: pointer;
+
+    &:hover:not(:disabled) {
+      transform: translateY(-0.0625rem);
+      box-shadow: 0 0.125rem 0.5rem rgba(184, 115, 51, 0.35);
+    }
+  }
+}
+
+// Modal styling without !important
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(0.25rem);
+  -webkit-backdrop-filter: blur(0.25rem);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1050;
+}
+
+.edit-modal {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  box-shadow: 0 0.75rem 2.5rem var(--shadow);
+  width: 100%;
+  max-width: 31.25rem;
+  overflow: hidden;
+
+  &__header {
+    background: var(--accent-gradient);
+    padding: 1.2rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    h4 {
+      color: #1c1c1e;
+      margin: 0;
+      font-weight: 800;
+    }
+  }
+
+  &__body {
+    padding: 1.5rem;
+  }
+}

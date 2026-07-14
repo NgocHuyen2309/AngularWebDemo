@@ -18,11 +18,9 @@ app.use((req, res, next) => {
 // Routes
 const userRoutes = require('./routes/user.routes');
 const catalogRoutes = require('./routes/catalog.routes');
-const soapRoutes = require('./routes/soap.routes');
 
 app.use('/api/users', userRoutes);
 app.use('/api/catalog', catalogRoutes);
-app.use('/api/soap', soapRoutes);
 
 // Simple healthcheck
 app.get('/health', (req, res) => res.json({ status: 'UP' }));

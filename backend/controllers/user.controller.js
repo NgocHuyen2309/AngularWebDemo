@@ -1,9 +1,10 @@
 const { User } = require('../models/user.model');
+const bcrypt = require('bcryptjs');
 
-// Helper to validate email
+// Helper to validate email strictly requiring ending with @gmail.com (or @enterprise.com)
 function isValidEmail(email) {
   if (!email || typeof email !== 'string') return false;
-  return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email);
+  return /^[a-zA-Z0-9._%+-]+@(gmail\.com|enterprise\.com)$/i.test(email.trim());
 }
 
 // Helper to validate date
@@ -13,37 +14,142 @@ function isValidDate(dateStr) {
   return !isNaN(d.getTime());
 }
 
+// Helper to validate age gate >= 16
+function isValidAgeGate(dateStr) {
+  if (!isValidDate(dateStr)) return false;
+  const dob = new Date(dateStr);
+  const today = new Date();
+  let age = today.getFullYear() - dob.getFullYear();
+  const m = today.getMonth() - dob.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+    age--;
+  }
+  return age >= 16;
+}
+
+exports.seedAdminUser = async () => {
+  try {
+    const hashedAdminPassword = await bcrypt.hash('12345', 10);
+    const existingAdmin = await User.findOne({ email: 'admin@enterprise.com' });
+    if (!existingAdmin) {
+      const adminUser = new User({
+        username: 'admin',
+        email: 'admin@enterprise.com',
+        password: hashedAdminPassword,
+        date_of_birth: new Date('1990-01-01'),
+        role: 'admin'
+      });
+      await adminUser.save();
+      console.log('Seeded initial enterprise admin account: admin@enterprise.com (Role: admin, Password: ***)');
+    } else {
+      let changed = false;
+      if (!existingAdmin.password) {
+        existingAdmin.password = hashedAdminPassword;
+        changed = true;
+      }
+      if (!existingAdmin.username) {
+        existingAdmin.username = 'admin';
+        changed = true;
+      }
+      if (changed) {
+        await existingAdmin.save();
+        console.log('Updated existing admin@enterprise.com account with default password/username.');
+      }
+    }
+  } catch (err) {
+    console.error('Error seeding admin account:', err.message);
+  }
+};
+
+exports.loginUser = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    if (!email || typeof email !== 'string') {
+      return res.status(400).json({ error: 'Email address is required for login' });
+    }
+    if (!password || typeof password !== 'string') {
+      return res.status(400).json({ error: 'Password is required for login' });
+    }
+
+    const user = await User.findOne({ email: email.trim() });
+    if (!user) {
+      return res.status(401).json({ error: 'Invalid email or password. Account not found.' });
+    }
+
+    if (!user.password) {
+      return res.status(401).json({ error: 'Account has no password configured. Please reset or register again.' });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(401).json({ error: 'Invalid email or password.' });
+    }
+
+    return res.status(200).json({
+      id: user.id,
+      username: user.username || user.email.split('@')[0],
+      email: user.email,
+      date_of_birth: user.date_of_birth ? user.date_of_birth.toISOString() : null,
+      role: user.role || 'user'
+    });
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
+};
+
 exports.createUser = async (req, res) => {
   try {
-    const { email, date_of_birth } = req.body;
+    const { username, email, password, confirm_password, date_of_birth, role } = req.body;
     
-    if (!email || !date_of_birth) {
-      return res.status(400).json({ error: 'Email and date_of_birth are required' });
+    if (!email || !date_of_birth || !password) {
+      return res.status(400).json({ error: 'Email, password, and date_of_birth are required' });
+    }
+
+    if (typeof password !== 'string' || password.length < 6) {
+      return res.status(400).json({ error: 'Password must be at least 6 characters long' });
+    }
+
+    if (confirm_password !== undefined && password !== confirm_password) {
+      return res.status(400).json({ error: 'Password and confirm password do not match' });
     }
     
     if (!isValidEmail(email)) {
-      return res.status(400).json({ error: 'Invalid email format' });
+      return res.status(400).json({ error: 'Email address must strictly end with @gmail.com (e.g., yourname@gmail.com)' });
     }
     
-    if (!isValidDate(date_of_birth) || !(new Date(date_of_birth) < new Date())) {
-      return res.status(400).json({ error: 'Invalid date_of_birth format' });
+    if (!isValidAgeGate(date_of_birth)) {
+      return res.status(400).json({ error: 'User must be at least 16 years old to register' });
     }
 
     // Check for duplicate email
-    const existing = await User.findOne({ email });
+    const existing = await User.findOne({ email: email.trim() });
     if (existing) {
       return res.status(409).json({ error: 'Email already exists' });
     }
 
-    const newUser = new User({ email, date_of_birth: new Date(date_of_birth) });
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newUser = new User({
+      username: username && typeof username === 'string' && username.trim() ? username.trim() : email.split('@')[0],
+      email: email.trim(),
+      password: hashedPassword,
+      date_of_birth: new Date(date_of_birth),
+      role: role && ['user', 'admin'].includes(role) ? role : 'user'
+    });
     await newUser.save();
     
     return res.status(201).json({
       id: newUser.id,
+      username: newUser.username || newUser.email.split('@')[0],
       email: newUser.email,
-      date_of_birth: newUser.date_of_birth.toISOString()
+      date_of_birth: newUser.date_of_birth.toISOString(),
+      role: newUser.role
     });
   } catch (error) {
+    if (error.name === 'ValidationError') {
+      const messages = Object.values(error.errors).map(val => val.message);
+      return res.status(400).json({ error: messages.join(', ') });
+    }
     return res.status(400).json({ error: error.message });
   }
 };
@@ -54,8 +160,10 @@ exports.getAllUsers = async (req, res) => {
     return res.status(200).json(
       users.map(u => ({
         id: u.id,
+        username: u.username || u.email.split('@')[0],
         email: u.email,
-        date_of_birth: u.date_of_birth ? u.date_of_birth.toISOString() : null
+        date_of_birth: u.date_of_birth ? u.date_of_birth.toISOString() : null,
+        role: u.role || 'user'
       }))
     );
   } catch (error) {
@@ -77,8 +185,10 @@ exports.getUser = async (req, res) => {
 
     return res.status(200).json({
       id: user.id,
+      username: user.username || user.email.split('@')[0],
       email: user.email,
-      date_of_birth: user.date_of_birth.toISOString()
+      date_of_birth: user.date_of_birth ? user.date_of_birth.toISOString() : null,
+      role: user.role || 'user'
     });
   } catch (error) {
     return res.status(400).json({ error: error.message });
@@ -92,40 +202,64 @@ exports.updateUser = async (req, res) => {
       return res.status(400).json({ error: 'Invalid user ID' });
     }
 
-    const { email, date_of_birth } = req.body;
+    const { username, email, password, date_of_birth, role } = req.body;
 
     const user = await User.findOne({ id: userId });
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
 
+    if (username !== undefined && typeof username === 'string') {
+      const trimmedUsername = username.trim();
+      if (trimmedUsername !== '') {
+        user.username = trimmedUsername;
+      }
+    }
+
     if (email !== undefined) {
       if (!isValidEmail(email)) {
-        return res.status(400).json({ error: 'Invalid email format' });
+        return res.status(400).json({ error: 'Email address must strictly end with @gmail.com (e.g., yourname@gmail.com)' });
       }
       // Check duplicate
-      const duplicate = await User.findOne({ email, id: { $ne: userId } });
+      const duplicate = await User.findOne({ email: email.trim(), id: { $ne: userId } });
       if (duplicate) {
         return res.status(409).json({ error: 'Email already exists' });
       }
-      user.email = email;
+      user.email = email.trim();
     }
 
-    if (date_of_birth !== undefined) {
-      if (!isValidDate(date_of_birth) || !(new Date(date_of_birth) < new Date())) {
-        return res.status(400).json({ error: 'Invalid date_of_birth format' });
+    if (password !== undefined && password !== '') {
+      if (typeof password !== 'string' || password.length < 6) {
+        return res.status(400).json({ error: 'Password must be at least 6 characters long' });
+      }
+      user.password = await bcrypt.hash(password, 10);
+    }
+
+    if (date_of_birth !== undefined && date_of_birth !== '') {
+      if (!isValidAgeGate(date_of_birth)) {
+        return res.status(400).json({ error: 'User must be at least 16 years old to register' });
       }
       user.date_of_birth = new Date(date_of_birth);
+    }
+
+    if (role !== undefined && ['user', 'admin'].includes(role)) {
+      user.role = role;
     }
 
     await user.save();
 
     return res.status(200).json({
       id: user.id,
+      username: user.username || user.email.split('@')[0],
       email: user.email,
-      date_of_birth: user.date_of_birth.toISOString()
+      date_of_birth: user.date_of_birth.toISOString(),
+      role: user.role || 'user'
     });
   } catch (error) {
+    if (error.name === 'ValidationError') {
+      const messages = Object.values(error.errors).map(val => val.message);
+      return res.status(400).json({ error: messages.join(', ') });
+    }
     return res.status(400).json({ error: error.message });
   }
 };

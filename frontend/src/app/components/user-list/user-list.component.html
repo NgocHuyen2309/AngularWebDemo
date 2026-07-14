@@ -1,151 +1,168 @@
-<div class="user-list card shadow-lg border-0 rounded-4 overflow-hidden mb-4">
-  <div class="user-list__header card-header p-3 p-xl-4 d-flex justify-content-between align-items-center gap-2">
-    <div class="d-flex align-items-center gap-2 overflow-hidden">
-      <h5 class="mb-0 fw-bold user-list__title text-truncate">Account Users</h5>
-      <span class="user-list__badge badge flex-shrink-0">{{ users.length }}</span>
-    </div>
+<div class="user-list card shadow-sm">
+  <div class="user-list__header d-flex justify-content-between align-items-center">
+    <h5 class="mb-0 d-flex align-items-center gap-2">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+        <circle cx="9" cy="7" r="4"/>
+        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+      </svg>
+      {{ isAdmin() ? 'All Registered User Accounts (Admin Access)' : 'My Account Profile' }}
+      <span class="user-list__badge ms-1">{{ users.length }}</span>
+    </h5>
+
     <button
       type="button"
-      class="user-list__refresh-btn btn btn-sm d-flex align-items-center justify-content-center gap-1 flex-shrink-0"
+      class="user-list__refresh-btn btn btn-sm d-flex align-items-center gap-1"
       (click)="loadUsers()"
       [disabled]="loading"
-      title="Refresh Users List"
+      title="Refresh User List"
     >
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <svg
+        [class.fa-spin]="loading"
+        width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+      >
         <path d="M23 4v6h-6"/>
         <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
       </svg>
-      <span class="user-list__refresh-text">Refresh</span>
+      <span class="user-list__refresh-text">{{ loading ? 'Loading...' : 'Refresh' }}</span>
     </button>
   </div>
 
-  <div class="user-list__body card-body p-4">
-    <!-- Loading spinner -->
-    <div *ngIf="loading && users.length === 0" class="text-center py-4">
-      <div class="spinner-border text-warning" role="status">
-        <span class="visually-hidden">Loading accounts...</span>
-      </div>
-      <p class="mt-2 mb-0 text-secondary small">Syncing accounts from DB...</p>
-    </div>
-
-    <!-- Error message -->
-    <div *ngIf="error" class="alert alert-danger p-3 rounded-3 small mb-3">
+  <div class="user-list__body">
+    <!-- Error State -->
+    <div *ngIf="error" class="alert alert-danger mb-3">
       {{ error }}
     </div>
 
-    <!-- Empty state -->
-    <div *ngIf="!loading && users.length === 0 && !error" class="text-center py-4">
-      <div class="user-list__empty-icon mb-2">
-        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 0 0 0-4 4v2"/>
-          <circle cx="9" cy="7" r="4"/>
-          <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-          <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-        </svg>
-      </div>
-      <p class="mb-0 text-secondary small">No registered accounts yet.<br>Register a new user above!</p>
+    <!-- Empty State -->
+    <div *ngIf="!loading && users.length === 0 && !error" class="text-center py-5">
+      <svg class="user-list__empty-icon mb-3" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+        <circle cx="9" cy="7" r="4"/>
+      </svg>
+      <p class="text-muted mb-0">No registered user accounts found.</p>
     </div>
 
-    <!-- Users table/list -->
+    <!-- User List Table/Grid -->
     <div *ngIf="users.length > 0" class="user-list__items">
-      <div *ngFor="let user of users" class="user-list__item p-3 mb-2 rounded-3 d-flex justify-content-between align-items-center" [class.user-list__item--editing]="editingId === user.id">
-        <!-- Normal View -->
-        <div *ngIf="editingId !== user.id" class="d-flex justify-content-between align-items-center w-100">
-          <div class="user-list__item-info overflow-hidden pe-2">
-            <div class="d-flex align-items-center gap-2 mb-1">
-              <span class="user-list__id fw-bold">#{{ user.id }}</span>
-              <span class="user-list__email fw-semibold text-truncate">{{ user.email }}</span>
+      <div
+        *ngFor="let user of users"
+        class="user-list__item p-3 mb-2 d-flex align-items-center justify-content-between flex-wrap gap-2"
+      >
+        <!-- User Info -->
+        <div class="d-flex align-items-center gap-3">
+          <span class="user-list__id fw-bold">#{{ user.id }}</span>
+          <div>
+            <div class="user-list__email fw-semibold">{{ user.username || user.email.split('@')[0] }} <span class="text-muted small fw-normal">({{ user.email }})</span></div>
+            <div class="user-list__dob small">
+              DOB: {{ user.date_of_birth ? (user.date_of_birth | date:'yyyy-MM-dd') : 'N/A' }}
+              <span *ngIf="user.role" class="badge bg-dark border ms-2">{{ user.role }}</span>
             </div>
-            <div class="user-list__dob small d-flex align-items-center gap-1">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-                <line x1="16" y1="2" x2="16" y2="6"/>
-                <line x1="8" y1="2" x2="8" y2="6"/>
-                <line x1="3" y1="10" x2="21" y2="10"/>
-              </svg>
-              <span>DOB: {{ user.date_of_birth | date:'yyyy-MM-dd' }}</span>
-            </div>
-          </div>
-          <div class="d-flex align-items-center gap-1 flex-shrink-0">
-            <!-- Edit Pen Button -->
-            <button
-              type="button"
-              class="user-list__edit-btn btn btn-sm p-2 rounded-2"
-              (click)="startEdit(user)"
-              title="Edit Account"
-            >
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-              </svg>
-            </button>
-            <!-- Delete Trash Button -->
-            <button
-              type="button"
-              class="user-list__delete-btn btn btn-sm p-2 rounded-2"
-              (click)="deleteUser(user.id)"
-              title="Delete Account"
-            >
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polyline points="3 6 5 6 21 6"/>
-                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-              </svg>
-            </button>
           </div>
         </div>
 
-        <!-- Inline Edit Form -->
-        <div *ngIf="editingId === user.id" class="w-100 py-1">
-          <div class="d-flex justify-content-between align-items-center mb-2">
-            <span class="user-list__id fw-bold">Editing #{{ user.id }}</span>
-            <button type="button" class="btn-close small" aria-label="Close" (click)="cancelEdit()"></button>
-          </div>
-          
-          <div class="mb-2">
-            <label class="form-label small mb-1 fw-semibold text-secondary">Email address</label>
-            <input
-              type="email"
-              class="user-list__edit-input form-control form-control-sm"
-              [(ngModel)]="editEmail"
-              placeholder="user@gmail.com"
-              required
-            />
-          </div>
+        <!-- Action Buttons -->
+        <div class="d-flex align-items-center gap-2">
+          <button
+            type="button"
+            class="user-list__edit-btn btn btn-sm p-1 px-2 d-flex align-items-center gap-1 rounded-2"
+            (click)="openEditModal(user)"
+            title="Edit User"
+          >
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+            </svg>
+            <span class="d-none d-sm-inline">Edit</span>
+          </button>
 
-          <div class="mb-3">
-            <label class="form-label small mb-1 fw-semibold text-secondary">Date of Birth</label>
-            <input
-              type="date"
-              class="user-list__edit-input form-control form-control-sm"
-              [(ngModel)]="editDob"
-              required
-            />
-          </div>
-
-          <div *ngIf="editError" class="alert alert-danger py-1 px-2 mb-2 small rounded-2">
-            {{ editError }}
-          </div>
-
-          <div class="d-flex justify-content-end gap-2">
-            <button
-              type="button"
-              class="user-list__btn-cancel btn btn-sm px-3 rounded-2"
-              (click)="cancelEdit()"
-              [disabled]="updating"
-            >
-              Cancel
-            </button>
-            <button
-              type="button"
-              class="user-list__btn-save btn btn-sm px-3 rounded-2 d-flex align-items-center gap-1"
-              (click)="saveEdit(user.id)"
-              [disabled]="updating"
-            >
-              <span *ngIf="updating" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-              <span>Save</span>
-            </button>
-          </div>
+          <button
+            type="button"
+            class="user-list__delete-btn btn btn-sm p-1 px-2 d-flex align-items-center gap-1 rounded-2"
+            (click)="requestDeleteConfirmation(user)"
+            title="Delete User"
+          >
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="3 6 5 6 21 6"/>
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+              <line x1="10" y1="11" x2="10" y2="17"/>
+              <line x1="14" y1="11" x2="14" y2="17"/>
+            </svg>
+          </button>
         </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Formly Edit Modal -->
+<div *ngIf="editingUser" class="modal-overlay">
+  <div class="edit-modal">
+    <div class="edit-modal__header">
+      <h4>Edit User Profile (#{{ editingUser.id }})</h4>
+      <button type="button" class="btn-close" aria-label="Close" (click)="closeEditModal()"></button>
+    </div>
+    <div class="edit-modal__body">
+      <div *ngIf="editError" class="alert alert-danger mb-3">
+        {{ editError }}
+      </div>
+
+      <form [formGroup]="editForm" (ngSubmit)="requestUpdateConfirmation()">
+        <formly-form
+          [form]="editForm"
+          [fields]="editFields"
+          [model]="editModel"
+        ></formly-form>
+
+        <div class="d-flex justify-content-end gap-2 mt-4">
+          <button
+            type="button"
+            class="user-list__btn-cancel btn btn-sm"
+            (click)="closeEditModal()"
+            [disabled]="updating"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            class="user-list__btn-save btn btn-sm px-4"
+            [disabled]="updating"
+          >
+            {{ updating ? 'Saving...' : 'Save Changes' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Confirmation Dialog Modal -->
+<div *ngIf="confirmModalOpen" class="modal-overlay">
+  <div class="edit-modal" style="max-width: 440px;">
+    <div class="edit-modal__header">
+      <h4>{{ confirmTitle }}</h4>
+      <button type="button" class="btn-close" aria-label="Close" (click)="closeConfirmModal()"></button>
+    </div>
+    <div class="edit-modal__body text-center py-4">
+      <p class="mb-4" style="font-size: 1.05rem;">{{ confirmMessage }}</p>
+      <div class="d-flex justify-content-center gap-3">
+        <button
+          type="button"
+          class="user-list__btn-cancel btn px-4"
+          (click)="closeConfirmModal()"
+        >
+          Cancel
+        </button>
+        <button
+          type="button"
+          class="btn px-4"
+          [class.btn-danger]="confirmActionType === 'delete'"
+          [class.user-list__btn-save]="confirmActionType === 'update'"
+          (click)="executeConfirmedAction()"
+        >
+          Confirm
+        </button>
       </div>
     </div>
   </div>

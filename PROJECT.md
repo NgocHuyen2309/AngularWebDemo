@@ -30,21 +30,26 @@ graph TD
 | 6 | **E2E Verification & Hardening** | Pass 100% of E2E tests (Tiers 1-4) and complete white-box Adversarial Coverage Hardening (Tier 5). | M4, M5 | DONE |
 | 7 | **v3.0 Live Sync & Dynamic Theme** | Account User List (`UserListComponent`) with real-time RxJS Subject (`userAdded$`) updates, SPA smooth scrolling navigation (`scrollToSection`), SOAP UI removal, and dynamic Light/Dark mode switcher with copper accents and calendar indicator contrast optimization. | M6 | DONE |
 | 8 | **v3.2 Inline User Editing & UI Polish** | Inline account editing inside `UserListComponent` cards with edit pen icon (`PUT /api/users/:id`), margin separation (`22px`) between sidebar forms, refresh button hover contrast, responsive icon-only layout (`<= 1399px`), and 100% unit test coverage (`ng test`). | M7 | DONE |
+| 9 | **v3.3 Enterprise Architecture & Style Migration** | Complete structural migration from Less (`.less`) to SCSS (`.scss`) with clean CSS specificity (`zero !important declarations`), PrimeNG v20 `SelectModule` integration (`p-select`), `ngx-formly` reactive forms for user registration/profile updates (`FormlyFieldConfig[]`), Role-Based Access Control (`AuthService`, `authGuard`, `adminGuard`) with modular routing (`app.routes.ts`) and Role Dashboards (`HomeComponent`, `LoginComponent`), plus strict backend validation enforcing TLD domain checks and `Age >= 16` age gating (`user.controller.js`). | M8 | DONE |
 
 ## Interface Contracts
 
 ### Frontend Service ↔ Backend Users API
+- **Endpoint**: `POST /api/users/login`
+  - Request: `{ email: string }`
+  - Response: `200 OK` with `{ id: number, email: string, date_of_birth: string, role: 'admin' | 'user' }`
+  - Error: `404 Not Found` if account does not exist or `400 Bad Request` if email is missing.
 - **Endpoint**: `POST /api/users`
-  - Request: `{ email: string, date_of_birth: string (ISO Date format) }`
-  - Response: `201 Created` with `{ id: number, email: string, date_of_birth: string, ... }`
-  - Error: `400 Bad Request` if email is invalid or missing, or `409 Conflict` if email already exists.
+  - Request: `{ email: string, date_of_birth: string (ISO Date format), role?: 'user' | 'admin' }`
+  - Response: `201 Created` with `{ id: number, email: string, date_of_birth: string, role: string }`
+  - Error: `400 Bad Request` if email is invalid (`Email address must contain a valid domain ending such as @gmail.com`) or age `< 16` (`User must be at least 16 years old to register`), or `409 Conflict` if email already exists.
 - **Endpoint**: `GET /api/users/:id`
-  - Response: `200 OK` with User object.
+  - Response: `200 OK` with User object including `role`.
   - Error: `404 Not Found` if user doesn't exist.
 - **Endpoint**: `PUT /api/users/:id`
-  - Request: `{ email?: string, date_of_birth?: string }`
+  - Request: `{ email?: string, date_of_birth?: string, role?: string }`
   - Response: `200 OK` with updated User object.
-  - Error: `400 Bad Request` or `404 Not Found`.
+  - Error: `400 Bad Request` (invalid TLD domain or age `< 16`) or `404 Not Found`.
 - **Endpoint**: `DELETE /api/users/:id`
   - Response: `200 OK` or `204 No Content` indicating deletion.
   - Error: `404 Not Found` or `400 Bad Request`.
@@ -54,32 +59,23 @@ graph TD
   - Response: `200 OK` with an array of at least 20 items:
     `Array<{ id: number, name: string, category: string, description: string, price: number, imageUrl: string }>`
 
-### Frontend Service ↔ Backend SOAP API
-- **Endpoint**: `POST /api/soap/info`
-  - Request Headers: `Content-Type: text/xml` or `application/xml`
-  - Request Body: Valid XML SOAP envelope querying project details.
-  - Response Body: XML SOAP envelope with `<web:GetProjectInfoResponse>` containing application status, version, and milestone metrics.
-
 ## Code Layout
 
 - `/backend/`
   - `config/`
-    - `db.js` — MongoDB connection configuration
+    - `db.js` — MongoDB connection configuration and initial admin (`admin@enterprise.com`) seeding
   - `controllers/`
-    - `user.controller.js` — User CRUD endpoint logic
+    - `user.controller.js` — User CRUD and authentication endpoint logic with strict TLD & age gating
     - `catalog.controller.js` — Catalog query and logic
-    - `soap.controller.js` — SOAP request handling
   - `models/`
-    - `user.model.js` — Strict Mongoose User schema with sequential ID counter
+    - `user.model.js` — Strict Mongoose User schema with sequential ID counter and role (`user` vs `admin`)
     - `catalog.model.js` — Catalog schema
   - `routes/`
-    - `user.routes.js` — Express routes for users
+    - `user.routes.js` — Express routes for users including `POST /login`
     - `catalog.routes.js` — Express routes for catalog
-    - `soap.routes.js` — Express routes for SOAP
   - `tests/`
     - `user.test.js` — User unit tests (Supertest + Jest)
     - `catalog.test.js` — Catalog unit tests
-    - `soap.test.js` — SOAP unit tests
   - `data.json` — Pre-seeded catalog items (20+ items)
   - `app.js` — Express application configurations (middleware, routes mapping)
   - `server.js` — Express server listener entry
@@ -88,16 +84,24 @@ graph TD
   - `src/`
     - `app/`
       - `components/`
-        - `navbar/` — Global navigation bar component
-        - `user-form/` — User CRUD registration and profile management component
-        - `catalog/` — Catalog gallery displaying 20+ items, categories filter, and sorting controls
-        - `vanilla-showcase/` — Component encapsulating raw ES6 Modular JS and DOM tree manipulation
+        - `navbar/` — Global navigation bar component with RBAC status indicators and responsive navigation
+        - `home/` — Role-based entry dashboard (`Admin Control Center` vs `Personal Dashboard` vs `Guest View`)
+        - `login/` — Authentication and account switching portal (`ngx-formly` login & registration tabs)
+        - `user-form/` — User CRUD registration component powered by `ngx-formly` reactive schema
+        - `user-list/` — Account directory and inline editing modal powered by `ngx-formly` & confirmation dialog
+        - `catalog/` — Catalog gallery displaying 20+ items, categories filter, and PrimeNG `p-select` sorting controls
       - `services/`
+        - `auth.service.ts` — Authentication session state, login/logout observables, and role verification (`isAdmin()`)
         - `user.service.ts` — Angular HttpClient wrapper communicating with User APIs
         - `catalog.service.ts` — Angular HttpClient wrapper communicating with Catalog APIs
-      - `app.component.*` — Entry Angular layout shell
-      - `app.config.ts` — Angular environment config with `provideHttpClient()`
-      - `styles.less` — Global Less stylesheet using Bootstrap and custom BEM classes
+      - `guards/`
+        - `auth.guard.ts` — Functional route guard protecting private pages
+        - `admin.guard.ts` — Functional route guard protecting admin-only pages
+      - `app.component.*` — Entry Angular layout shell housing `NavbarComponent` and `RouterOutlet`
+      - `app.routes.ts` — Router configuration mapping paths to views with functional guards
+      - `app.config.ts` — Angular environment config with `provideHttpClient()`, `provideRouter()`, `provideAnimationsAsync()`, PrimeNG Aura preset, and `FormlyModule.forRoot()`
+      - `styles.scss` — Global SCSS stylesheet using CSS custom properties (`--bg-card`, `--accent-copper`) with strict specificity (zero `!important` rules)
     - `main.ts` — Bootstrapping script
   - `package.json` — Frontend dependency manager
-  - `angular.json` — Build configuration specifying Less as style preprocessor
+  - `angular.json` — Build configuration specifying SCSS (`.scss`) as style preprocessor
+

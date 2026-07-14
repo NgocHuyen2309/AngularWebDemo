@@ -1,0 +1,21 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  background-color: var(--bg-primary, #1c1c1e);
+  color: var(--text-primary, #f5f0e8);
+}
+
+app-user-form {
+  display: block;
+  margin-bottom: 1.375rem;
+}
+
+app-user-list {
+  display: block;
+}
+
+.profile-modal-overlay {
+  background: rgba(0, 0, 0, 0.7) !important;
+  backdrop-filter: blur(0.25rem) !important;
+  -webkit-backdrop-filter: blur(0.25rem) !important;
+}
