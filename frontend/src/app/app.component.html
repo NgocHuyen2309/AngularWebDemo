@@ -1,3 +1,6 @@
+<!-- Global PrimeNG Toast Notifications -->
+<p-toast position="top-right" [style]="{ zIndex: '1100' }"></p-toast>
+
 <!-- Starry Night Van Gogh Animated Ambient Background Orbs -->
 <div class="ambient-orb-container">
   <div class="ambient-orb ambient-orb--crescent"></div>
@@ -11,7 +14,8 @@
   [currentUserEmail]="currentUser ? currentUser.email : null"
   [currentUsername]="currentUser ? (currentUser.username || currentUser.email.split('@')[0]) : null"
   (logoutEvent)="handleLogout()"
-  (editProfileEvent)="showProfileModal = true"
+  (editProfileEvent)="setProfileModalState(true)"
+  (changePasswordEvent)="setChangePasswordModalState(true)"
 ></app-navbar>
 
 <div class="app__container app__section" style="position: relative; z-index: 1;">
@@ -19,16 +23,24 @@
 </div>
 
 <!-- Profile Edit Modal Overlay -->
-<div *ngIf="showProfileModal" class="modal fade show d-block profile-modal-overlay" tabindex="-1" role="dialog" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(10, 17, 40, 0.8) !important; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 1085 !important; display: flex !important; align-items: center !important; justify-content: center !important; padding: 1.5rem;">
-  <div class="modal-dialog fade-in-up" role="document" style="max-width: 32.25rem; width: 100%; margin: auto !important;">
-    <div class="modal-content border-0 shadow-lg" style="background: transparent; max-height: 90vh; overflow-y: auto;">
-      <app-user-form
-        [isModal]="true"
-        [isEditMode]="true"
-        [editUserId]="currentUser ? currentUser.id : null"
-        (closeModalEvent)="showProfileModal = false"
-        (userUpdated)="onProfileUpdated($event)"
-      ></app-user-form>
-    </div>
+<div *ngIf="showProfileModal" class="profile-modal-overlay" tabindex="-1" role="dialog" aria-modal="true">
+  <div class="profile-modal-box fade-in-up" role="document">
+    <app-user-form
+      [isModal]="true"
+      [isEditMode]="true"
+      [editUserId]="currentUser ? currentUser.id : null"
+      (closeModalEvent)="setProfileModalState(false)"
+      (userUpdated)="onProfileUpdated($event)"
+    ></app-user-form>
+  </div>
+</div>
+
+<!-- Change Password Modal Overlay -->
+<div *ngIf="showChangePasswordModal" class="profile-modal-overlay" tabindex="-1" role="dialog" aria-modal="true">
+  <div class="profile-modal-box fade-in-up" role="document">
+    <app-change-password-modal
+      [userId]="currentUser ? currentUser.id : null"
+      (closeModalEvent)="setChangePasswordModalState(false)"
+    ></app-change-password-modal>
   </div>
 </div>

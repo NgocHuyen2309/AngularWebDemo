@@ -48,26 +48,27 @@ $catalog-spacing: 1.8rem;
       transform: translateY(-2px);
     }
 
-    &--active {
-      background: linear-gradient(135deg, #ECB44D 0%, #F2E199 100%) !important;
+    &--active,
+    button.catalog__filter-btn--active {
+      background: linear-gradient(135deg, #ECB44D 0%, #F2E199 100%);
       border-color: transparent;
-      color: #0A1128 !important;
-      font-weight: 800 !important;
+      color: #0A1128;
+      font-weight: 800;
       box-shadow: 0 4px 14px rgba(236, 180, 77, 0.45);
 
       &:hover {
-        background: linear-gradient(135deg, #F2E199 0%, #FFFBEB 100%) !important;
-        color: #0A1128 !important;
+        background: linear-gradient(135deg, #F2E199 0%, #FFFBEB 100%);
+        color: #0A1128;
       }
 
       :host-context([data-theme="light"]) & {
-        background: linear-gradient(135deg, #2A6FDB 0%, #1E40AF 100%) !important;
-        color: #FFFFFF !important;
+        background: linear-gradient(135deg, #2A6FDB 0%, #1E40AF 100%);
+        color: #FFFFFF;
         box-shadow: 0 4px 14px rgba(42, 111, 219, 0.4);
 
         &:hover {
-          background: linear-gradient(135deg, #3B82F6 0%, #2A6FDB 100%) !important;
-          color: #FFFFFF !important;
+          background: linear-gradient(135deg, #3B82F6 0%, #2A6FDB 100%);
+          color: #FFFFFF;
         }
       }
     }
@@ -166,19 +167,19 @@ $catalog-spacing: 1.8rem;
   &__item-category {
     align-self: flex-start;
     font-size: 0.75rem;
-    font-weight: 800 !important;
+    font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.08rem;
-    background: linear-gradient(135deg, #ECB44D 0%, #F2E199 100%) !important;
-    color: #0A1128 !important;
+    background: linear-gradient(135deg, #ECB44D 0%, #F2E199 100%);
+    color: #0A1128;
     padding: 0.4rem 0.9rem;
     border-radius: 1.25rem;
     margin-bottom: 0.95rem;
     box-shadow: 0 3px 10px rgba(236, 180, 77, 0.35);
 
     :host-context([data-theme="light"]) & {
-      background: linear-gradient(135deg, #2A6FDB 0%, #1E40AF 100%) !important;
-      color: #FFFFFF !important;
+      background: linear-gradient(135deg, #2A6FDB 0%, #1E40AF 100%);
+      color: #FFFFFF;
       box-shadow: 0 3px 10px rgba(42, 111, 219, 0.35);
     }
   }

@@ -1,74 +1,104 @@
 <div class="home-dashboard">
   <!-- Admin Dashboard View -->
-  <div *ngIf="currentUser && isAdmin">
-    <div class="hero-section">
-      <div>
+  <div *ngIf="currentUser && isAdmin" class="fade-in-up">
+    <div class="hero-section shadow-lg">
+      <div class="hero-section__content">
         <span class="hero-section__badge">Administrator Access</span>
-        <h1>Welcome, {{ currentUser.username || currentUser.email.split('@')[0] }}!</h1>
-        <p>Welcome to the Admin Control Center. Manage enterprise users, monitor system status, and test integrated web services.</p>
-        <a routerLink="/accounts" class="btn btn-dark fw-bold px-4 py-2">Manage All User Accounts</a>
+        <h1 class="fw-bold"><span class="hero-welcome-text">Welcome,</span> {{ currentUser.username || currentUser.email.split('@')[0] }}!</h1>
+        <p class="mb-0">You are in the Admin Control Center. Manage enterprise user credentials, enforce role privileges, and supervise system inventory seamlessly.</p>
       </div>
     </div>
 
     <div class="row g-4 mb-5">
       <div class="col-md-6">
-        <div class="dashboard-card">
-          <h4>Account Management</h4>
-          <p>Review all registered accounts, enforce role privileges, or modify credentials directly.</p>
-          <a routerLink="/accounts" class="btn btn-outline-primary">Open Account Directory</a>
+        <div class="dashboard-card shadow-sm">
+          <div class="dashboard-card__header d-flex align-items-center gap-2 mb-2">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+            <h4 class="mb-0">Account Directory</h4>
+          </div>
+          <p>Review all registered accounts, enforce role privileges, or modify credentials directly from the enterprise management table.</p>
+          <a routerLink="/accounts" class="btn btn-card-primary fw-bold px-4 py-2 mt-auto">Open Directory</a>
         </div>
       </div>
       <div class="col-md-6">
-        <div class="dashboard-card">
-          <h4>Catalog Administration</h4>
-          <p>Browse active inventory items and verify pricing and category listings.</p>
-          <a routerLink="/catalog" class="btn btn-outline-primary">Browse Catalog</a>
+        <div class="dashboard-card shadow-sm">
+          <div class="dashboard-card__header d-flex align-items-center gap-2 mb-2">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="7" height="7"/>
+              <rect x="14" y="3" width="7" height="7"/>
+              <rect x="14" y="14" width="7" height="7"/>
+              <rect x="3" y="14" width="7" height="7"/>
+            </svg>
+            <h4 class="mb-0">Catalog Administration</h4>
+          </div>
+          <p>Browse active inventory items, inspect product pricing, and verify luxury category listings across the platform.</p>
+          <a routerLink="/catalog" class="btn btn-card-primary fw-bold px-4 py-2 mt-auto">Browse Catalog</a>
         </div>
       </div>
     </div>
   </div>
 
   <!-- User Dashboard View -->
-  <div *ngIf="currentUser && !isAdmin">
-    <div class="hero-section">
-      <div>
+  <div *ngIf="currentUser && !isAdmin" class="fade-in-up">
+    <div class="hero-section shadow-lg">
+      <div class="hero-section__content">
         <span class="hero-section__badge">Personal Dashboard</span>
-        <h1>Welcome, {{ currentUser.username || currentUser.email.split('@')[0] }}!</h1>
-        <p>Explore luxury inventory or update your account details directly from your secure portal.</p>
-        <a routerLink="/catalog" class="btn btn-dark fw-bold px-4 py-2">Explore Catalog</a>
+        <h1 class="fw-bold"><span class="hero-welcome-text">Welcome,</span> {{ currentUser.username || currentUser.email.split('@')[0] }}!</h1>
+        <p class="mb-0">Explore our curated luxury inventory or review your account settings directly from your secure portal.</p>
       </div>
     </div>
 
-    <div class="row g-4">
+    <div class="row g-4 mb-5">
       <div class="col-md-6">
-        <div class="dashboard-card">
-          <h4>Luxury Product Catalog</h4>
-          <p>Discover high-end electronics, books, and fashion curated specifically for our members.</p>
-          <a routerLink="/catalog" class="btn btn-outline-primary">Browse Products</a>
+        <div class="dashboard-card shadow-sm">
+          <div class="dashboard-card__header d-flex align-items-center gap-2 mb-2">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="9" cy="21" r="1"/>
+              <circle cx="20" cy="21" r="1"/>
+              <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+            </svg>
+            <h4 class="mb-0">Luxury Catalog</h4>
+          </div>
+          <p>Discover high-end electronics, books, and fashion curated specifically for our registered members.</p>
+          <a routerLink="/catalog" class="btn btn-card-primary fw-bold px-4 py-2 mt-auto">Browse Products</a>
         </div>
       </div>
       <div class="col-md-6">
-        <div class="dashboard-card">
-          <h4>My Account Settings</h4>
-          <p>Review or update your profile details and preferences securely.</p>
-          <button type="button" class="btn btn-outline-primary" (click)="onOpenProfile($event)">Edit Profile</button>
+        <div class="dashboard-card shadow-sm">
+          <div class="dashboard-card__header d-flex align-items-center gap-2 mb-2">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+              <circle cx="12" cy="7" r="4"/>
+            </svg>
+            <h4 class="mb-0">Account Profile</h4>
+          </div>
+          <p>Review or update your profile credentials, username, and security preferences in real time.</p>
+          <button type="button" class="btn btn-card-primary fw-bold px-4 py-2 mt-auto" (click)="onOpenProfile($event)">Edit Profile</button>
         </div>
       </div>
     </div>
   </div>
 
   <!-- Guest View -->
-  <div *ngIf="!currentUser">
-    <div class="hero-section">
-      <div>
+  <div *ngIf="!currentUser" class="fade-in-up">
+    <div class="hero-section shadow-lg">
+      <div class="hero-section__content">
         <span class="hero-section__badge">Enterprise Portal</span>
-        <h1>Crown & Velvet Management System</h1>
-        <p>Please sign in or register a new account to access full catalog features and account settings.</p>
-        <div class="d-flex gap-3">
+        <h1 class="fw-bold">Crown &amp; Velvet Management System</h1>
+        <p class="mb-4">Please sign in or register a new account to access full catalog features and account settings.</p>
+        <div class="d-flex flex-wrap gap-3">
           <a routerLink="/login" class="btn btn-dark fw-bold px-4 py-2">Sign In / Register</a>
-          <a routerLink="/catalog" class="btn btn-outline-dark fw-bold px-4 py-2" style="border-color: #1c1c1e; color: #1c1c1e;">Browse Public Catalog</a>
+          <a routerLink="/catalog" class="btn btn-outline-dark fw-bold px-4 py-2">Browse Public Catalog</a>
         </div>
       </div>
     </div>
   </div>
 </div>
+
+<!-- Áp dụng kiểu Interpolation và Propert Binding -->
+

@@ -1,28 +1,43 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { finalize } from 'rxjs/operators';
 import { FormlyModule, FormlyFieldConfig } from '@ngx-formly/core';
+import { TableModule, Table } from 'primeng/table';
+import { InputTextModule } from 'primeng/inputtext';
+import { ButtonModule } from 'primeng/button';
+import { TooltipModule } from 'primeng/tooltip';
+import { MessageService } from 'primeng/api';
 import { UserService, User } from '../../services/user.service';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-user-list',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormlyModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    FormlyModule,
+    TableModule,
+    InputTextModule,
+    ButtonModule,
+    TooltipModule
+  ],
   templateUrl: './user-list.component.html',
   styleUrl: './user-list.component.scss'
 })
 export class UserListComponent implements OnInit, OnDestroy {
+  @ViewChild('dt') dt?: Table;
   users: User[] = [];
   loading = false;
   error = '';
   sub?: Subscription;
 
-  // Formly Editing modal / state
   editingUser: User | null = null;
   editForm = new FormGroup({});
-  editModel: any = { username: '', email: '', date_of_birth: '' };
+  editModel: Partial<User> = { username: '', email: '', date_of_birth: '' };
   editFields: FormlyFieldConfig[] = [
     {
       key: 'username',
@@ -61,25 +76,23 @@ export class UserListComponent implements OnInit, OnDestroy {
   updating = false;
   editError = '';
 
-  // Confirmation state
   confirmModalOpen = false;
   confirmActionType: 'update' | 'delete' | null = null;
   confirmTargetId: number | null = null;
   confirmTitle = '';
   confirmMessage = '';
 
-  // Backwards compatibility for tests and old references
   get editingId(): number | null {
     return this.editingUser ? this.editingUser.id : null;
   }
   get editEmail(): string {
-    return this.editModel.email;
+    return this.editModel.email || '';
   }
   set editEmail(val: string) {
     this.editModel.email = val;
   }
   get editDob(): string {
-    return this.editModel.date_of_birth;
+    return this.editModel.date_of_birth || '';
   }
   set editDob(val: string) {
     this.editModel.date_of_birth = val;
@@ -93,9 +106,10 @@ export class UserListComponent implements OnInit, OnDestroy {
 
   constructor(
     private userService: UserService,
-    private authService: AuthService
+    private authService: AuthService,
+    private messageService: MessageService,
+    private router: Router
   ) {}
-
   ngOnInit() {
     this.loadUsers();
     this.sub = this.userService.userAdded$.subscribe(() => {
@@ -111,20 +125,86 @@ export class UserListComponent implements OnInit, OnDestroy {
     return this.authService.isAdmin();
   }
 
+  isSuperAdmin(): boolean {
+    return this.authService.isSuperAdmin();
+  }
+
+  onGlobalFilter(event: Event): void {
+    const value = (event.target as HTMLInputElement).value;
+    if (this.dt) {
+      this.dt.filterGlobal(value, 'contains');
+    }
+  }
+
+  toggleLockUser(user: User): void {
+    if (!this.isAdmin()) return;
+    const newStatus = user.status === 'locked' ? 'active' : 'locked';
+    this.userService.updateUserStatus(user.id, newStatus).subscribe({
+      next: (updated) => {
+        const idx = this.users.findIndex(u => u.id === user.id);
+        if (idx !== -1) {
+          this.users[idx].status = updated.status;
+        }
+        this.messageService.add({
+          severity: 'success',
+          summary: newStatus === 'locked' ? 'Account Locked' : 'Account Activated',
+          detail: `User #${user.id} (${user.username}) is now ${newStatus}.`
+        });
+      },
+      error: (err) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Status Change Failed',
+          detail: err.error?.error || 'Could not update account status.'
+        });
+      }
+    });
+  }
+
+  changeUserRole(user: User, newRole: string): void {
+    if (!this.isSuperAdmin()) return;
+    this.userService.updateUserRole(user.id, newRole).subscribe({
+      next: (updated) => {
+        const idx = this.users.findIndex(u => u.id === user.id);
+        if (idx !== -1) {
+          this.users[idx].role = updated.role;
+        }
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Role Changed',
+          detail: `User #${user.id} role updated to ${newRole.replace('_', ' ').toUpperCase()}.`
+        });
+      },
+      error: (err) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Role Update Failed',
+          detail: err.error?.error || 'Could not change account role.'
+        });
+      }
+    });
+  }
+
   loadUsers() {
     this.loading = true;
     this.error = '';
     this.userService.getUsers().subscribe({
       next: (data) => {
         const currentUser = this.authService.getCurrentUser();
+        if (currentUser) {
+          const foundSelf = data.find(u => Number(u.id) === Number(currentUser.id) || u.email === currentUser.email);
+          if (foundSelf && foundSelf.role !== currentUser.role) {
+            this.authService.updateCurrentUserSession(foundSelf);
+          }
+        }
         if (this.authService.isAdmin() || !currentUser) {
           this.users = data;
         } else {
-          this.users = data.filter(u => u.id === currentUser.id || u.email === currentUser.email);
+          this.users = data.filter(u => Number(u.id) === Number(currentUser.id) || u.email === currentUser.email);
         }
         this.loading = false;
       },
-      error: (err) => {
+      error: () => {
         this.error = 'Failed to load user account list.';
         this.loading = false;
       }
@@ -213,9 +293,13 @@ export class UserListComponent implements OnInit, OnDestroy {
         }
         this.updating = false;
         this.closeEditModal();
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'User profile updated successfully!'
+        });
         this.userService.notifyUserAdded();
 
-        // Update current session if the edited user is the logged-in user
         const currentUser = this.authService.getCurrentUser();
         if (currentUser && Number(currentUser.id) === Number(id)) {
           this.authService.updateCurrentUserSession({
@@ -230,19 +314,30 @@ export class UserListComponent implements OnInit, OnDestroy {
       },
       error: (err) => {
         this.updating = false;
-        this.editError = err.error?.error || err.error?.message || 'Failed to update user.';
+        this.editError = err.error?.error || 'Failed to update user.';
       }
     });
   }
 
   private performDeleteUser(id: number) {
-    this.userService.deleteUser(id).subscribe({
-      next: () => {
-        this.users = this.users.filter(u => u.id !== id);
-      },
-      error: () => {
-        this.loadUsers();
-      }
-    });
+    this.userService.deleteUser(id)
+      .pipe(finalize(() => this.loadUsers()))
+      .subscribe({
+        next: () => {
+          this.users = this.users.filter(u => u.id !== id);
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Deleted',
+            detail: 'User account permanently deleted.'
+          });
+        },
+        error: (err) => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Delete Failed',
+            detail: err.error?.error || 'Could not delete user account.'
+          });
+        }
+      });
   }
 }

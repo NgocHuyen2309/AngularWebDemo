@@ -13,7 +13,7 @@ export function emailDomainValidator(control: AbstractControl): ValidationErrors
   if (!control.value) {
     return null;
   }
-  const emailRegex = /^[a-zA-Z0-9._%+-]+@(gmail\.com|enterprise\.com)$/i;
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@(gmail\.com|enterprise\.com|.*\.vn|.*\.edu|.*\.edu\.vn)$/i;
   return emailRegex.test(control.value.trim()) ? null : { emailDomain: true };
 }
 
@@ -51,7 +51,10 @@ export const appConfig: ApplicationConfig = {
     provideAnimationsAsync(),
     providePrimeNG({
       theme: {
-        preset: Aura
+        preset: Aura,
+        options: {
+          darkModeSelector: '[data-theme="dark"]'
+        }
       }
     }),
     importProvidersFrom(

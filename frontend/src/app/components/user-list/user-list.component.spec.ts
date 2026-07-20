@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { MessageService } from 'primeng/api';
 import { UserListComponent } from './user-list.component';
 
 describe('UserListComponent', () => {
@@ -12,7 +13,8 @@ describe('UserListComponent', () => {
       imports: [UserListComponent],
       providers: [
         provideHttpClient(),
-        provideHttpClientTesting()
+        provideHttpClientTesting(),
+        MessageService
       ]
     }).compileComponents();
 
@@ -26,7 +28,7 @@ describe('UserListComponent', () => {
   });
 
   it('should start and cancel editing', () => {
-    const mockUser = { id: 1, email: 'test@gmail.com', date_of_birth: '2000-01-01T00:00:00.000Z' };
+    const mockUser = { id: 1, username: 'test', email: 'test@gmail.com', date_of_birth: '2000-01-01T00:00:00.000Z', role: 'user' };
     component.startEdit(mockUser);
     expect(component.editingId).toBe(1);
     expect(component.editEmail).toBe('test@gmail.com');

@@ -30,8 +30,10 @@ describe('UserService', () => {
   it('should create a user via POST', () => {
     const mockUser: User = {
       id: 1,
+      username: 'test',
       email: 'test@example.com',
-      date_of_birth: '1990-01-15'
+      date_of_birth: '1990-01-15',
+      role: 'user'
     };
 
     service.createUser('test@example.com', 'SecurePass123!', 'SecurePass123!', '1990-01-15').subscribe(user => {
@@ -41,6 +43,7 @@ describe('UserService', () => {
     const req = httpMock.expectOne('http://localhost:3000/api/users');
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual({
+      username: undefined,
       email: 'test@example.com',
       password: 'SecurePass123!',
       confirm_password: 'SecurePass123!',
@@ -53,8 +56,10 @@ describe('UserService', () => {
   it('should get a user via GET', () => {
     const mockUser: User = {
       id: 1,
+      username: 'test',
       email: 'test@example.com',
-      date_of_birth: '1990-01-15'
+      date_of_birth: '1990-01-15',
+      role: 'user'
     };
 
     service.getUser(1).subscribe(user => {
@@ -69,8 +74,10 @@ describe('UserService', () => {
   it('should update a user via PUT', () => {
     const mockUser: User = {
       id: 1,
+      username: 'updated',
       email: 'updated@example.com',
-      date_of_birth: '1990-01-15'
+      date_of_birth: '1990-01-15',
+      role: 'user'
     };
 
     service.updateUser(1, { email: 'updated@example.com' }).subscribe(user => {

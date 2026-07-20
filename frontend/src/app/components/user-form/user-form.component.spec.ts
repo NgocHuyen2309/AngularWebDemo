@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
+import { MessageService } from 'primeng/api';
 import { UserFormComponent } from './user-form.component';
 
 describe('UserFormComponent', () => {
@@ -13,7 +14,8 @@ describe('UserFormComponent', () => {
       imports: [UserFormComponent],
       providers: [
         provideHttpClient(),
-        provideHttpClientTesting()
+        provideHttpClientTesting(),
+        MessageService
       ]
     }).compileComponents();
 
@@ -36,10 +38,11 @@ describe('UserFormComponent', () => {
     component.model.date_of_birth = '';
     component.model.password = '';
     component.onSubmit();
-    expect(component.errorMessage).toBe('Please fill in all fields.');
+    expect(component.errorMessage).toBe('Please fill in all required fields.');
   });
 
   it('should show error when password confirmation mismatch', () => {
+    component.model.username = 'test';
     component.model.email = 'test@gmail.com';
     component.model.date_of_birth = '1990-01-15';
     component.model.password = 'SecurePass123!';
@@ -63,10 +66,13 @@ describe('UserFormComponent', () => {
   it('should call createUser and show success on valid submission', () => {
     const mockUser = {
       id: 1,
+      username: 'test',
       email: 'test@gmail.com',
-      date_of_birth: '1990-01-15'
+      date_of_birth: '1990-01-15',
+      role: 'user'
     };
 
+    component.model.username = 'test';
     component.model.email = 'test@gmail.com';
     component.model.password = 'SecurePass123!';
     component.model.confirm_password = 'SecurePass123!';
@@ -76,6 +82,7 @@ describe('UserFormComponent', () => {
     const req = httpMock.expectOne('http://localhost:3000/api/users');
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual({
+      username: 'test',
       email: 'test@gmail.com',
       password: 'SecurePass123!',
       confirm_password: 'SecurePass123!',
@@ -84,13 +91,12 @@ describe('UserFormComponent', () => {
     });
     req.flush(mockUser);
 
-    expect(component.successMessage).toContain('User registered successfully');
-    expect(component.createdUser).toEqual(mockUser);
     expect(component.model.email).toBe('');
     expect(component.model.password).toBe('');
   });
 
   it('should show error message on API failure', () => {
+    component.model.username = 'test';
     component.model.email = 'test@gmail.com';
     component.model.password = 'SecurePass123!';
     component.model.confirm_password = 'SecurePass123!';

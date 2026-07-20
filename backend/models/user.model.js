@@ -10,12 +10,14 @@ const UserSchema = new mongoose.Schema({
   id: { type: Number, unique: true },
   username: {
     type: String,
+    required: [true, 'Username is required'],
+    unique: true,
     trim: true,
-    default: function() {
-      if (this.email && typeof this.email === 'string') {
-        return this.email.split('@')[0];
-      }
-      return 'user';
+    validate: {
+      validator: function(v) {
+        return /^[a-zA-Z0-9_]+$/.test(v);
+      },
+      message: () => 'Username must not contain spaces or special characters (only letters, numbers, and underscores)'
     }
   },
   email: {
@@ -51,8 +53,13 @@ const UserSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ['user', 'admin'],
+    enum: ['user', 'admin', 'super_admin'],
     default: 'user'
+  },
+  status: {
+    type: String,
+    enum: ['active', 'locked'],
+    default: 'active'
   },
   password: {
     type: String,

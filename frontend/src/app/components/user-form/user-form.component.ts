@@ -1,7 +1,8 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormlyModule } from '@ngx-formly/core';
+import { MessageService } from 'primeng/api';
 import { UserService, User } from '../../services/user.service';
 import { AuthService } from '../../services/auth.service';
 
@@ -27,10 +28,11 @@ export class UserFormComponent implements OnInit {
   @Output() userUpdated = new EventEmitter<User>();
   @Output() closeModalEvent = new EventEmitter<void>();
 
-  successMessage = '';
   errorMessage = '';
   createdUser: User | null = null;
   loading = false;
+  showPasswordSection = false;
+  formSubmitted = false;
 
   // Form model
   model = {
@@ -51,12 +53,10 @@ export class UserFormComponent implements OnInit {
   get username(): string { return this.model.username; }
   set username(val: string) { this.model.username = val; }
 
-  // Visibility toggle (Con mắt)
   showPassword = false;
   showConfirmPassword = false;
 
-  // Password strength state
-  strengthScore = 0; // 0 to 4
+  strengthScore = 0;
   strengthLabel = 'None';
   strengthColorClass = 'strength-none';
 
@@ -68,7 +68,12 @@ export class UserFormComponent implements OnInit {
     hasSpecial: false
   };
 
-  constructor(private userService: UserService, private authService: AuthService) {}
+  constructor(
+    private userService: UserService,
+    private authService: AuthService,
+    private messageService: MessageService,
+    private elRef: ElementRef
+  ) {}
 
   ngOnInit(): void {
     this.checkPasswordStrength('');
@@ -106,7 +111,7 @@ export class UserFormComponent implements OnInit {
           date_of_birth: formattedDob
         };
       },
-      error: (err) => {
+      error: () => {
         this.loading = false;
         this.errorMessage = 'Failed to load user profile details.';
       }
@@ -121,9 +126,23 @@ export class UserFormComponent implements OnInit {
     this.showConfirmPassword = !this.showConfirmPassword;
   }
 
+  togglePasswordSection(): void {
+    this.showPasswordSection = !this.showPasswordSection;
+    if (!this.showPasswordSection) {
+      this.model.password = '';
+      this.model.confirm_password = '';
+      this.checkPasswordStrength('');
+    }
+  }
+
   onPasswordChange(val: string): void {
     this.model.password = val;
     this.checkPasswordStrength(val);
+  }
+
+  isValidUsername(username: string): boolean {
+    if (!username) return false;
+    return /^[a-zA-Z0-9_]+$/.test(username);
   }
 
   checkPasswordStrength(password: string): void {
@@ -173,7 +192,7 @@ export class UserFormComponent implements OnInit {
 
   isValidEmail(email: string): boolean {
     if (!email) return false;
-    return /^[a-zA-Z0-9._%+-]+@(gmail\.com|enterprise\.com)$/i.test(email.trim());
+    return /^[a-zA-Z0-9._%+-]+@(gmail\.com|enterprise\.com|.*\.vn|.*\.edu|.*\.edu\.vn)$/i.test(email.trim());
   }
 
   isValidAge(dob: string): boolean {
@@ -189,40 +208,67 @@ export class UserFormComponent implements OnInit {
     return age >= 16;
   }
 
+  private autoFocusFirstInvalidInput(): void {
+    setTimeout(() => {
+      const invalidInput = this.elRef.nativeElement.querySelector('.ng-invalid:not(form), input.is-invalid');
+      if (invalidInput) {
+        invalidInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        invalidInput.focus();
+      }
+    }, 50);
+  }
+
   onSubmit(): void {
-    this.successMessage = '';
+    this.formSubmitted = true;
     this.errorMessage = '';
     this.createdUser = null;
 
     if (this.isEditMode) {
-      if (!this.model.username || !this.model.email || !this.model.date_of_birth) {
-        this.errorMessage = 'Please fill in Username, Email, and Date of Birth.';
+      if (!this.model.username || !this.model.date_of_birth) {
+        this.errorMessage = 'Please fill in Username and Date of Birth.';
+        this.autoFocusFirstInvalidInput();
         return;
       }
     } else {
       if (!this.model.username || !this.model.email || !this.model.date_of_birth || !this.model.password) {
-        this.errorMessage = 'Please fill in all required fields including Username and Password.';
+        this.errorMessage = 'Please fill in all required fields.';
+        this.autoFocusFirstInvalidInput();
         return;
       }
     }
 
-    if (!this.isValidEmail(this.model.email)) {
-      this.errorMessage = 'Email address must strictly end with @gmail.com (e.g., yourname@gmail.com)';
+    if (!this.isValidUsername(this.model.username)) {
+      this.errorMessage = 'Username must not contain spaces or special characters (only letters, numbers, and underscores).';
+      this.autoFocusFirstInvalidInput();
+      return;
+    }
+
+    if (!this.isEditMode && !this.isValidEmail(this.model.email)) {
+      this.errorMessage = 'Email address must strictly end with @gmail.com, @enterprise.com, .vn, or .edu';
+      this.autoFocusFirstInvalidInput();
       return;
     }
 
     if (!this.isValidAge(this.model.date_of_birth)) {
-      this.errorMessage = 'User must be at least 16 years old';
+      this.errorMessage = 'User must be at least 16 years old.';
+      this.autoFocusFirstInvalidInput();
       return;
     }
 
-    if (this.model.password) {
-      if (this.model.password.length < 6) {
-        this.errorMessage = 'Password must be at least 6 characters long.';
+    if (!this.isEditMode) {
+      if (!this.model.password) {
+        this.errorMessage = 'Password is required.';
+        this.autoFocusFirstInvalidInput();
+        return;
+      }
+      if (!this.checklist.minLength || !this.checklist.hasUpper || !this.checklist.hasLower || !this.checklist.hasNumber || !this.checklist.hasSpecial) {
+        this.errorMessage = 'Password is not strong enough. Please meet all the security requirements.';
+        this.autoFocusFirstInvalidInput();
         return;
       }
       if (this.model.password !== this.model.confirm_password) {
         this.errorMessage = 'Password and confirmation do not match.';
+        this.autoFocusFirstInvalidInput();
         return;
       }
     }
@@ -233,14 +279,15 @@ export class UserFormComponent implements OnInit {
         email: this.model.email.trim(),
         date_of_birth: this.model.date_of_birth
       };
-      if (this.model.password) {
-        updateData.password = this.model.password;
-      }
       this.loading = true;
       this.userService.updateUser(this.editUserId, updateData).subscribe({
         next: (updatedUser) => {
           this.loading = false;
-          this.successMessage = 'Profile updated successfully!';
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: 'Profile updated successfully!'
+          });
           const currentSession = this.authService.getCurrentUser();
           if (currentSession && Number(currentSession.id) === Number(updatedUser.id)) {
             const newAuthSession: any = {
@@ -258,12 +305,21 @@ export class UserFormComponent implements OnInit {
           if (this.isModal) {
             setTimeout(() => {
               this.closeModalEvent.emit();
-            }, 1200);
+            }, 1000);
           }
         },
         error: (err) => {
           this.loading = false;
-          this.errorMessage = err.error?.error || err.error?.message || 'Profile update failed. Please try again.';
+          this.errorMessage = err.error?.error || err.error?.message || 'Profile update failed.';
+          if (err.status >= 500) {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Server Error',
+              detail: 'A global server error occurred while updating profile.'
+            });
+          } else {
+            this.autoFocusFirstInvalidInput();
+          }
         }
       });
       return;
@@ -281,14 +337,28 @@ export class UserFormComponent implements OnInit {
       next: (user) => {
         this.loading = false;
         this.createdUser = user;
-        this.successMessage = `User registered successfully! Username: ${user.username || user.email.split('@')[0]}`;
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Account Created',
+          detail: `User registered successfully! Username: ${user.username || user.email.split('@')[0]}`
+        });
         this.model = { username: '', email: '', password: '', confirm_password: '', date_of_birth: '' };
+        this.formSubmitted = false;
         this.checkPasswordStrength('');
         this.userService.notifyUserAdded();
       },
       error: (err) => {
         this.loading = false;
-        this.errorMessage = err.error?.error || err.error?.message || 'Registration failed. Please try again.';
+        this.errorMessage = err.error?.error || err.error?.message || 'Registration failed.';
+        if (err.status >= 500) {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Server Error',
+            detail: 'A global server error occurred during registration.'
+          });
+        } else {
+          this.autoFocusFirstInvalidInput();
+        }
       }
     });
   }

@@ -10,8 +10,7 @@
         [class.catalog__filter-btn--active]="selectedCategory === category"
         [class.btn-primary]="selectedCategory === category"
         [class.btn-outline-primary]="selectedCategory !== category"
-        (click)="filterByCategory(category)"
-      >
+        (click)="filterByCategory(category)">
         {{ category }}
       </button>
     </div>

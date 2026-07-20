@@ -5,14 +5,14 @@
 :host {
   position: sticky;
   top: 0;
-  z-index: 1060 !important;
+  z-index: 1060;
   display: block;
   width: 100%;
 }
 
 .navbar {
   position: relative;
-  z-index: 1060 !important;
+  z-index: 1060;
   background: rgba(10, 17, 40, 0.92);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
@@ -21,10 +21,11 @@
   box-shadow: 0 6px 28px rgba(0, 0, 0, 0.45);
   transition: all 0.3s ease;
 
-  &__brand {
+  &__brand,
+  &__brand.navbar-brand {
     font-size: 1.45rem;
     font-weight: 700;
-    color: #FFFFFF !important;
+    color: #FFFFFF;
     display: flex;
     align-items: center;
     gap: 12px;
@@ -38,17 +39,17 @@
       justify-content: center;
       width: 38px;
       height: 38px;
-      background: linear-gradient(135deg, #ECB44D 0%, #F2E199 100%) !important;
-      color: #101828 !important;
+      background: linear-gradient(135deg, #ECB44D 0%, #F2E199 100%);
+      color: #101828;
       font-size: 0.95rem;
-      font-weight: 900 !important;
+      font-weight: 900;
       border-radius: 10px;
       box-shadow: 0 4px 12px rgba(236, 180, 77, 0.45);
       transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     &:hover {
-      color: #F2E199 !important;
+      color: #F2E199;
 
       &::before {
         transform: rotate(-6deg) scale(1.08);
@@ -69,94 +70,135 @@
     }
   }
 
-  &__badge {
+  &__badge,
+  span.navbar__badge {
     font-size: 0.78rem;
     padding: 0.32rem 0.75rem;
     border-radius: 20px;
-    font-weight: 800 !important;
+    font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.6px;
     margin-left: 0.55rem;
-    background: rgba(236, 180, 77, 0.22) !important;
-    border: 1px solid rgba(236, 180, 77, 0.45) !important;
-    color: #FFFBEB !important;
-    text-shadow: 0 1px 3px rgba(10, 17, 40, 0.6) !important;
+    background: rgba(236, 180, 77, 0.22);
+    border: 1px solid rgba(236, 180, 77, 0.45);
+    color: #FFFBEB;
+    text-shadow: 0 1px 3px rgba(10, 17, 40, 0.6);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
 
-    &--admin {
-      background: linear-gradient(135deg, #ECB44D 0%, #D4952B 100%) !important;
-      color: #FFFFFF !important;
-      border: 1px solid rgba(255, 255, 255, 0.4) !important;
-      text-shadow: 0 1px 3px rgba(10, 17, 40, 0.65) !important;
+    &--admin,
+    &.navbar__badge--admin {
+      background: linear-gradient(135deg, #ECB44D 0%, #D4952B 100%);
+      color: #FFFFFF;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      text-shadow: 0 1px 3px rgba(10, 17, 40, 0.65);
       box-shadow: 0 2px 10px rgba(236, 180, 77, 0.4);
     }
 
     :host-context([data-theme="light"]) & {
-      background: linear-gradient(135deg, #3C8CC4 0%, #2A6FDB 100%) !important;
-      border: 1px solid rgba(255, 255, 255, 0.45) !important;
-      color: #FFFFFF !important;
-      text-shadow: 0 1px 3px rgba(10, 17, 40, 0.45) !important;
+      background: linear-gradient(135deg, #3C8CC4 0%, #2A6FDB 100%);
+      border: 1px solid rgba(255, 255, 255, 0.45);
+      color: #FFFFFF;
+      text-shadow: 0 1px 3px rgba(10, 17, 40, 0.45);
       box-shadow: 0 2px 8px rgba(42, 111, 219, 0.35);
 
-      &--admin {
-        background: linear-gradient(135deg, #2A6FDB 0%, #1E40AF 100%) !important;
-        color: #FFFFFF !important;
-        border: 1px solid rgba(255, 255, 255, 0.5) !important;
-        text-shadow: 0 1px 3px rgba(10, 17, 40, 0.45) !important;
+      &--admin,
+      &.navbar__badge--admin {
+        background: linear-gradient(135deg, #2A6FDB 0%, #1E40AF 100%);
+        color: #FFFFFF;
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        text-shadow: 0 1px 3px rgba(10, 17, 40, 0.45);
         box-shadow: 0 2px 10px rgba(30, 64, 175, 0.45);
       }
     }
   }
 
-  // Ensure Dropdown sits above all page headers
-  .dropdown-menu {
-    z-index: 1070 !important;
-    background-color: var(--bg-card);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid var(--border);
-    box-shadow: 0 14px 38px rgba(0, 0, 0, 0.55) !important;
+  // Dropdown — Dark Mode (solid, no glass)
+  .dropdown-menu,
+  .dropdown-menu.dropdown-menu {
+    z-index: 1070;
+    background-color: #12264A;
+    border: 1px solid rgba(111, 184, 230, 0.28);
+    box-shadow: 0 14px 38px rgba(0, 0, 0, 0.55);
     border-radius: 12px;
     padding: 0.6rem;
     min-width: 13rem;
 
     .dropdown-item {
-      color: var(--text-primary);
+      color: #F5F0E8;
       font-weight: 600;
       border-radius: 8px;
       transition: all 0.2s ease;
       padding: 0.65rem 0.9rem;
 
       &:hover {
-        background-color: var(--bg-card-hover);
-        color: var(--accent-copper);
+        background-color: rgba(42, 111, 219, 0.22);
+        color: #ECB44D;
       }
 
       &.text-danger {
-        color: #ff6b6b !important;
+        color: #ff6b6b;
         &:hover {
           background-color: rgba(255, 107, 107, 0.15);
-          color: #ff8787 !important;
+          color: #ff8787;
         }
       }
     }
 
     .dropdown-divider {
-      border-color: var(--border);
-      opacity: 0.6;
+      border-color: rgba(111, 184, 230, 0.2);
+      opacity: 0.7;
     }
   }
 }
 
 // In Light Mode, keep navbar deep starry indigo with bright white & golden text for maximum elegance and clarity
-:host-context([data-theme="light"]) .navbar {
-  background: linear-gradient(90deg, #15284C 0%, #0F1E38 100%) !important;
+:host-context([data-theme="light"]) .navbar.navbar {
+  background: linear-gradient(90deg, #15284C 0%, #0F1E38 100%);
   border-bottom: 1px solid rgba(236, 180, 77, 0.45);
   box-shadow: 0 6px 24px rgba(21, 40, 76, 0.25);
 }
 
-.navbar .navbar-nav .nav-link {
-  color: #FFFFFF !important;
+// Light mode — CV logo box: white bg with navy text for contrast against dark navbar
+:host-context([data-theme="light"]) .navbar__brand::before,
+:host-context([data-theme="light"]) .navbar .navbar__brand::before {
+  background: linear-gradient(135deg, #FFFFFF 0%, #E8F0FE 100%);
+  color: #1E40AF;
+  box-shadow: 0 4px 14px rgba(30, 64, 175, 0.35);
+}
+
+// Light mode — Dropdown: clean white card matching light UI language
+:host-context([data-theme="light"]) .navbar .dropdown-menu,
+:host-context([data-theme="light"]) .navbar .dropdown-menu.dropdown-menu {
+  background-color: #FFFFFF;
+  border: 1px solid #DCE5F0;
+  box-shadow: 0 10px 32px rgba(27, 58, 104, 0.18);
+
+  .dropdown-item {
+    color: #191939;
+
+    &:hover {
+      background-color: #EBF2FA;
+      color: #1E40AF;
+    }
+
+    &.text-danger {
+      color: #DC2626;
+      &:hover {
+        background-color: #FEE2E2;
+        color: #B91C1C;
+      }
+    }
+  }
+
+  .dropdown-divider {
+    border-color: #DCE5F0;
+    opacity: 1;
+  }
+}
+
+.navbar .navbar-nav .nav-link,
+.navbar .navbar-nav .nav-link.nav-link {
+  color: #FFFFFF;
   font-weight: 600;
   padding: 0.55rem 1.15rem;
   border-radius: 10px;
@@ -165,21 +207,22 @@
   cursor: pointer;
 
   &:hover {
-    color: #F2E199 !important;
+    color: #F2E199;
     background-color: rgba(236, 180, 77, 0.18);
     transform: translateY(-2px);
   }
 
   &.active {
-    color: #191939 !important;
-    background: linear-gradient(135deg, #ECB44D 0%, #F2E199 100%) !important;
+    color: #191939;
+    background: linear-gradient(135deg, #ECB44D 0%, #F2E199 100%);
     font-weight: 700;
     box-shadow: 0 4px 14px rgba(236, 180, 77, 0.35);
   }
 }
 
-#profileDropdown {
-  color: #F2E199 !important;
+#profileDropdown,
+a#profileDropdown.nav-link {
+  color: #F2E199;
   font-weight: 700;
 }
 

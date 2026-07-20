@@ -1,20 +1,22 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap, map, Subject } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 export interface AuthUser {
   id: number;
-  username?: string;
+  username: string;
   email: string;
   date_of_birth: string;
-  role: 'admin' | 'user';
+  role: 'admin' | 'super_admin' | 'user' | string;
+  status?: 'active' | 'locked';
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:3000/api/users';
+  private apiUrl = `${environment.apiUrl}/users`;
   private currentUserSubject = new BehaviorSubject<AuthUser | null>(this.loadUserFromStorage());
   public currentUser$ = this.currentUserSubject.asObservable();
   public profileModalRequested$ = new Subject<void>();
@@ -38,8 +40,8 @@ export class AuthService {
     return null;
   }
 
-  login(email: string, password: string): Observable<AuthUser> {
-    return this.http.post<AuthUser>(`${this.apiUrl}/login`, { email, password }).pipe(
+  login(identifier: string, password: string): Observable<AuthUser> {
+    return this.http.post<AuthUser>(`${this.apiUrl}/login`, { identifier, password }).pipe(
       tap(user => {
         localStorage.setItem('currentUser', JSON.stringify(user));
         this.currentUserSubject.next(user);
@@ -49,6 +51,7 @@ export class AuthService {
 
   logout() {
     localStorage.removeItem('currentUser');
+    localStorage.removeItem('adminOriginalUser');
     this.currentUserSubject.next(null);
   }
 
@@ -62,18 +65,24 @@ export class AuthService {
 
   isAdmin(): boolean {
     const user = this.currentUserSubject.value;
-    return user !== null && user.role === 'admin';
+    return user !== null && (user.role === 'admin' || user.role === 'super_admin');
   }
 
-  getRole(): 'admin' | 'user' | null {
+  isSuperAdmin(): boolean {
+    const user = this.currentUserSubject.value;
+    return user !== null && user.role === 'super_admin';
+  }
+
+  getRole(): string | null {
     const user = this.currentUserSubject.value;
     return user ? user.role : null;
   }
 
   updateCurrentUserSession(updatedUser: AuthUser) {
-    if (this.currentUserSubject.value && Number(this.currentUserSubject.value.id) === Number(updatedUser.id)) {
+    const current = this.currentUserSubject.value;
+    if (current && (Number(current.id) === Number(updatedUser.id) || current.email === updatedUser.email)) {
       const merged: AuthUser = {
-        ...this.currentUserSubject.value,
+        ...current,
         ...updatedUser,
         username: updatedUser.username || (updatedUser.email ? updatedUser.email.split('@')[0] : 'user')
       };

@@ -40,6 +40,8 @@ Thumbs.db
 .agents/
 .gemini/
 scratch/
+*.patch
+diff_changes.patch
 
 # Excel & Data spreadsheets (Training plans, etc.)
 *.xlsx

@@ -3,66 +3,66 @@
 // =============================================
 
 .home-dashboard {
-  padding: 2.2rem 0;
-  animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  padding: 1.8rem 0;
+  animation: fadeInUp 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+// =============================================
+// Hero Section
+// =============================================
 .hero-section {
   background: var(--accent-gradient);
-  border: 1px solid rgba(236, 180, 77, 0.4);
-  border-radius: 20px;
-  padding: 3.2rem 2.8rem;
+  border: 1.5px solid rgba(236, 180, 77, 0.45);
+  border-radius: 1.25rem;
+  padding: 2.5rem 2.4rem;
   color: #191939;
-  box-shadow: 0 16px 40px var(--shadow), 0 0 30px rgba(236, 180, 77, 0.2);
-  margin-bottom: 2.8rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 2.2rem;
+  box-shadow: 0 14px 36px var(--shadow), 0 0 24px rgba(236, 180, 77, 0.18);
+  margin-bottom: 2.2rem;
   position: relative;
   overflow: hidden;
 
   &::after {
     content: '';
     position: absolute;
-    top: -50%;
-    right: -10%;
-    width: 320px;
-    height: 320px;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+    inset: 0;
+    border: 1.5px solid rgba(236, 180, 77, 0.5);
+    border-radius: inherit;
     pointer-events: none;
-    filter: blur(40px);
+    z-index: 5;
+  }
+
+  &__content {
+    position: relative;
+    z-index: 2;
+    max-width: 760px;
   }
 
   h1 {
-    font-weight: 800;
-    font-size: 2.5rem;
+    font-weight: 850;
+    font-size: 2.3rem;
     margin-bottom: 0.6rem;
     color: #191939;
     letter-spacing: -0.5px;
   }
 
   p {
-    font-size: 1.15rem;
+    font-size: 1.1rem;
     font-weight: 600;
-    margin-bottom: 1.6rem;
-    max-width: 620px;
     color: #191939;
-    line-height: 1.65;
+    line-height: 1.6;
   }
 
   &__badge {
     background-color: #191939;
     color: #F2E199;
-    padding: 0.45rem 1.15rem;
+    padding: 0.4rem 1.1rem;
     border-radius: 30px;
     font-weight: 800;
-    font-size: 0.85rem;
+    font-size: 0.82rem;
     text-transform: uppercase;
-    letter-spacing: 1.2px;
+    letter-spacing: 1.1px;
     display: inline-block;
-    margin-bottom: 1.2rem;
+    margin-bottom: 1rem;
     box-shadow: 0 4px 12px rgba(25, 25, 57, 0.3);
   }
 
@@ -70,41 +70,45 @@
     background-color: #191939;
     color: #F5F0E8;
     border: none;
-    border-radius: 12px;
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    box-shadow: 0 6px 18px rgba(25, 25, 57, 0.35);
+    border-radius: 0.75rem;
+    font-weight: 700;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 6px 16px rgba(25, 25, 57, 0.35);
 
     &:hover {
       background-color: #234880;
       color: #F2E199;
-      transform: translateY(-3px);
-      box-shadow: 0 10px 24px rgba(25, 25, 57, 0.5);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 22px rgba(25, 25, 57, 0.45);
     }
   }
 
   .btn-outline-dark {
     border: 2px solid #191939;
     color: #191939;
-    border-radius: 12px;
+    border-radius: 0.75rem;
     font-weight: 700;
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 
     &:hover {
       background-color: #191939;
       color: #F5F0E8;
-      transform: translateY(-3px);
+      transform: translateY(-2px);
     }
   }
 
   :host-context([data-theme="light"]) & {
     background: linear-gradient(135deg, #2A6FDB 0%, #4FA3F7 50%, #F2C14E 100%);
+    border-color: rgba(42, 111, 219, 0.5);
     color: #FFFFFF;
-    box-shadow: 0 12px 36px rgba(42, 111, 219, 0.3);
+    box-shadow: 0 12px 32px rgba(42, 111, 219, 0.28);
 
-    h1, h1 .starry-gradient-text {
+    &::after {
+      border-color: rgba(255, 255, 255, 0.6);
+    }
+
+    h1 {
       color: #FFFFFF;
-      background: none;
-      -webkit-text-fill-color: #FFFFFF;
       text-shadow: 0 2px 6px rgba(16, 36, 72, 0.35);
     }
 
@@ -116,18 +120,13 @@
     .hero-section__badge {
       background-color: #FFFFFF;
       color: #0A1128;
-      -webkit-text-fill-color: #0A1128;
-      font-weight: 800;
-      text-shadow: none;
       box-shadow: 0 4px 14px rgba(30, 64, 175, 0.3);
     }
 
     .btn-dark {
       background-color: #FFFFFF;
       color: #1E40AF;
-      font-weight: 800;
-      text-shadow: none;
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
 
       &:hover {
         background-color: #F2C14E;
@@ -136,7 +135,7 @@
     }
 
     .btn-outline-dark {
-      border: 2px solid #FFFFFF;
+      border-color: #FFFFFF;
       color: #FFFFFF;
       text-shadow: 0 1px 3px rgba(16, 36, 72, 0.35);
 
@@ -149,87 +148,152 @@
   }
 }
 
+// =============================================
+// Hero Welcome Text — Shimmer Animation
+// =============================================
+
+// Dark mode: white→pale-gold→sky shimmer on the dark gradient bg
+.hero-welcome-text {
+  background: linear-gradient(135deg, #FFFFFF 0%, #FEF3C7 40%, #BAE6FD 75%, #FFFFFF 100%);
+  background-size: 250% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+  animation: heroWelcomeShimmer 5s ease infinite;
+  display: inline-block;
+}
+
+
+@keyframes heroWelcomeShimmer {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+// Light mode: white→gold shimmer only — warm & bright on blue hero bg
+:host-context([data-theme="light"]) .hero-welcome-text {
+  background: linear-gradient(135deg, #FFFFFF 0%, #FFF3B0 35%, #FFD700 65%, #FFFFFF 100%);
+  background-size: 250% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+  animation: heroWelcomeShimmer 5s ease infinite;
+  display: inline-block;
+}
+
+// =============================================
+// Dashboard Cards
+// =============================================
 .dashboard-card {
   background-color: var(--bg-card);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  padding: 2.2rem;
+  border: 1.5px solid var(--border);
+  border-radius: 1.25rem;
+  padding: 1.6rem;
   height: 100%;
-  box-shadow: 0 8px 24px var(--shadow);
-  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 0 28px var(--shadow), 0 8px 32px var(--shadow);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   display: flex;
   flex-direction: column;
   position: relative;
   overflow: hidden;
 
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border: 1.5px solid transparent;
+    border-radius: inherit;
+    pointer-events: none;
+    transition: border-color 0.3s ease;
+    z-index: 5;
+  }
+
   &:hover {
-    border-color: rgba(236, 180, 77, 0.5);
-    transform: translateY(-6px);
-    box-shadow: 0 18px 38px var(--shadow), 0 0 24px rgba(236, 180, 77, 0.18);
+    border-color: var(--accent-copper);
+    transform: translateY(-4px);
+    box-shadow: 0 0 34px var(--shadow), 0 16px 36px rgba(236, 180, 77, 0.2);
+
+    &::after {
+      border-color: var(--accent-copper);
+    }
   }
 
-  [data-theme="light"] &:hover {
-    border-color: #3C8CC4;
-    box-shadow: 0 14px 32px rgba(27, 58, 104, 0.12), 0 0 18px rgba(111, 184, 230, 0.25);
+  [data-theme="light"] & {
+    box-shadow: 0 0 28px rgba(27, 58, 104, 0.16), 0 8px 32px rgba(42, 111, 219, 0.2);
+
+    &:hover {
+      border-color: #2A6FDB;
+      box-shadow: 0 0 34px rgba(27, 58, 104, 0.2), 0 16px 36px rgba(42, 111, 219, 0.25);
+
+      &::after {
+        border-color: #2A6FDB;
+      }
+    }
   }
 
-  h4 {
+  &__header {
     color: var(--text-primary);
-    font-weight: 700;
-    font-size: 1.35rem;
-    margin-bottom: 0.85rem;
+
+    h4 {
+      font-weight: 700;
+      font-size: 1.28rem;
+      margin: 0;
+    }
   }
 
   p {
     color: var(--text-secondary);
-    font-size: 1rem;
-    line-height: 1.6;
+    font-size: 0.96rem;
+    line-height: 1.55;
     flex-grow: 1;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.4rem;
   }
 
-  .btn {
+  // =============================================
+  // Unified .btn-card-primary — Same style for both dashboard card buttons
+  // Dark mode: golden filled | Light mode: navy filled
+  // =============================================
+  .btn-card-primary {
     align-self: flex-start;
-    border-radius: 10px;
-    font-weight: 600;
-    padding: 0.55rem 1.4rem;
-    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-
-  .btn-primary {
-    background: var(--accent-gradient);
-    color: #191939;
-    border: none;
+    border-radius: 0.65rem;
     font-weight: 700;
+    font-size: 0.9rem;
+    padding: 0 1.4rem;
+    height: 2.6rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    z-index: 6;
+
+    // Dark mode: golden gradient, dark text
+    background: linear-gradient(135deg, #ECB44D 0%, #F2E199 100%);
+    color: #191939;
+    border: 1.5px solid transparent;
 
     &:hover {
-      background: var(--accent-gradient-hover);
+      background: linear-gradient(135deg, #F2E199 0%, #ECB44D 100%);
       transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(236, 180, 77, 0.35);
-    }
-  }
-
-  .btn-outline-primary {
-    border: 1.5px solid var(--accent-skies);
-    color: var(--accent-skies);
-
-    &:hover {
-      background-color: var(--accent-skies);
-      color: #191939;
-      transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(111, 184, 230, 0.3);
+      box-shadow: 0 6px 16px rgba(236, 180, 77, 0.4);
+      color: #0A1128;
     }
 
+    // Light mode: navy filled, white text
     :host-context([data-theme="light"]) & {
-      border-color: #2A6FDB;
-      color: #2A6FDB;
+      background: linear-gradient(135deg, #2A6FDB 0%, #1E40AF 100%);
+      color: #FFFFFF;
+      border-color: transparent;
 
       &:hover {
-        background-color: #2A6FDB;
+        background: linear-gradient(135deg, #1E40AF 0%, #15328A 100%);
+        box-shadow: 0 6px 18px rgba(42, 111, 219, 0.4);
+        transform: translateY(-2px);
         color: #FFFFFF;
-        box-shadow: 0 6px 18px rgba(42, 111, 219, 0.35);
       }
     }
   }

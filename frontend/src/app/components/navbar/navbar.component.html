@@ -2,9 +2,6 @@
   <div class="container-fluid">
     <a class="navbar__brand navbar-brand" routerLink="/home">
       <span class="starry-gradient-text fw-bold">{{ appTitle }}</span>
-      <span *ngIf="isLoggedIn && userRole" class="navbar__badge" [class.navbar__badge--admin]="userRole === 'admin'">
-        {{ userRole }}
-      </span>
     </a>
     <button
       class="navbar__toggle navbar-toggler"
@@ -28,7 +25,7 @@
         <li class="nav-item" *ngIf="isLoggedIn">
           <a class="nav-link" routerLink="/catalog" routerLinkActive="active" (click)="toggleNavbar()">Catalog</a>
         </li>
-        <li class="nav-item" *ngIf="isLoggedIn && userRole === 'admin'">
+        <li class="nav-item" *ngIf="isLoggedIn && (userRole === 'admin' || userRole === 'super_admin')">
           <a class="nav-link" routerLink="/accounts" routerLinkActive="active" (click)="toggleNavbar()">All Accounts (Admin)</a>
         </li>
         <li class="nav-item dropdown" *ngIf="isLoggedIn" [class.show]="dropdownOpen">
@@ -43,6 +40,12 @@
                 <span>Edit Profile</span>
               </a>
             </li>
+            <li>
+              <a class="dropdown-item d-flex align-items-center gap-2 py-2" href="#" (click)="onChangePassword($event)">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                <span>Change Password</span>
+              </a>
+            </li>
             <li><hr class="dropdown-divider my-1"></li>
             <li>
               <a class="dropdown-item text-danger d-flex align-items-center gap-2 py-2" href="#" (click)="onLogout($event)">
@@ -53,7 +56,7 @@
           </ul>
         </li>
         <li class="nav-item" *ngIf="!isLoggedIn">
-          <a class="nav-link" routerLink="/login" routerLinkActive="active" (click)="toggleNavbar()">Login / Register</a>
+          <a class="nav-link" routerLink="/login" [class.active]="!isLoginRoute" (click)="toggleNavbar()">Login / Register</a>
         </li>
         <li class="nav-item ms-lg-3 mt-2 mt-lg-0">
           <button
@@ -64,7 +67,6 @@
             [attr.aria-label]="isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'"
             [title]="isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'"
           >
-            <!-- Sun Icon (Show in Dark Mode to switch to Light) -->
             <svg *ngIf="isDarkMode" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <circle cx="12" cy="12" r="5"/>
               <line x1="12" y1="1" x2="12" y2="3"/>
@@ -76,7 +78,6 @@
               <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
               <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
             </svg>
-            <!-- Moon Icon (Show in Light Mode to switch to Dark) -->
             <svg *ngIf="!isDarkMode" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
             </svg>
@@ -86,3 +87,5 @@
     </div>
   </div>
 </nav>
+
+<!-- Các button chưa dùng thuộc tính pButton -->
