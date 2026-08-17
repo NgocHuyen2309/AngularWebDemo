@@ -16,7 +16,7 @@ export interface CatalogItem {
   providedIn: 'root'
 })
 export class CatalogService {
-  private readonly apiUrl = `${environment.apiUrl}/catalog`;
+  readonly apiUrl = `${environment.apiUrl}/catalog`;
 
   constructor(private http: HttpClient) {}
 

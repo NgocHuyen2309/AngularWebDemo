@@ -16,7 +16,7 @@ export interface User {
   providedIn: 'root'
 })
 export class UserService {
-  private readonly apiUrl = `${environment.apiUrl}/users`;
+  readonly apiUrl = `${environment.apiUrl}/users`;
   userAdded$ = new Subject<void>();
 
   constructor(private http: HttpClient) {}
@@ -25,7 +25,7 @@ export class UserService {
     this.userAdded$.next();
   }
 
-  private getAuthHeaders(): { [header: string]: string } {
+  getAuthHeaders(): { [header: string]: string } {
     const saved = localStorage.getItem('currentUser');
     if (saved) {
       try {
@@ -79,7 +79,7 @@ export class UserService {
     }, { headers: this.getAuthHeaders() });
   }
 
-  deleteUser(id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${id}`, { headers: this.getAuthHeaders() });
+  deleteUser(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`, { headers: this.getAuthHeaders() });
   }
 }

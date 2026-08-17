@@ -4,7 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormlyModule } from '@ngx-formly/core';
 import { MessageService } from 'primeng/api';
 import { UserService, User } from '../../services/user.service';
-import { AuthService } from '../../services/auth.service';
+import { AuthService, AuthUser } from '../../services/auth.service';
 
 export interface PasswordChecklist {
   minLength: boolean;
@@ -208,7 +208,7 @@ export class UserFormComponent implements OnInit {
     return age >= 16;
   }
 
-  private autoFocusFirstInvalidInput(): void {
+  autoFocusFirstInvalidInput(): void {
     setTimeout(() => {
       const invalidInput = this.elRef.nativeElement.querySelector('.ng-invalid:not(form), input.is-invalid');
       if (invalidInput) {
@@ -256,11 +256,6 @@ export class UserFormComponent implements OnInit {
     }
 
     if (!this.isEditMode) {
-      if (!this.model.password) {
-        this.errorMessage = 'Password is required.';
-        this.autoFocusFirstInvalidInput();
-        return;
-      }
       if (!this.checklist.minLength || !this.checklist.hasUpper || !this.checklist.hasLower || !this.checklist.hasNumber || !this.checklist.hasSpecial) {
         this.errorMessage = 'Password is not strong enough. Please meet all the security requirements.';
         this.autoFocusFirstInvalidInput();
@@ -274,7 +269,7 @@ export class UserFormComponent implements OnInit {
     }
 
     if (this.isEditMode && this.editUserId) {
-      const updateData: any = {
+      const updateData: Partial<User> = {
         username: this.model.username.trim(),
         email: this.model.email.trim(),
         date_of_birth: this.model.date_of_birth
@@ -290,7 +285,7 @@ export class UserFormComponent implements OnInit {
           });
           const currentSession = this.authService.getCurrentUser();
           if (currentSession && Number(currentSession.id) === Number(updatedUser.id)) {
-            const newAuthSession: any = {
+            const newAuthSession: AuthUser = {
               ...currentSession,
               ...updatedUser,
               username: updatedUser.username || (updatedUser.email ? updatedUser.email.split('@')[0] : 'user'),

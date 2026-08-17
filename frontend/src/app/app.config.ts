@@ -1,7 +1,6 @@
 import { ApplicationConfig, provideZoneChangeDetection, importProvidersFrom } from '@angular/core';
 import { provideHttpClient } from '@angular/common/http';
 import { provideRouter } from '@angular/router';
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { providePrimeNG } from 'primeng/config';
 import Aura from '@primeuix/themes/aura';
 import { FormlyModule } from '@ngx-formly/core';
@@ -31,15 +30,15 @@ export function ageValidator(control: AbstractControl): ValidationErrors | null 
   return age >= 16 ? null : { ageGate: true };
 }
 
-export function emailDomainValidationMessage(error: any, field: any) {
+export function emailDomainValidationMessage() {
   return 'Email address must strictly end with @gmail.com (e.g., yourname@gmail.com)';
 }
 
-export function ageValidationMessage(error: any, field: any) {
+export function ageValidationMessage() {
   return 'User must be at least 16 years old to register';
 }
 
-export function requiredValidationMessage(error: any, field: any) {
+export function requiredValidationMessage() {
   return 'This field is required';
 }
 
@@ -48,7 +47,6 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideHttpClient(),
     provideRouter(routes),
-    provideAnimationsAsync(),
     providePrimeNG({
       theme: {
         preset: Aura,

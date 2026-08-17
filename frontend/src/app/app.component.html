@@ -12,7 +12,7 @@
   [userRole]="userRole"
   [isLoggedIn]="isLoggedIn"
   [currentUserEmail]="currentUser ? currentUser.email : null"
-  [currentUsername]="currentUser ? (currentUser.username || currentUser.email.split('@')[0]) : null"
+  [currentUsername]="currentUser ? (currentUser.username || (currentUser.email ? currentUser.email.split('@')[0] : '')) : null"
   (logoutEvent)="handleLogout()"
   (editProfileEvent)="setProfileModalState(true)"
   (changePasswordEvent)="setChangePasswordModalState(true)"

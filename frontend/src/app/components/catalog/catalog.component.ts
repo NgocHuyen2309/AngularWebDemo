@@ -22,6 +22,7 @@ export class CatalogComponent implements OnInit {
   categories: string[] = [];
   selectedCategory = 'All';
   sortBy = 'name';
+  errorMessage = '';
 
   sortOptions: SortOption[] = [
     { label: 'Sort by Name (A-Z)', value: 'name' },
@@ -40,7 +41,7 @@ export class CatalogComponent implements OnInit {
         this.applyFiltersAndSort();
       },
       error: (err) => {
-        console.error('Failed to load catalog:', err);
+        this.errorMessage = err.error?.message;
       }
     });
   }
@@ -59,7 +60,6 @@ export class CatalogComponent implements OnInit {
     let result = this.selectedCategory === 'All'
       ? [...this.items]
       : this.items.filter(item => item.category === this.selectedCategory);
-
     switch (this.sortBy) {
       case 'name':
         result.sort((a, b) => a.name.localeCompare(b.name));
@@ -74,7 +74,6 @@ export class CatalogComponent implements OnInit {
         result.sort((a, b) => a.category.localeCompare(b.category));
         break;
     }
-
     this.filteredItems = result;
   }
 }

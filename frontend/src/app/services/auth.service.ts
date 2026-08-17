@@ -16,8 +16,8 @@ export interface AuthUser {
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = `${environment.apiUrl}/users`;
-  private currentUserSubject = new BehaviorSubject<AuthUser | null>(this.loadUserFromStorage());
+  apiUrl = `${environment.apiUrl}/users`;
+  currentUserSubject = new BehaviorSubject<AuthUser | null>(this.loadUserFromStorage());
   public currentUser$ = this.currentUserSubject.asObservable();
   public profileModalRequested$ = new Subject<void>();
 
@@ -27,7 +27,7 @@ export class AuthService {
     this.profileModalRequested$.next();
   }
 
-  private loadUserFromStorage(): AuthUser | null {
+  loadUserFromStorage(): AuthUser | null {
     const savedUser = localStorage.getItem('currentUser');
     if (savedUser) {
       try {

@@ -29,7 +29,11 @@
   </div>
 
   <!-- Empty State -->
-  <div *ngIf="filteredItems.length === 0" class="catalog__empty alert alert-info">
+  <div *ngIf="errorMessage" class="catalog__error alert alert-danger mb-4">
+    <p class="mb-0">{{ errorMessage }}</p>
+  </div>
+  
+  <div *ngIf="filteredItems.length === 0 && !errorMessage" class="catalog__empty alert alert-info">
     <p class="mb-0">No items found. Try adjusting your filters.</p>
   </div>
 

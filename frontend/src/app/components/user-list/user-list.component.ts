@@ -277,7 +277,7 @@ export class UserListComponent implements OnInit, OnDestroy {
     this.closeConfirmModal();
   }
 
-  private performSaveEdit(id: number) {
+  performSaveEdit(id: number) {
     this.updating = true;
     this.editError = '';
 
@@ -319,7 +319,7 @@ export class UserListComponent implements OnInit, OnDestroy {
     });
   }
 
-  private performDeleteUser(id: number) {
+  performDeleteUser(id: number) {
     this.userService.deleteUser(id)
       .pipe(finalize(() => this.loadUsers()))
       .subscribe({

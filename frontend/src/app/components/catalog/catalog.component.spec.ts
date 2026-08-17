@@ -48,6 +48,10 @@ describe('CatalogComponent', () => {
     fixture = TestBed.createComponent(CatalogComponent);
     component = fixture.componentInstance;
     httpMock = TestBed.inject(HttpTestingController);
+    fixture.detectChanges(); //Kích hoạt lifecycle ban đầu, gọi this.catalogService.getCatalog().subscribe(...) để tạo ra một HTTP Request gọi API lấy dữ liệu
+    const req = httpMock.expectOne('http://localhost:3000/api/catalog'); //Request đã được gửi đi nhưng chưa có kết quả trả về.
+    req.flush(mockItems); //Giả lập server trả về dữ liệu mockItems, từ mảng rỗng sang mảng 3 phần tử sẽ KHÔNG tự động cập nhật ra giao diện (DOM).
+    fixture.detectChanges(); //LẦN 2: Cập nhật giao diện (DOM) với dữ liệu mới
   });
 
   afterEach(() => {
@@ -55,75 +59,71 @@ describe('CatalogComponent', () => {
   });
 
   it('should create', () => {
-    fixture.detectChanges();
-    const req = httpMock.expectOne('http://localhost:3000/api/catalog');
-    req.flush(mockItems);
     expect(component).toBeTruthy();
   });
 
-  it('should load and render catalog items', () => {
-    fixture.detectChanges();
-
+  it('should handle API error gracefully', () => {
+    // Test requires fresh fixture that hasn't flushed yet
+    // Re-create to simulate error path
+    const errorFixture = TestBed.createComponent(CatalogComponent);
+    const errorComponent = errorFixture.componentInstance;
+    errorFixture.detectChanges();
     const req = httpMock.expectOne('http://localhost:3000/api/catalog');
-    req.flush(mockItems);
-    fixture.detectChanges();
+    req.flush({ message: 'Error message from API' }, { status: 500, statusText: 'Server Error' });
+    expect(errorComponent.errorMessage).toBe('Error message from API');
+  });
 
+  it('should load and render 3 catalog items', () => {
     expect(component.items.length).toBe(3);
     expect(component.filteredItems.length).toBe(3);
-
     const compiled = fixture.nativeElement as HTMLElement;
     const cards = compiled.querySelectorAll('.catalog__item');
     expect(cards.length).toBe(3);
   });
 
-  it('should extract categories from items', () => {
-    fixture.detectChanges();
-
-    const req = httpMock.expectOne('http://localhost:3000/api/catalog');
-    req.flush(mockItems);
-    fixture.detectChanges();
-
+  it('should extract all categories including "All" from items', () => {
     expect(component.categories).toContain('All');
     expect(component.categories).toContain('Electronics');
     expect(component.categories).toContain('Clothing');
     expect(component.categories).toContain('Books');
   });
 
-  it('should filter items by category', () => {
-    fixture.detectChanges();
-
-    const req = httpMock.expectOne('http://localhost:3000/api/catalog');
-    req.flush(mockItems);
-    fixture.detectChanges();
-
+  it('should filter to only Electronics items when Electronics category is selected', () => {
     component.filterByCategory('Electronics');
     expect(component.filteredItems.length).toBe(1);
     expect(component.filteredItems[0].name).toBe('Laptop');
   });
 
-  it('should show all items when "All" filter is selected', () => {
-    fixture.detectChanges();
-
-    const req = httpMock.expectOne('http://localhost:3000/api/catalog');
-    req.flush(mockItems);
-    fixture.detectChanges();
-
+  it('should show all items when "All" filter is selected after filtering', () => {
     component.filterByCategory('Electronics');
     expect(component.filteredItems.length).toBe(1);
-
     component.filterByCategory('All');
     expect(component.filteredItems.length).toBe(3);
   });
 
-  it('should sort items by price ascending', () => {
-    fixture.detectChanges();
-
-    const req = httpMock.expectOne('http://localhost:3000/api/catalog');
-    req.flush(mockItems);
-    fixture.detectChanges();
-
+  it('should sort items by price ascending (cheapest first)', () => {
     component.sortItems('price-asc');
     expect(component.filteredItems[0].name).toBe('Novel');
     expect(component.filteredItems[2].name).toBe('Laptop');
+  });
+
+  it('should sort items by price descending (most expensive first)', () => {
+    component.sortItems('price-desc');
+    expect(component.filteredItems[0].name).toBe('Laptop');
+    expect(component.filteredItems[2].name).toBe('Novel');
+  });
+
+  it('should sort items alphabetically by name', () => {
+    component.sortItems('name');
+    expect(component.filteredItems[0].name).toBe('Laptop');
+    expect(component.filteredItems[1].name).toBe('Novel');
+    expect(component.filteredItems[2].name).toBe('T-Shirt');
+  });
+
+  it('should sort items alphabetically by category', () => {
+    component.sortItems('category');
+    expect(component.filteredItems[0].category).toBe('Books');
+    expect(component.filteredItems[1].category).toBe('Clothing');
+    expect(component.filteredItems[2].category).toBe('Electronics');
   });
 });

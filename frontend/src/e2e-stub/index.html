@@ -542,7 +542,10 @@
         }
       })
       .catch(function(err) {
-        console.error('Failed to fetch catalog:', err);
+        var grid = document.getElementById('catalog-grid');
+        if (grid) {
+          grid.innerHTML = '<div class="catalog__empty-message">Failed to fetch catalog</div>';
+        }
       });
 
     /* ==========================================================================
