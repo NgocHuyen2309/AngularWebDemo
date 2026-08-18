@@ -1,8 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SelectModule } from 'primeng/select';
+import { ButtonModule } from 'primeng/button';
 import { CatalogService, CatalogItem } from '../../services/catalog.service';
+import { Subject, takeUntil } from 'rxjs';
 
 interface SortOption {
   label: string;
@@ -12,11 +14,11 @@ interface SortOption {
 @Component({
   selector: 'app-catalog',
   standalone: true,
-  imports: [CommonModule, FormsModule, SelectModule],
+  imports: [CommonModule, FormsModule, SelectModule, ButtonModule],
   templateUrl: './catalog.component.html',
   styleUrl: './catalog.component.scss'
 })
-export class CatalogComponent implements OnInit {
+export class CatalogComponent implements OnInit, OnDestroy {
   items: CatalogItem[] = [];
   filteredItems: CatalogItem[] = [];
   categories: string[] = [];
@@ -31,19 +33,32 @@ export class CatalogComponent implements OnInit {
     { label: 'Category', value: 'category' }
   ];
 
+  destroy$ = new Subject<void>();
+
   constructor(private catalogService: CatalogService) { }
 
   ngOnInit() {
-    this.catalogService.getCatalog().subscribe({
-      next: (data) => {
-        this.items = data;
-        this.categories = ['All', ...new Set(data.map(item => item.category))];
-        this.applyFiltersAndSort();
-      },
-      error: (err) => {
-        this.errorMessage = err.error?.message;
-      }
-    });
+    this.initCatalog();
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  initCatalog() {
+    this.catalogService.getCatalog()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (data) => {
+          this.items = data;
+          this.categories = ['All', ...new Set(data.map(item => item.category))];
+          this.applyFiltersAndSort();
+        },
+        error: (err) => {
+          this.errorMessage = err.error?.message || err.message || 'Failed to load catalog items';
+        }
+      });
   }
 
   filterByCategory(category: string) {

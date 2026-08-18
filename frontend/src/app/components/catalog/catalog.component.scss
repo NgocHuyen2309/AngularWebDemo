@@ -49,7 +49,7 @@ $catalog-spacing: 1.8rem;
     }
 
     &--active,
-    button.catalog__filter-btn--active {
+    p-button.catalog__filter-btn--active {
       background: linear-gradient(135deg, #ECB44D 0%, #F2E199 100%);
       border-color: transparent;
       color: #0A1128;

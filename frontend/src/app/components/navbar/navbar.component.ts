@@ -1,12 +1,13 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { Router, RouterModule } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
+
+import { Router, RouterModule} from '@angular/router';
+import { ButtonModule } from 'primeng/button';
+import { AuthService} from '../../services/auth.service';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [RouterModule, ButtonModule],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.scss'
 })
@@ -32,6 +33,10 @@ export class NavbarComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.initTheme();
+  }
+
+  initTheme() {
     const savedTheme = localStorage.getItem('theme') || 'dark';
     this.isDarkMode = savedTheme === 'dark';
     document.documentElement.setAttribute('data-theme', savedTheme);

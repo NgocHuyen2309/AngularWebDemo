@@ -50,10 +50,8 @@ describe('NavbarComponent', () => {
     // Need a fresh component created AFTER setting localStorage
     localStorage.setItem('theme', 'light');
     document.documentElement.removeAttribute('data-theme');
-
     const freshFixture = TestBed.createComponent(NavbarComponent);
     freshFixture.detectChanges();
-
     const freshComponent = freshFixture.componentInstance;
     expect(freshComponent.isDarkMode).toBeFalse();
     expect(document.documentElement.getAttribute('data-theme')).toBe('light');
@@ -84,10 +82,8 @@ describe('NavbarComponent', () => {
     const event = new Event('click');
     spyOn(event, 'preventDefault');
     spyOn(event, 'stopPropagation');
-
     expect(component.dropdownOpen).toBeFalse();
     component.toggleDropdown(event);
-
     expect(event.preventDefault).toHaveBeenCalled();
     expect(event.stopPropagation).toHaveBeenCalled();
     expect(component.dropdownOpen).toBeTrue();
@@ -95,9 +91,7 @@ describe('NavbarComponent', () => {
 
   it('should switch from dark to light theme when toggleTheme is called', () => {
     document.documentElement.setAttribute('data-theme', 'dark');
-
     component.toggleTheme();
-
     expect(component.isDarkMode).toBeFalse();
     expect(document.documentElement.getAttribute('data-theme')).toBe('light');
     expect(localStorage.getItem('theme')).toBe('light');
@@ -106,9 +100,7 @@ describe('NavbarComponent', () => {
   it('should switch from light to dark theme when toggleTheme is called again', () => {
     document.documentElement.setAttribute('data-theme', 'dark');
     component.toggleTheme(); // dark -> light
-
     component.toggleTheme(); // light -> dark
-
     expect(component.isDarkMode).toBeTrue();
     expect(document.documentElement.getAttribute('data-theme')).toBe('dark');
     expect(localStorage.getItem('theme')).toBe('dark');
@@ -118,12 +110,9 @@ describe('NavbarComponent', () => {
     spyOn(component.editProfileEvent, 'emit');
     const event = new Event('click');
     spyOn(event, 'preventDefault');
-
     component.dropdownOpen = true;
     component.isCollapsed = false;
-
     component.onEditProfile(event);
-
     expect(event.preventDefault).toHaveBeenCalled();
     expect(component.dropdownOpen).toBeFalse();
     expect(component.isCollapsed).toBeTrue();
@@ -134,12 +123,9 @@ describe('NavbarComponent', () => {
     spyOn(component.editProfileEvent, 'emit');
     const event = new Event('click');
     spyOn(event, 'preventDefault');
-
     component.dropdownOpen = true;
     component.isCollapsed = true;
-
     component.onEditProfile(event);
-
     expect(event.preventDefault).toHaveBeenCalled();
     expect(component.dropdownOpen).toBeFalse();
     expect(component.isCollapsed).toBeTrue();
@@ -150,12 +136,9 @@ describe('NavbarComponent', () => {
     spyOn(component.changePasswordEvent, 'emit');
     const event = new Event('click');
     spyOn(event, 'preventDefault');
-
     component.dropdownOpen = true;
     component.isCollapsed = false;
-
     component.onChangePassword(event);
-
     expect(event.preventDefault).toHaveBeenCalled();
     expect(component.dropdownOpen).toBeFalse();
     expect(component.isCollapsed).toBeTrue();
@@ -166,12 +149,9 @@ describe('NavbarComponent', () => {
     spyOn(component.changePasswordEvent, 'emit');
     const event = new Event('click');
     spyOn(event, 'preventDefault');
-
     component.dropdownOpen = true;
     component.isCollapsed = true;
-
     component.onChangePassword(event);
-
     expect(event.preventDefault).toHaveBeenCalled();
     expect(component.dropdownOpen).toBeFalse();
     expect(component.isCollapsed).toBeTrue();
@@ -182,11 +162,8 @@ describe('NavbarComponent', () => {
     spyOn(component.logoutEvent, 'emit');
     const event = new Event('click');
     spyOn(event, 'preventDefault');
-
     component.dropdownOpen = true;
-
     component.onLogout(event);
-
     expect(event.preventDefault).toHaveBeenCalled();
     expect(component.dropdownOpen).toBeFalse();
     expect(component.logoutEvent.emit).toHaveBeenCalled();

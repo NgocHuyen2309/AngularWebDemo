@@ -276,7 +276,7 @@
        ========================================================================== -->
   <header class="navbar">
     <div class="navbar__brand">Angular 21 Fullstack Store</div>
-    <button class="navbar__toggle" type="button" aria-label="Toggle navigation">Menu</button>
+    <p-button class="navbar__toggle" type="button" aria-label="Toggle navigation">Menu</p-button>
   </header>
 
   <!-- ==========================================================================
@@ -292,7 +292,7 @@
           <form id="regForm" class="user-form__form">
             <input class="user-form__input user-form__input-email" type="email" placeholder="Email Address" required>
             <input class="user-form__input user-form__input-dob" type="date" placeholder="Date of Birth" required>
-            <button class="user-form__submit" type="submit">Register Profile</button>
+            <p-button class="user-form__submit" type="submit">Register Profile</p-button>
           </form>
         </section>
 
@@ -300,7 +300,7 @@
         <section class="soap-info">
           <h3>System Status</h3>
           <div class="soap-info__status">SOAP Service Active</div>
-          <button id="launchModalBtn" class="soap-info__modal-btn" type="button">Launch Vanilla Modal</button>
+          <p-button id="launchModalBtn" class="soap-info__modal-btn" type="button">Launch Vanilla Modal</p-button>
         </section>
       </aside>
 
@@ -310,10 +310,10 @@
         <section class="catalog">
           <div class="catalog__header">
             <div class="catalog__filters">
-              <button class="catalog__filter-btn catalog__filter-btn--active" data-category="All" type="button">All</button>
-              <button class="catalog__filter-btn" data-category="Electronics" type="button">Electronics</button>
-              <button class="catalog__filter-btn" data-category="Books" type="button">Books</button>
-              <button class="catalog__filter-btn" data-category="Home" type="button">Home</button>
+              <p-button class="catalog__filter-btn catalog__filter-btn--active" data-category="All" type="button">All</p-button>
+              <p-button class="catalog__filter-btn" data-category="Electronics" type="button">Electronics</p-button>
+              <p-button class="catalog__filter-btn" data-category="Books" type="button">Books</p-button>
+              <p-button class="catalog__filter-btn" data-category="Home" type="button">Home</p-button>
             </div>
             <div class="catalog__sort">
               <select class="catalog__sort-select" aria-label="Sort catalog">
@@ -544,7 +544,8 @@
       .catch(function(err) {
         var grid = document.getElementById('catalog-grid');
         if (grid) {
-          grid.innerHTML = '<div class="catalog__empty-message">Failed to fetch catalog</div>';
+          var msg = (err && err.message) ? err.message : 'Failed to fetch catalog';
+          grid.innerHTML = '<div class="catalog__empty-message">' + msg + '</div>';
         }
       });
 

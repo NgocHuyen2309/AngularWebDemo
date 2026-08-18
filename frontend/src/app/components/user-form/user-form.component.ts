@@ -1,10 +1,12 @@
-import { Component, OnInit, Input, Output, EventEmitter, ElementRef } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ElementRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { FormlyModule } from '@ngx-formly/core';
+import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormlyModule, FormlyFieldConfig } from '@ngx-formly/core';
 import { MessageService } from 'primeng/api';
+import { ButtonModule } from 'primeng/button';
 import { UserService, User } from '../../services/user.service';
 import { AuthService, AuthUser } from '../../services/auth.service';
+import { Subject, takeUntil } from 'rxjs';
 
 export interface PasswordChecklist {
   minLength: boolean;
@@ -17,11 +19,11 @@ export interface PasswordChecklist {
 @Component({
   selector: 'app-user-form',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, FormlyModule],
+  imports: [CommonModule, ReactiveFormsModule, FormlyModule, ButtonModule],
   templateUrl: './user-form.component.html',
   styleUrl: './user-form.component.scss'
 })
-export class UserFormComponent implements OnInit {
+export class UserFormComponent implements OnInit, OnDestroy {
   @Input() isModal = false;
   @Input() isEditMode = false;
   @Input() editUserId: number | null = null;
@@ -31,10 +33,9 @@ export class UserFormComponent implements OnInit {
   errorMessage = '';
   createdUser: User | null = null;
   loading = false;
-  showPasswordSection = false;
   formSubmitted = false;
 
-  // Form model
+  form = new FormGroup({});
   model = {
     username: '',
     email: '',
@@ -42,6 +43,7 @@ export class UserFormComponent implements OnInit {
     confirm_password: '',
     date_of_birth: ''
   };
+  fields: FormlyFieldConfig[] = [];
 
   // Backwards compatibility for tests that access properties directly
   get email(): string { return this.model.email; }
@@ -52,9 +54,6 @@ export class UserFormComponent implements OnInit {
 
   get username(): string { return this.model.username; }
   set username(val: string) { this.model.username = val; }
-
-  showPassword = false;
-  showConfirmPassword = false;
 
   strengthScore = 0;
   strengthLabel = 'None';
@@ -68,6 +67,8 @@ export class UserFormComponent implements OnInit {
     hasSpecial: false
   };
 
+  destroy$ = new Subject<void>();
+
   constructor(
     private userService: UserService,
     private authService: AuthService,
@@ -75,8 +76,14 @@ export class UserFormComponent implements OnInit {
     private elRef: ElementRef
   ) {}
 
-  ngOnInit(): void {
+  ngOnInit() {
+    this.initUserForm();
+  }
+
+  initUserForm() {
     this.checkPasswordStrength('');
+    this.buildFields();
+    
     if (this.isEditMode && this.editUserId) {
       this.loadUserDetails(this.editUserId);
     } else if (this.isEditMode && !this.editUserId) {
@@ -88,56 +95,149 @@ export class UserFormComponent implements OnInit {
     }
   }
 
-  loadUserDetails(id: number): void {
-    this.loading = true;
-    this.userService.getUser(id).subscribe({
-      next: (user) => {
-        this.loading = false;
-        let formattedDob = '';
-        if (user.date_of_birth) {
-          const d = new Date(user.date_of_birth);
-          if (!isNaN(d.getTime())) {
-            const year = d.getFullYear();
-            const month = String(d.getMonth() + 1).padStart(2, '0');
-            const day = String(d.getDate()).padStart(2, '0');
-            formattedDob = `${year}-${month}-${day}`;
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  buildFields() {
+    this.fields = [
+      {
+        fieldGroupClassName: this.isEditMode ? '' : 'row',
+        fieldGroup: [
+          {
+            className: this.isEditMode ? '' : 'col-md-6',
+            key: 'username',
+            type: 'input',
+            props: {
+              label: 'Username',
+              placeholder: 'e.g. alex_crown',
+              required: true,
+            },
+            validators: {
+              validUsername: {
+                expression: (c: any) => this.isValidUsername(c.value),
+                message: () => 'No spaces or special characters allowed.'
+              }
+            }
+          },
+          {
+            className: this.isEditMode ? '' : 'col-md-6',
+            key: 'date_of_birth',
+            type: 'input',
+            props: {
+              type: 'date',
+              label: 'Date of Birth',
+              required: true,
+            },
+            validators: {
+              validAge: {
+                expression: (c: any) => this.isValidAge(c.value),
+                message: () => 'You must be at least 16 years old.'
+              }
+            }
+          }
+        ]
+      },
+      {
+        key: 'email',
+        type: 'input',
+        props: {
+          type: 'email',
+          label: 'Email Address',
+          placeholder: 'Enter email (e.g. yourname@gmail.com)',
+          required: !this.isEditMode,
+          disabled: this.isEditMode,
+        },
+        validators: {
+          validEmail: {
+            expression: (c: any) => this.isEditMode ? true : this.isValidEmail(c.value),
+            message: () => 'Must strictly end with @gmail.com or @enterprise.com.'
           }
         }
-        this.model = {
-          username: user.username || user.email.split('@')[0],
-          email: user.email,
-          password: '',
-          confirm_password: '',
-          date_of_birth: formattedDob
-        };
       },
-      error: () => {
-        this.loading = false;
-        this.errorMessage = 'Failed to load user profile details.';
+      {
+        key: 'password',
+        type: 'input',
+        hideExpression: () => this.isEditMode,
+        props: {
+          type: 'password',
+          label: 'Password',
+          placeholder: 'Create secure password (min. 6 chars)',
+          required: !this.isEditMode,
+          minLength: 6,
+          change: (field, $event) => {
+            if (field.formControl?.value) {
+              this.checkPasswordStrength(field.formControl.value);
+            } else {
+              this.checkPasswordStrength('');
+            }
+          }
+        },
+        validators: {
+          strength: {
+            expression: (c: any) => {
+              const val = c.value;
+              if (this.isEditMode || !val) return true;
+              return val.length >= 6 && /[A-Z]/.test(val) && /[a-z]/.test(val) && /[0-9]/.test(val) && /[!@#$%^&*(),.?":{}|<>\-_+=\/\\[\]]/.test(val);
+            },
+            message: () => 'Password is not strong enough. Please meet all the security requirements.'
+          }
+        }
+      },
+      {
+        key: 'confirm_password',
+        type: 'input',
+        hideExpression: () => this.isEditMode,
+        props: {
+          type: 'password',
+          label: 'Confirm Password',
+          placeholder: 'Confirm your password',
+          required: !this.isEditMode,
+        },
+        validators: {
+          fieldMatch: {
+            expression: (c: any) => this.isEditMode ? true : c.value === this.model.password,
+            message: () => 'Passwords do not match.'
+          }
+        },
+        expressionProperties: {
+          'validators.fieldMatch.expression': (model: any) => this.isEditMode ? true : model.confirm_password === model.password
+        }
       }
-    });
+    ];
   }
 
-  togglePasswordVisibility(): void {
-    this.showPassword = !this.showPassword;
-  }
-
-  toggleConfirmPasswordVisibility(): void {
-    this.showConfirmPassword = !this.showConfirmPassword;
-  }
-
-  togglePasswordSection(): void {
-    this.showPasswordSection = !this.showPasswordSection;
-    if (!this.showPasswordSection) {
-      this.model.password = '';
-      this.model.confirm_password = '';
-      this.checkPasswordStrength('');
-    }
-  }
-
-  onPasswordChange(val: string): void {
-    this.model.password = val;
-    this.checkPasswordStrength(val);
+  loadUserDetails(id: number) {
+    this.loading = true;
+    this.userService.getUser(id)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (user) => {
+          this.loading = false;
+          let formattedDob = '';
+          if (user.date_of_birth) {
+            const d = new Date(user.date_of_birth);
+            if (!isNaN(d.getTime())) {
+              const year = d.getFullYear();
+              const month = String(d.getMonth() + 1).padStart(2, '0');
+              const day = String(d.getDate()).padStart(2, '0');
+              formattedDob = `${year}-${month}-${day}`;
+            }
+          }
+          this.model = {
+            username: user.username || user.email.split('@')[0],
+            email: user.email,
+            password: '',
+            confirm_password: '',
+            date_of_birth: formattedDob
+          };
+        },
+        error: () => {
+          this.loading = false;
+          this.errorMessage = 'Failed to load user profile details.';
+        }
+      });
   }
 
   isValidUsername(username: string): boolean {
@@ -145,7 +245,7 @@ export class UserFormComponent implements OnInit {
     return /^[a-zA-Z0-9_]+$/.test(username);
   }
 
-  checkPasswordStrength(password: string): void {
+  checkPasswordStrength(password: string) {
     if (!password) {
       this.strengthScore = 0;
       this.strengthLabel = 'None';
@@ -208,7 +308,7 @@ export class UserFormComponent implements OnInit {
     return age >= 16;
   }
 
-  autoFocusFirstInvalidInput(): void {
+  autoFocusFirstInvalidInput() {
     setTimeout(() => {
       const invalidInput = this.elRef.nativeElement.querySelector('.ng-invalid:not(form), input.is-invalid');
       if (invalidInput) {
@@ -218,55 +318,17 @@ export class UserFormComponent implements OnInit {
     }, 50);
   }
 
-  onSubmit(): void {
+  onSubmit() {
     this.formSubmitted = true;
+    
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      this.autoFocusFirstInvalidInput();
+      return;
+    }
+
     this.errorMessage = '';
     this.createdUser = null;
-
-    if (this.isEditMode) {
-      if (!this.model.username || !this.model.date_of_birth) {
-        this.errorMessage = 'Please fill in Username and Date of Birth.';
-        this.autoFocusFirstInvalidInput();
-        return;
-      }
-    } else {
-      if (!this.model.username || !this.model.email || !this.model.date_of_birth || !this.model.password) {
-        this.errorMessage = 'Please fill in all required fields.';
-        this.autoFocusFirstInvalidInput();
-        return;
-      }
-    }
-
-    if (!this.isValidUsername(this.model.username)) {
-      this.errorMessage = 'Username must not contain spaces or special characters (only letters, numbers, and underscores).';
-      this.autoFocusFirstInvalidInput();
-      return;
-    }
-
-    if (!this.isEditMode && !this.isValidEmail(this.model.email)) {
-      this.errorMessage = 'Email address must strictly end with @gmail.com, @enterprise.com, .vn, or .edu';
-      this.autoFocusFirstInvalidInput();
-      return;
-    }
-
-    if (!this.isValidAge(this.model.date_of_birth)) {
-      this.errorMessage = 'User must be at least 16 years old.';
-      this.autoFocusFirstInvalidInput();
-      return;
-    }
-
-    if (!this.isEditMode) {
-      if (!this.checklist.minLength || !this.checklist.hasUpper || !this.checklist.hasLower || !this.checklist.hasNumber || !this.checklist.hasSpecial) {
-        this.errorMessage = 'Password is not strong enough. Please meet all the security requirements.';
-        this.autoFocusFirstInvalidInput();
-        return;
-      }
-      if (this.model.password !== this.model.confirm_password) {
-        this.errorMessage = 'Password and confirmation do not match.';
-        this.autoFocusFirstInvalidInput();
-        return;
-      }
-    }
 
     if (this.isEditMode && this.editUserId) {
       const updateData: Partial<User> = {
@@ -275,8 +337,10 @@ export class UserFormComponent implements OnInit {
         date_of_birth: this.model.date_of_birth
       };
       this.loading = true;
-      this.userService.updateUser(this.editUserId, updateData).subscribe({
-        next: (updatedUser) => {
+      this.userService.updateUser(this.editUserId, updateData)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: (updatedUser) => {
           this.loading = false;
           this.messageService.add({
             severity: 'success',
@@ -326,9 +390,10 @@ export class UserFormComponent implements OnInit {
       this.model.password,
       this.model.confirm_password,
       this.model.date_of_birth,
-      undefined,
       this.model.username.trim()
-    ).subscribe({
+    )
+    .pipe(takeUntil(this.destroy$))
+    .subscribe({
       next: (user) => {
         this.loading = false;
         this.createdUser = user;
@@ -338,6 +403,7 @@ export class UserFormComponent implements OnInit {
           detail: `User registered successfully! Username: ${user.username || user.email.split('@')[0]}`
         });
         this.model = { username: '', email: '', password: '', confirm_password: '', date_of_birth: '' };
+        this.form.reset();
         this.formSubmitted = false;
         this.checkPasswordStrength('');
         this.userService.notifyUserAdded();

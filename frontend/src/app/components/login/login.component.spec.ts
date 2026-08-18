@@ -3,6 +3,9 @@ import { LoginComponent } from './login.component';
 import { AuthService, AuthUser } from '../../services/auth.service';
 import { ActivatedRoute, Router, Params } from '@angular/router';
 import { of, throwError } from 'rxjs';
+import { FormlyModule } from '@ngx-formly/core';
+import { FormlyBootstrapModule } from '@ngx-formly/bootstrap';
+import { ReactiveFormsModule } from '@angular/forms';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
@@ -26,7 +29,7 @@ describe('LoginComponent', () => {
     activatedRouteMock = { snapshot: { queryParams: { returnUrl: '/custom-url' } } };
 
     await TestBed.configureTestingModule({
-      imports: [LoginComponent],
+      imports: [LoginComponent, FormlyModule.forRoot(), FormlyBootstrapModule, ReactiveFormsModule],
       providers: [
         { provide: AuthService, useValue: authServiceSpy },
         { provide: Router, useValue: routerSpy },
@@ -51,32 +54,25 @@ describe('LoginComponent', () => {
     expect(component.errorMessage).toBe('');
   });
 
-  it('should toggle password visibility', () => {
-    expect(component.showPassword).toBeFalse();
-    component.togglePasswordVisibility();
-    expect(component.showPassword).toBeTrue();
-  });
-
   it('should show error and not call login when identifier is empty', () => {
-    component.loginModel.identifier = '';
-    component.loginModel.password = 'password123';
+    component.loginForm.patchValue({ identifier: '', password: 'password123' });
+    component.loginForm.markAllAsTouched();
     component.onLoginSubmit();
-    expect(component.errorMessage).toBe('Please enter both username/email and password.');
+    expect(component.errorMessage).toBe(''); // Formly handles validation errors
     expect(authServiceSpy.login).not.toHaveBeenCalled();
   });
 
   it('should show error and not call login when password is empty', () => {
-    component.loginModel.identifier = 'test@example.com';
-    component.loginModel.password = '';
+    component.loginForm.patchValue({ identifier: 'test@example.com', password: '' });
+    component.loginForm.markAllAsTouched();
     component.onLoginSubmit();
-    expect(component.errorMessage).toBe('Please enter both username/email and password.');
+    expect(component.errorMessage).toBe('');
     expect(authServiceSpy.login).not.toHaveBeenCalled();
   });
 
   it('should call auth service and navigate to returnUrl on successful login', () => {
     authServiceSpy.login.and.returnValue(of(mockAuthUser));
-    component.loginModel.identifier = 'test@example.com';
-    component.loginModel.password = 'password123';
+    component.loginForm.patchValue({ identifier: 'test@example.com', password: 'password123' });
     component.onLoginSubmit();
     expect(component.loading).toBeFalse();
     expect(authServiceSpy.login).toHaveBeenCalledWith('test@example.com', 'password123');
@@ -86,17 +82,23 @@ describe('LoginComponent', () => {
   it('should navigate to /home when no returnUrl is provided', () => {
     activatedRouteMock.snapshot.queryParams = {};
     authServiceSpy.login.and.returnValue(of(mockAuthUser));
-    component.loginModel.identifier = 'test@example.com';
-    component.loginModel.password = 'password123';
+    component.loginForm.patchValue({ identifier: 'test@example.com', password: 'password123' });
     component.onLoginSubmit();
     expect(routerSpy.navigateByUrl).toHaveBeenCalledWith('/home');
+  });
+
+  it('should show error if username or password is not provided on submit', () => {
+    spyOnProperty(component.loginForm, 'invalid').and.returnValue(false);
+    component.loginModel.identifier = '';
+    component.loginModel.password = '';
+    component.onLoginSubmit();
+    expect(component.errorMessage).toBe('Please enter both username/email and password.');
   });
 
   it('should set specific error message when login fails with API error', () => {
     const errorResponse = { error: { error: 'Invalid credentials' } };
     authServiceSpy.login.and.returnValue(throwError(() => errorResponse));
-    component.loginModel.identifier = 'test@example.com';
-    component.loginModel.password = 'wrongpass';
+    component.loginForm.patchValue({ identifier: 'test@example.com', password: 'wrongpass' });
     component.onLoginSubmit();
     expect(component.loading).toBeFalse();
     expect(component.errorMessage).toBe('Invalid credentials');
@@ -104,8 +106,7 @@ describe('LoginComponent', () => {
 
   it('should set fallback error message when login fails without specific API message', () => {
     authServiceSpy.login.and.returnValue(throwError(() => ({})));
-    component.loginModel.identifier = 'test@example.com';
-    component.loginModel.password = 'wrongpass';
+    component.loginForm.patchValue({ identifier: 'test@example.com', password: 'wrongpass' });
     component.onLoginSubmit();
     expect(component.loading).toBeFalse();
     expect(component.errorMessage).toBe('Login failed. Invalid email or password.');

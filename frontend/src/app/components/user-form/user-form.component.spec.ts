@@ -4,6 +4,10 @@ import { provideHttpClientTesting, HttpTestingController } from '@angular/common
 import { MessageService } from 'primeng/api';
 import { UserFormComponent } from './user-form.component';
 import { AuthService, AuthUser } from '../../services/auth.service';
+import { FormlyModule } from '@ngx-formly/core';
+import { FormlyBootstrapModule } from '@ngx-formly/bootstrap';
+import { ReactiveFormsModule } from '@angular/forms';
+import { environment } from '../../../environments/environment';
 
 describe('UserFormComponent', () => {
   let component: UserFormComponent;
@@ -25,7 +29,7 @@ describe('UserFormComponent', () => {
     aSpy.getCurrentUser.and.returnValue(mockAuthUser);
 
     await TestBed.configureTestingModule({
-      imports: [UserFormComponent],
+      imports: [UserFormComponent, FormlyModule.forRoot(), FormlyBootstrapModule, ReactiveFormsModule],
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
@@ -136,42 +140,7 @@ describe('UserFormComponent', () => {
     expect(freshComponent.editUserId).toBeNull();
   });
 
-  // ─── Password Toggles ─────────────────────────────────────────────────────
-
-  it('should toggle password visibility', () => {
-    expect(component.showPassword).toBeFalse();
-    component.togglePasswordVisibility();
-    expect(component.showPassword).toBeTrue();
-  });
-
-  it('should toggle confirm password visibility', () => {
-    expect(component.showConfirmPassword).toBeFalse();
-    component.toggleConfirmPasswordVisibility();
-    expect(component.showConfirmPassword).toBeTrue();
-  });
-
-  it('should toggle password section on and preserve existing passwords', () => {
-    component.showPasswordSection = false;
-    component.model.password = 'abc';
-    component.model.confirm_password = 'def';
-    component.togglePasswordSection(); // -> true
-    expect(component.showPasswordSection).toBeTrue();
-    expect(component.model.password).toBe('abc');
-  });
-
-  it('should toggle password section off and clear passwords', () => {
-    component.showPasswordSection = true;
-    component.model.password = 'abc';
-    component.model.confirm_password = 'def';
-    component.togglePasswordSection(); // -> false
-    expect(component.showPasswordSection).toBeFalse();
-    expect(component.model.password).toBe('');
-    expect(component.model.confirm_password).toBe('');
-    expect(component.strengthScore).toBe(0);
-  });
-
   // ─── Validators ───────────────────────────────────────────────────────────
-
   it('should reject empty username', () => {
     expect(component.isValidUsername('')).toBeFalse();
   });
@@ -273,7 +242,8 @@ describe('UserFormComponent', () => {
     component.model.date_of_birth = '2000-01-01';
     component.onSubmit();
     tick(100);
-    expect(component.errorMessage).toBe('Please fill in Username and Date of Birth.');
+    expect(component.form.invalid).toBeTrue();
+    expect(component.errorMessage).toBe("");
   }));
 
   it('should show error when submitting edit mode with empty date of birth', fakeAsync(() => {
@@ -282,7 +252,8 @@ describe('UserFormComponent', () => {
     component.model.date_of_birth = '';
     component.onSubmit();
     tick(100);
-    expect(component.errorMessage).toBe('Please fill in Username and Date of Birth.');
+    expect(component.form.invalid).toBeTrue();
+    expect(component.errorMessage).toBe("");
   }));
 
   it('should show error when submitting empty form in create mode', fakeAsync(() => {
@@ -290,7 +261,8 @@ describe('UserFormComponent', () => {
     component.model.email = '';
     component.onSubmit();
     tick(100);
-    expect(component.errorMessage).toBe('Please fill in all required fields.');
+    expect(component.form.invalid).toBeTrue();
+    expect(component.errorMessage).toBe("");
   }));
 
   it('should show error for missing password in create mode', fakeAsync(() => {
@@ -298,7 +270,8 @@ describe('UserFormComponent', () => {
     component.model = { username: 'test', email: 'test@gmail.com', date_of_birth: '1990-01-01', password: '', confirm_password: '' };
     component.onSubmit();
     tick(100);
-    expect(component.errorMessage).toBe('Please fill in all required fields.');
+    expect(component.form.invalid).toBeTrue();
+    expect(component.errorMessage).toBe("");
   }));
 
   it('should show error for invalid username format', fakeAsync(() => {
@@ -306,7 +279,8 @@ describe('UserFormComponent', () => {
     component.model = { username: 'invalid name!', email: 'test@gmail.com', date_of_birth: '2000-01-01', password: 'Password123!', confirm_password: 'Password123!' };
     component.onSubmit();
     tick(100);
-    expect(component.errorMessage).toBe('Username must not contain spaces or special characters (only letters, numbers, and underscores).');
+    expect(component.form.invalid).toBeTrue();
+    expect(component.errorMessage).toBe("");
   }));
 
   it('should show error for invalid email domain in create mode', fakeAsync(() => {
@@ -314,7 +288,8 @@ describe('UserFormComponent', () => {
     component.model = { username: 'test', email: 'test@yahoo.com', date_of_birth: '2000-01-01', password: 'Password123!', confirm_password: 'Password123!' };
     component.onSubmit();
     tick(100);
-    expect(component.errorMessage).toBe('Email address must strictly end with @gmail.com, @enterprise.com, .vn, or .edu');
+    expect(component.form.invalid).toBeTrue();
+    expect(component.errorMessage).toBe("");
   }));
 
   it('should show error when user is under 16 years old', fakeAsync(() => {
@@ -324,25 +299,28 @@ describe('UserFormComponent', () => {
     component.model = { username: 'test', email: 'test@gmail.com', date_of_birth: tenYearsAgo.toISOString(), password: 'Password123!', confirm_password: 'Password123!' };
     component.onSubmit();
     tick(100);
-    expect(component.errorMessage).toBe('User must be at least 16 years old.');
+    expect(component.form.invalid).toBeTrue();
+    expect(component.errorMessage).toBe("");
   }));
 
   it('should show error for weak password in create mode', fakeAsync(() => {
     component.isEditMode = false;
     component.model = { username: 'test', email: 'test@gmail.com', date_of_birth: '1990-01-01', password: 'weak', confirm_password: 'weak' };
-    component.onPasswordChange('weak');
+    component.checkPasswordStrength('weak');
+    component.form.markAllAsTouched();
     component.onSubmit();
     tick(100);
-    expect(component.errorMessage).toBe('Password is not strong enough. Please meet all the security requirements.');
+    expect(component.form.invalid).toBeTrue();
   }));
 
   it('should show error when password and confirm password do not match', fakeAsync(() => {
     component.isEditMode = false;
     component.model = { username: 'test', email: 'test@gmail.com', date_of_birth: '1990-01-01', password: 'Password123!', confirm_password: 'Password1234!' };
-    component.onPasswordChange('Password123!');
+    component.checkPasswordStrength('Password123!');
+    component.form.markAllAsTouched();
     component.onSubmit();
     tick(100);
-    expect(component.errorMessage).toBe('Password and confirmation do not match.');
+    expect(component.form.invalid).toBeTrue();
   }));
 
   // ─── Auto Focus ───────────────────────────────────────────────────────────
@@ -351,41 +329,33 @@ describe('UserFormComponent', () => {
     component.isEditMode = true;
     component.model.username = '';
     fixture.detectChanges();
-    const invalidInput = fixture.nativeElement.querySelector('input[name="username"]') as HTMLInputElement;
-    spyOn(invalidInput, 'scrollIntoView');
-    spyOn(invalidInput, 'focus');
+    spyOn(component, 'autoFocusFirstInvalidInput');
     component.onSubmit();
-    setTimeout(() => {
-      expect(invalidInput.scrollIntoView).toHaveBeenCalled();
-      expect(invalidInput.focus).toHaveBeenCalled();
-      done();
-    }, 150);
+    expect(component.autoFocusFirstInvalidInput).toHaveBeenCalled();
+    done();
   });
 
   it('should auto focus on invalid input if validation fails in create mode', (done) => {
     component.isEditMode = false;
     component.model.username = '';
     fixture.detectChanges();
-    const invalidInput = fixture.nativeElement.querySelector('input[name="username"]') as HTMLInputElement;
-    spyOn(invalidInput, 'scrollIntoView');
-    spyOn(invalidInput, 'focus');
+    spyOn(component, 'autoFocusFirstInvalidInput');
     component.onSubmit();
-    setTimeout(() => {
-      expect(invalidInput.scrollIntoView).toHaveBeenCalled();
-      expect(invalidInput.focus).toHaveBeenCalled();
-      done();
-    }, 150);
+    expect(component.autoFocusFirstInvalidInput).toHaveBeenCalled();
+    done();
   });
 
   // ─── Create User (POST) ───────────────────────────────────────────────────
 
   it('should call createUser and reset form on successful submission', () => {
     const mockUser = { id: 1, username: 'test', email: 'test@gmail.com', date_of_birth: '1990-01-15', role: 'user' };
-    component.model.username = 'test';
-    component.model.email = 'test@gmail.com';
-    component.onPasswordChange('SecurePass123!');
-    component.model.confirm_password = 'SecurePass123!';
-    component.model.date_of_birth = '1990-01-15';
+    component.form.patchValue({
+      username: 'test',
+      email: 'test@gmail.com',
+      password: 'SecurePass123!',
+      confirm_password: 'SecurePass123!',
+      date_of_birth: '1990-01-15'
+    });
     component.onSubmit();
     const req = httpMock.expectOne('http://localhost:3000/api/users');
     expect(req.request.method).toBe('POST');
@@ -397,11 +367,13 @@ describe('UserFormComponent', () => {
   });
 
   it('should handle API 500 error on create with error message from response', fakeAsync(() => {
-    component.model.username = 'test';
-    component.model.email = 'test@gmail.com';
-    component.onPasswordChange('SecurePass123!');
-    component.model.confirm_password = 'SecurePass123!';
-    component.model.date_of_birth = '1990-01-15';
+    component.form.patchValue({
+      username: 'test',
+      email: 'test@gmail.com',
+      password: 'SecurePass123!',
+      confirm_password: 'SecurePass123!',
+      date_of_birth: '1990-01-15'
+    });
     component.onSubmit();
     const req = httpMock.expectOne('http://localhost:3000/api/users');
     req.flush({ message: 'Internal error' }, { status: 500, statusText: 'Server Error' });
@@ -410,11 +382,13 @@ describe('UserFormComponent', () => {
   }));
 
   it('should handle API 500 error on create with fallback message when response body is empty', fakeAsync(() => {
-    component.model.username = 'test';
-    component.model.email = 'test@gmail.com';
-    component.onPasswordChange('SecurePass123!');
-    component.model.confirm_password = 'SecurePass123!';
-    component.model.date_of_birth = '1990-01-15';
+    component.form.patchValue({
+      username: 'test',
+      email: 'test@gmail.com',
+      password: 'SecurePass123!',
+      confirm_password: 'SecurePass123!',
+      date_of_birth: '1990-01-15'
+    });
     component.onSubmit()
     const req = httpMock.expectOne('http://localhost:3000/api/users');
     req.flush({}, { status: 500, statusText: 'Server Error' });
@@ -422,12 +396,65 @@ describe('UserFormComponent', () => {
     expect(component.errorMessage).toBe('Registration failed.');
   }));
 
+  it('should handle bad request (400) on create', fakeAsync(() => {
+    component.form.patchValue({
+      username: 'test',
+      email: 'test@gmail.com',
+      password: 'SecurePass123!',
+      confirm_password: 'SecurePass123!',
+      date_of_birth: '1990-01-15'
+    });
+    component.onSubmit()
+    const req = httpMock.expectOne(`${environment.apiUrl}/users`);
+    req.flush({}, { status: 400, statusText: 'Bad Request' });
+    tick(100);
+    expect(component.errorMessage).toBe('Registration failed.');
+  }));
+
+  it('should call message functions of validators', () => {
+    component.buildFields();
+    
+    // Find fields properly handling fieldGroups
+    let usernameField, dobField, emailField, passwordField, confirmPasswordField;
+    for (const f of component.fields) {
+      if (f.key === 'email') emailField = f;
+      if (f.key === 'password') passwordField = f;
+      if (f.key === 'confirm_password') confirmPasswordField = f;
+      if (f.fieldGroup) {
+        for (const subField of f.fieldGroup) {
+          if (subField.key === 'username') usernameField = subField;
+          if (subField.key === 'date_of_birth') dobField = subField;
+        }
+      }
+    }
+
+    expect((usernameField?.validators as any)?.['validUsername']?.message()).toBe('No spaces or special characters allowed.');
+    expect((dobField?.validators as any)?.['validAge']?.message()).toBe('You must be at least 16 years old.');
+    expect((emailField?.validators as any)?.['validEmail']?.message()).toBe('Must strictly end with @gmail.com or @enterprise.com.');
+    expect((passwordField?.validators as any)?.['strength']?.message()).toBe('Password is not strong enough. Please meet all the security requirements.');
+    expect((confirmPasswordField?.validators as any)?.['fieldMatch']?.message()).toBe('Passwords do not match.');
+  });
+
+  it('should trigger password change event correctly', () => {
+    component.buildFields();
+    const passwordField = component.fields.find(f => f.key === 'password');
+    spyOn(component, 'checkPasswordStrength');
+    
+    (passwordField?.props as any)?.change?.({ formControl: { value: 'password123' } }, null);
+    expect(component.checkPasswordStrength).toHaveBeenCalledWith('password123');
+    
+    (passwordField?.props as any)?.change?.({ formControl: { value: null } }, null);
+    expect(component.checkPasswordStrength).toHaveBeenCalledWith('');
+  });
+
   it('should trigger autoFocus when create returns 4xx error', fakeAsync(() => {
-    component.model.username = 'test';
-    component.model.email = 'test@gmail.com';
-    component.onPasswordChange('SecurePass123!');
-    component.model.confirm_password = 'SecurePass123!';
-    component.model.date_of_birth = '1990-01-15';
+    component.form.patchValue({
+      username: 'test',
+      email: 'test@gmail.com',
+      password: 'SecurePass123!',
+      confirm_password: 'SecurePass123!',
+      date_of_birth: '1990-01-15'
+    });
     component.onSubmit();
     const req = httpMock.expectOne('http://localhost:3000/api/users');
     req.flush({ message: 'Email already exists' }, { status: 409, statusText: 'Conflict' });
@@ -441,9 +468,13 @@ describe('UserFormComponent', () => {
   it('should call updateUser and update session when editing current user', fakeAsync(() => {
     component.isEditMode = true;
     component.editUserId = 1;
-    component.model.username = 'newname';
-    component.model.email = 'admin@gmail.com';
-    component.model.date_of_birth = '1990-01-01';
+    component.buildFields();
+    fixture.detectChanges();
+    component.form.patchValue({
+      username: 'newname',
+      email: 'admin@gmail.com',
+      date_of_birth: '1990-01-01'
+    });
     spyOn(component.userUpdated, 'emit');
     component.onSubmit();
     const req = httpMock.expectOne('http://localhost:3000/api/users/1');
@@ -460,9 +491,13 @@ describe('UserFormComponent', () => {
     authServiceSpy.getCurrentUser.and.returnValue(null);
     component.isEditMode = true;
     component.editUserId = 2;
-    component.model.username = 'newname';
-    component.model.email = 'user2@gmail.com';
-    component.model.date_of_birth = '1990-01-01';
+    component.buildFields();
+    fixture.detectChanges();
+    component.form.patchValue({
+      username: 'newname',
+      email: 'user2@gmail.com',
+      date_of_birth: '1990-01-01'
+    });
     component.onSubmit();
     const req = httpMock.expectOne('http://localhost:3000/api/users/2');
     req.flush({ id: 2, username: 'newname', email: 'user2@gmail.com', role: 'user' });
@@ -474,9 +509,13 @@ describe('UserFormComponent', () => {
     authServiceSpy.getCurrentUser.and.returnValue({ id: 999, email: 'other@gmail.com', role: 'user', username: 'other', date_of_birth: '1990-01-01', status: 'active' });
     component.isEditMode = true;
     component.editUserId = 2;
-    component.model.username = 'newname';
-    component.model.email = 'user2@gmail.com';
-    component.model.date_of_birth = '1990-01-01';
+    component.buildFields();
+    fixture.detectChanges();
+    component.form.patchValue({
+      username: 'newname',
+      email: 'user2@gmail.com',
+      date_of_birth: '1990-01-01'
+    });
     component.onSubmit();
     const req = httpMock.expectOne('http://localhost:3000/api/users/2');
     req.flush({ id: 2, username: 'newname', email: 'user2@gmail.com', role: 'user' });
@@ -487,9 +526,13 @@ describe('UserFormComponent', () => {
   it('should handle API 500 error on update with error message from response', fakeAsync(() => {
     component.isEditMode = true;
     component.editUserId = 1;
-    component.model.username = 'newname';
-    component.model.email = 'admin@gmail.com';
-    component.model.date_of_birth = '1990-01-01';
+    component.buildFields();
+    fixture.detectChanges();
+    component.form.patchValue({
+      username: 'newname',
+      email: 'admin@gmail.com',
+      date_of_birth: '1990-01-01'
+    });
     component.onSubmit();
     const req = httpMock.expectOne('http://localhost:3000/api/users/1');
     req.flush({ message: 'Internal error' }, { status: 500, statusText: 'Server Error' });
@@ -500,9 +543,13 @@ describe('UserFormComponent', () => {
   it('should handle API 500 error on update with fallback message when response body is empty', fakeAsync(() => {
     component.isEditMode = true;
     component.editUserId = 1;
-    component.model.username = 'newname';
-    component.model.email = 'admin@gmail.com';
-    component.model.date_of_birth = '1990-01-01';
+    component.buildFields();
+    fixture.detectChanges();
+    component.form.patchValue({
+      username: 'newname',
+      email: 'admin@gmail.com',
+      date_of_birth: '1990-01-01'
+    });
     component.onSubmit();
     const req = httpMock.expectOne('http://localhost:3000/api/users/1');
     req.flush({}, { status: 500, statusText: 'Server Error' });
@@ -513,9 +560,13 @@ describe('UserFormComponent', () => {
   it('should trigger autoFocus when update returns 4xx error', fakeAsync(() => {
     component.isEditMode = true;
     component.editUserId = 1;
-    component.model.username = 'newname';
-    component.model.email = 'admin@gmail.com';
-    component.model.date_of_birth = '1990-01-01';
+    component.buildFields();
+    fixture.detectChanges();
+    component.form.patchValue({
+      username: 'newname',
+      email: 'admin@gmail.com',
+      date_of_birth: '1990-01-01'
+    });
     component.onSubmit();
     const req = httpMock.expectOne('http://localhost:3000/api/users/1');
     req.flush({ error: 'Username already taken' }, { status: 422, statusText: 'Unprocessable Entity' });
@@ -530,9 +581,13 @@ describe('UserFormComponent', () => {
     component.isEditMode = true;
     component.isModal = true;
     component.editUserId = 2;
-    component.model.username = 'user2';
-    component.model.email = 'user2@gmail.com';
-    component.model.date_of_birth = '2000-01-01';
+    component.buildFields();
+    fixture.detectChanges();
+    component.form.patchValue({
+      username: 'user2',
+      email: 'user2@gmail.com',
+      date_of_birth: '2000-01-01'
+    });
     spyOn(component.closeModalEvent, 'emit');
     component.onSubmit();
     const req = httpMock.expectOne('http://localhost:3000/api/users/2');
@@ -546,9 +601,13 @@ describe('UserFormComponent', () => {
     component.isEditMode = true;
     component.isModal = false;
     component.editUserId = 1;
-    component.model.username = 'newname';
-    component.model.email = 'admin@gmail.com';
-    component.model.date_of_birth = '1990-01-01';
+    component.buildFields();
+    fixture.detectChanges();
+    component.form.patchValue({
+      username: 'newname',
+      email: 'admin@gmail.com',
+      date_of_birth: '1990-01-01'
+    });
     spyOn(component.closeModalEvent, 'emit');
     component.onSubmit();
     const req = httpMock.expectOne('http://localhost:3000/api/users/1');
@@ -559,11 +618,13 @@ describe('UserFormComponent', () => {
 
   it('should not emit closeModalEvent after create when isModal is false', fakeAsync(() => {
     component.isModal = false;
-    component.model.username = 'test';
-    component.model.email = 'test@gmail.com';
-    component.onPasswordChange('SecurePass123!');
-    component.model.confirm_password = 'SecurePass123!';
-    component.model.date_of_birth = '1990-01-15';
+    component.form.patchValue({
+      username: 'test',
+      email: 'test@gmail.com',
+      password: 'SecurePass123!',
+      confirm_password: 'SecurePass123!',
+      date_of_birth: '1990-01-15'
+    });
     spyOn(component.closeModalEvent, 'emit');
     component.onSubmit();
     const req = httpMock.expectOne('http://localhost:3000/api/users');

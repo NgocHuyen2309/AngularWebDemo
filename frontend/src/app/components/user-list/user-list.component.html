@@ -11,240 +11,247 @@
     </h5>
 
     <div class="d-flex align-items-center gap-2">
-      <div class="p-input-icon-left position-relative d-flex align-items-center" *ngIf="users.length > 0">
-        <svg class="user-list__search-icon position-absolute" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="left: 0.65rem; z-index: 1; pointer-events: none;">
-          <circle cx="11" cy="11" r="8"/>
-          <line x1="21" y1="21" x2="16.65" y2="16.65"/>
-        </svg>
-        <input
-          pInputText
-          type="text"
-          (input)="onGlobalFilter($event)"
-          placeholder="Search accounts..."
-          class="p-inputtext-sm"
-        />
-      </div>
+      @if (users.length > 0) {
+        <div class="p-input-icon-left position-relative d-flex align-items-center">
+          <svg class="user-list__search-icon position-absolute" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="left: 0.65rem; z-index: 1; pointer-events: none;">
+            <circle cx="11" cy="11" r="8"/>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <input
+            pInputText
+            type="text"
+            (input)="onGlobalFilter($event)"
+            placeholder="Search accounts..."
+            class="p-inputtext-sm"
+            />
+        </div>
+      }
 
-      <button
-        type="button"
-        class="user-list__refresh-btn btn btn-sm d-flex align-items-center gap-1"
-        (click)="loadUsers()"
-        [disabled]="loading"
-        title="Refresh User List">
+      <p-button styleClass="user-list__refresh-btn btn-sm d-flex align-items-center gap-1" (onClick)="loadUsers()" [disabled]="loading" title="Refresh User List">
         <svg
           [class.fa-spin]="loading"
           width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-        >
+          >
           <path d="M23 4v6h-6"/>
           <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
         </svg>
         <span class="user-list__refresh-text">{{ loading ? 'Loading...' : 'Refresh' }}</span>
-      </button>
+      </p-button>
     </div>
   </div>
 
   <div class="user-list__body card-body py-4 px-4">
     <!-- Error State -->
-    <div *ngIf="error" class="alert alert-danger mb-3">
-      {{ error }}
-    </div>
+    @if (error) {
+      <div class="alert alert-danger mb-3">
+        {{ error }}
+      </div>
+    }
 
     <!-- Empty State -->
-    <div *ngIf="!loading && users.length === 0 && !error" class="text-center py-5">
-      <svg class="user-list__empty-icon mb-3" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-        <circle cx="9" cy="7" r="4"/>
-      </svg>
-      <p class="text-muted mb-0">No registered user accounts found.</p>
-    </div>
+    @if (!loading && users.length === 0 && !error) {
+      <div class="text-center py-5">
+        <svg class="user-list__empty-icon mb-3" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+          <circle cx="9" cy="7" r="4"/>
+        </svg>
+        <p class="text-muted mb-0">No registered user accounts found.</p>
+      </div>
+    }
 
     <!-- PrimeNG Enterprise Table -->
-    <div *ngIf="users.length > 0">
-      <p-table
-        #dt
-        [value]="users"
-        [paginator]="true"
-        [rows]="5"
-        [showCurrentPageReport]="true"
-        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} accounts"
-        [globalFilterFields]="['id', 'username', 'email', 'role', 'status']"
-        styleClass="p-datatable-sm p-datatable-striped"
-      >
-        <ng-template pTemplate="header">
-          <tr>
-            <th pSortableColumn="id" style="width: 75px;">ID <p-sortIcon field="id"></p-sortIcon></th>
-            <th pSortableColumn="username" style="width: 17%;">Username <p-sortIcon field="username"></p-sortIcon></th>
-            <th pSortableColumn="email" style="width: 25%;">Email <p-sortIcon field="email"></p-sortIcon></th>
-            <th pSortableColumn="date_of_birth" style="width: 14%;">DOB <p-sortIcon field="date_of_birth"></p-sortIcon></th>
-            <th pSortableColumn="role" style="width: 18%;">Role & Status <p-sortIcon field="role"></p-sortIcon></th>
-            <th style="width: 19%; text-align: right;">Actions</th>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-user>
-          <tr>
-            <td class="user-list__id fw-bold">#{{ user.id }}</td>
-            <td class="fw-semibold">{{ user.username || user.email.split('@')[0] }}</td>
-            <td class="user-list__email-cell" [title]="user.email">{{ user.email }}</td>
-            <td>{{ user.date_of_birth ? (user.date_of_birth | date:'yyyy-MM-dd') : 'N/A' }}</td>
-            <td>
-              <div class="d-flex align-items-center gap-1">
+    @if (users.length > 0) {
+      <div>
+        <p-table
+          #dt
+          [value]="users"
+          [paginator]="true"
+          [rows]="5"
+          [showCurrentPageReport]="true"
+          currentPageReportTemplate="Showing {first} to {last} of {totalRecords} accounts"
+          [globalFilterFields]="['id', 'username', 'email', 'role', 'status']"
+          styleClass="p-datatable-sm p-datatable-striped"
+          >
+          <ng-template pTemplate="header">
+            <tr>
+              <th pSortableColumn="id" style="width: 75px;">ID <p-sortIcon field="id"></p-sortIcon></th>
+              <th pSortableColumn="username" style="width: 17%;">Username <p-sortIcon field="username"></p-sortIcon></th>
+              <th pSortableColumn="email" style="width: 25%;">Email <p-sortIcon field="email"></p-sortIcon></th>
+              <th pSortableColumn="date_of_birth" style="width: 14%;">DOB <p-sortIcon field="date_of_birth"></p-sortIcon></th>
+              <th pSortableColumn="role" style="width: 18%;">Role & Status <p-sortIcon field="role"></p-sortIcon></th>
+              <th style="width: 19%; text-align: right;">Actions</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-user>
+            <tr>
+              <td class="user-list__id fw-bold">#{{ user.id }}</td>
+              <td class="fw-semibold">{{ user.username || user.email.split('@')[0] }}</td>
+              <td class="user-list__email-cell" [title]="user.email">{{ user.email }}</td>
+              <td>{{ user.date_of_birth ? (user.date_of_birth | date:'yyyy-MM-dd') : 'N/A' }}</td>
+              <td>
+                <div class="d-flex align-items-center gap-1">
                 <span class="badge px-2 py-1" [ngClass]="{
                   'bg-danger text-white': user.role === 'super_admin',
                   'bg-warning text-dark': user.role === 'admin',
                   'bg-secondary text-white': user.role !== 'admin' && user.role !== 'super_admin'
                 }">
-                  {{ (user.role === 'super_admin' ? 'SUPER ADMIN' : (user.role || 'user')) | uppercase }}
-                </span>
-                <span *ngIf="user.status === 'locked'" class="badge bg-danger text-white px-2 py-1 d-flex align-items-center gap-1" title="Account is locked">
-                  🔒 Locked
-                </span>
-                <span *ngIf="user.status !== 'locked'" class="badge bg-success text-white px-2 py-1 d-flex align-items-center gap-1" title="Account is active">
-                  🟢 Active
-                </span>
-              </div>
-            </td>
-            <td style="text-align: right;">
-              <div class="d-flex justify-content-end align-items-center gap-2">
-                <!-- Lock / Unlock Button -->
-                <button
-                  *ngIf="isAdmin() && user.role !== 'super_admin'"
-                  type="button"
-                  class="btn btn-sm p-1 px-2 d-flex align-items-center gap-1 rounded-2"
-                  [ngClass]="user.status === 'locked' ? 'btn-outline-success' : 'btn-outline-warning'"
-                  (click)="toggleLockUser(user)"
-                  [title]="user.status === 'locked' ? 'Unlock Account' : 'Lock Account'"
-                >
-                  <span class="small fw-semibold">{{ user.status === 'locked' ? 'Unlock' : 'Lock' }}</span>
-                </button>
-
-                <!-- Promote / Demote Role Toggle -->
-                <button
-                  *ngIf="isSuperAdmin() && user.role !== 'super_admin' && user.role !== 'admin'"
-                  type="button"
-                  class="btn btn-sm btn-outline-info p-1 px-2 d-flex align-items-center gap-1 rounded-2"
-                  (click)="changeUserRole(user, 'admin')"
-                  title="Promote account to ADMIN role"
-                >
-                  <span class="small fw-semibold">Promote</span>
-                </button>
-                <button
-                  *ngIf="isSuperAdmin() && user.role === 'admin'"
-                  type="button"
-                  class="btn btn-sm btn-outline-secondary p-1 px-2 d-flex align-items-center gap-1 rounded-2"
-                  (click)="changeUserRole(user, 'user')"
-                  title="Demote account back to USER role"
-                >
-                  <span class="small fw-semibold">Demote</span>
-                </button>
-
-                <!-- Edit Button -->
-                <button
-                  type="button"
-                  class="user-list__edit-btn btn btn-sm p-1 px-2 d-flex align-items-center gap-1 rounded-2"
-                  (click)="openEditModal(user)"
-                  title="Edit User Profile"
-                >
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-                  </svg>
-                  <span class="small fw-semibold">Edit</span>
-                </button>
-
-                <!-- Delete Button -->
-                <button
-                  *ngIf="user.role !== 'super_admin'"
-                  type="button"
-                  class="user-list__delete-btn btn btn-sm p-1 px-2 d-flex align-items-center gap-1 rounded-2"
-                  (click)="requestDeleteConfirmation(user)"
-                  title="Delete User"
-                >
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <polyline points="3 6 5 6 21 6"/>
-                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-                    <line x1="10" y1="11" x2="10" y2="17"/>
-                    <line x1="14" y1="11" x2="14" y2="17"/>
-                  </svg>
-                </button>
-              </div>
-            </td>
-          </tr>
-        </ng-template>
-      </p-table>
-    </div>
+                    {{ (user.role === 'super_admin' ? 'SUPER ADMIN' : (user.role || 'user')) | uppercase }}
+                  </span>
+                  @if (user.status === 'locked') {
+                    <span class="badge bg-danger text-white px-2 py-1 d-flex align-items-center gap-1" title="Account is locked">
+                      🔒 Locked
+                    </span>
+                  }
+                  @if (user.status !== 'locked') {
+                    <span class="badge bg-success text-white px-2 py-1 d-flex align-items-center gap-1" title="Account is active">
+                      🟢 Active
+                    </span>
+                  }
+                </div>
+              </td>
+              <td style="text-align: right;">
+                <div class="d-flex justify-content-end align-items-center gap-2">
+                  <!-- Lock / Unlock Button -->
+                  @if (isAdmin() && user.role !== 'super_admin') {
+                    <p-button
+                      styleClass="btn-sm p-1 px-2 d-flex align-items-center gap-1 rounded-2"
+                      [severity]="user.status === 'locked' ? 'success' : 'warn'"
+                      [outlined]="true"
+                      (onClick)="toggleLockUser(user)"
+                      [title]="user.status === 'locked' ? 'Unlock Account' : 'Lock Account'"
+                      >
+                      <span class="small fw-semibold">{{ user.status === 'locked' ? 'Unlock' : 'Lock' }}</span>
+                    </p-button>
+                  }
+                  <!-- Promote / Demote Role Toggle -->
+                  @if (isSuperAdmin() && user.role !== 'super_admin' && user.role !== 'admin') {
+                    <p-button
+                      styleClass="btn-sm p-1 px-2 d-flex align-items-center gap-1 rounded-2"
+                      severity="info"
+                      [outlined]="true"
+                      (onClick)="changeUserRole(user, 'admin')"
+                      title="Promote account to ADMIN role"
+                      >
+                      <span class="small fw-semibold">Promote</span>
+                    </p-button>
+                  }
+                  @if (isSuperAdmin() && user.role === 'admin') {
+                    <p-button
+                      styleClass="btn-sm p-1 px-2 d-flex align-items-center gap-1 rounded-2"
+                      severity="secondary"
+                      [outlined]="true"
+                      (onClick)="changeUserRole(user, 'user')"
+                      title="Demote account back to USER role"
+                      >
+                      <span class="small fw-semibold">Demote</span>
+                    </p-button>
+                  }
+                  <!-- Edit Button -->
+                  <p-button
+                    styleClass="user-list__edit-btn btn-sm p-1 px-2 d-flex align-items-center gap-1 rounded-2"
+                    (onClick)="openEditModal(user)"
+                    title="Edit User Profile"
+                    >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                    </svg>
+                    <span class="small fw-semibold">Edit</span>
+                  </p-button>
+                  <!-- Delete Button -->
+                  @if (user.role !== 'super_admin') {
+                    <p-button
+                      styleClass="user-list__delete-btn btn-sm p-1 px-2 d-flex align-items-center gap-1 rounded-2"
+                      (onClick)="requestDeleteConfirmation(user)"
+                      title="Delete User"
+                      >
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="3 6 5 6 21 6"/>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                        <line x1="10" y1="11" x2="10" y2="17"/>
+                        <line x1="14" y1="11" x2="14" y2="17"/>
+                      </svg>
+                    </p-button>
+                  }
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    }
   </div>
 </div>
 
 <!-- Formly Edit Modal -->
-<div *ngIf="editingUser" class="modal-overlay">
-  <div class="edit-modal">
-    <div class="edit-modal__header">
-      <h4>Edit User Profile (#{{ editingUser.id }})</h4>
-      <button type="button" class="btn-close" aria-label="Close" (click)="closeEditModal()"></button>
-    </div>
-    <div class="edit-modal__body">
-      <div *ngIf="editError" class="alert alert-danger mb-3">
-        {{ editError }}
+@if (editingUser) {
+  <div class="modal-overlay">
+    <div class="edit-modal">
+      <div class="edit-modal__header">
+        <h4>Edit User Profile (#{{ editingUser.id }})</h4>
+        <p-button icon="pi pi-times" [rounded]="true" [text]="true" severity="secondary" aria-label="Close" (onClick)="closeEditModal()"></p-button>
       </div>
-
-      <form [formGroup]="editForm" (ngSubmit)="requestUpdateConfirmation()">
-        <formly-form
-          [form]="editForm"
-          [fields]="editFields"
-          [model]="editModel"
-        ></formly-form>
-
-        <div class="d-flex justify-content-end gap-2 mt-4">
-          <button
-            type="button"
-            class="user-list__btn-cancel btn btn-sm"
-            (click)="closeEditModal()"
-            [disabled]="updating"
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            class="user-list__btn-save btn btn-sm px-4"
-            [disabled]="updating"
-          >
-            {{ updating ? 'Saving...' : 'Save Changes' }}
-          </button>
-        </div>
-      </form>
+      <div class="edit-modal__body">
+        @if (editError) {
+          <div class="alert alert-danger mb-3">
+            {{ editError }}
+          </div>
+        }
+        <form [formGroup]="editForm" (ngSubmit)="requestUpdateConfirmation()">
+          <formly-form
+            [form]="editForm"
+            [fields]="editFields"
+            [model]="editModel"
+          ></formly-form>
+          <div class="d-flex justify-content-end gap-2 mt-4">
+            <p-button
+              styleClass="user-list__btn-cancel btn-sm"
+              (onClick)="closeEditModal()"
+              [disabled]="updating"
+              label="Cancel"
+              >
+            </p-button>
+            <p-button
+              styleClass="user-list__btn-save btn-sm px-4"
+              [disabled]="updating"
+              [label]="updating ? 'Saving...' : 'Save Changes'"
+              type="submit"
+              >
+            </p-button>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
-</div>
+}
 
 <!-- Confirmation Dialog Modal -->
-<div *ngIf="confirmModalOpen" class="modal-overlay">
-  <div class="edit-modal" style="max-width: 440px;">
-    <div class="edit-modal__header">
-      <h4>{{ confirmTitle }}</h4>
-      <button type="button" class="btn-close" aria-label="Close" (click)="closeConfirmModal()"></button>
-    </div>
-    <div class="edit-modal__body text-center py-4">
-      <p class="mb-4" style="font-size: 1.05rem;">{{ confirmMessage }}</p>
-      <div class="d-flex justify-content-center gap-3">
-        <button
-          type="button"
-          class="user-list__btn-cancel btn px-4"
-          (click)="closeConfirmModal()"
-        >
-          Cancel
-        </button>
-        <button
-          type="button"
-          class="btn px-4"
-          [class.btn-danger]="confirmActionType === 'delete'"
-          [class.user-list__btn-save]="confirmActionType === 'update'"
-          (click)="executeConfirmedAction()"
-        >
-          Confirm
-        </button>
+@if (confirmModalOpen) {
+  <div class="modal-overlay">
+    <div class="edit-modal" style="max-width: 440px;">
+      <div class="edit-modal__header">
+        <h4>{{ confirmTitle }}</h4>
+        <p-button icon="pi pi-times" [rounded]="true" [text]="true" severity="secondary" aria-label="Close" (onClick)="closeConfirmModal()"></p-button>
+      </div>
+      <div class="edit-modal__body text-center py-4">
+        <p class="mb-4" style="font-size: 1.05rem;">{{ confirmMessage }}</p>
+        <div class="d-flex justify-content-center gap-3">
+          <p-button
+            styleClass="user-list__btn-cancel px-4"
+            (onClick)="closeConfirmModal()"
+            label="Cancel"
+            >
+          </p-button>
+          <p-button
+            [styleClass]="'px-4 ' + (confirmActionType === 'delete' ? 'p-button-danger' : 'user-list__btn-save')"
+            (onClick)="executeConfirmedAction()"
+            label="Confirm"
+            >
+          </p-button>
+        </div>
       </div>
     </div>
   </div>
-</div>
+}
 
 <!--Các file html, cố gắng tích hợp Interpolation để đỡ boilerplate code, với khi sửa ta chỉ cần sửa ở file typescript là được.-->

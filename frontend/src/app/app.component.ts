@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+
 import { RouterOutlet, Router } from '@angular/router';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
@@ -8,23 +8,23 @@ import { UserFormComponent } from './components/user-form/user-form.component';
 import { ChangePasswordModalComponent } from './components/change-password-modal/change-password-modal.component';
 import { AuthService, AuthUser } from './services/auth.service';
 import { User } from './services/user.service';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [
-    CommonModule,
     RouterOutlet,
     ToastModule,
     NavbarComponent,
     UserFormComponent,
     ChangePasswordModalComponent
-  ],
+],
   providers: [MessageService],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
   title = 'Crown & Velvet';
   currentUser: AuthUser | null = null;
   userRole: string | null = null;
@@ -32,20 +32,31 @@ export class AppComponent implements OnInit {
   showProfileModal = false;
   showChangePasswordModal = false;
 
+  destroy$ = new Subject<void>();
+
   constructor(
     private authService: AuthService,
     private router: Router
   ) {}
 
   ngOnInit() {
-    this.authService.currentUser$.subscribe(user => {
-      this.currentUser = user;
-      this.isLoggedIn = user !== null;
-      this.userRole = user ? user.role : null;
-    });
-    this.authService.profileModalRequested$.subscribe(() => {
-      this.setProfileModalState(true);
-    });
+    this.authService.currentUser$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(user => {
+        this.currentUser = user;
+        this.isLoggedIn = user !== null;
+        this.userRole = user ? user.role : null;
+      });
+    this.authService.profileModalRequested$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.setProfileModalState(true);
+      });
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   setProfileModalState(show: boolean) {

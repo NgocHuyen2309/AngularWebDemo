@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { ActivatedRoute, provideRouter, Router } from '@angular/router';
+import { provideRouter, Router } from '@angular/router';
 import { AppComponent } from './app.component';
 import { AuthService, AuthUser } from './services/auth.service';
 import { BehaviorSubject, Subject } from 'rxjs';

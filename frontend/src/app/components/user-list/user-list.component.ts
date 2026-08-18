@@ -2,8 +2,8 @@ import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { finalize } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { finalize, takeUntil } from 'rxjs/operators';
 import { FormlyModule, FormlyFieldConfig } from '@ngx-formly/core';
 import { TableModule, Table } from 'primeng/table';
 import { InputTextModule } from 'primeng/inputtext';
@@ -33,7 +33,7 @@ export class UserListComponent implements OnInit, OnDestroy {
   users: User[] = [];
   loading = false;
   error = '';
-  sub?: Subscription;
+  destroy$ = new Subject<void>();
 
   editingUser: User | null = null;
   editForm = new FormGroup({});
@@ -97,10 +97,10 @@ export class UserListComponent implements OnInit, OnDestroy {
   set editDob(val: string) {
     this.editModel.date_of_birth = val;
   }
-  startEdit(user: User): void {
+  startEdit(user: User) {
     this.openEditModal(user);
   }
-  cancelEdit(): void {
+  cancelEdit() {
     this.closeEditModal();
   }
 
@@ -111,14 +111,21 @@ export class UserListComponent implements OnInit, OnDestroy {
     private router: Router
   ) {}
   ngOnInit() {
+    this.initUserList();
+  }
+
+  initUserList() {
     this.loadUsers();
-    this.sub = this.userService.userAdded$.subscribe(() => {
-      this.loadUsers();
-    });
+    this.userService.userAdded$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.loadUsers();
+      });
   }
 
   ngOnDestroy() {
-    this.sub?.unsubscribe();
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   isAdmin(): boolean {
@@ -129,86 +136,92 @@ export class UserListComponent implements OnInit, OnDestroy {
     return this.authService.isSuperAdmin();
   }
 
-  onGlobalFilter(event: Event): void {
+  onGlobalFilter(event: Event) {
     const value = (event.target as HTMLInputElement).value;
     if (this.dt) {
       this.dt.filterGlobal(value, 'contains');
     }
   }
 
-  toggleLockUser(user: User): void {
+  toggleLockUser(user: User) {
     if (!this.isAdmin()) return;
     const newStatus = user.status === 'locked' ? 'active' : 'locked';
-    this.userService.updateUserStatus(user.id, newStatus).subscribe({
-      next: (updated) => {
-        const idx = this.users.findIndex(u => u.id === user.id);
-        if (idx !== -1) {
-          this.users[idx].status = updated.status;
+    this.userService.updateUserStatus(user.id, newStatus)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (updated) => {
+          const idx = this.users.findIndex(u => u.id === user.id);
+          if (idx !== -1) {
+            this.users[idx].status = updated.status;
+          }
+          this.messageService.add({
+            severity: 'success',
+            summary: newStatus === 'locked' ? 'Account Locked' : 'Account Activated',
+            detail: `User #${user.id} (${user.username}) is now ${newStatus}.`
+          });
+        },
+        error: (err) => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Status Change Failed',
+            detail: err.error?.error || 'Could not update account status.'
+          });
         }
-        this.messageService.add({
-          severity: 'success',
-          summary: newStatus === 'locked' ? 'Account Locked' : 'Account Activated',
-          detail: `User #${user.id} (${user.username}) is now ${newStatus}.`
-        });
-      },
-      error: (err) => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Status Change Failed',
-          detail: err.error?.error || 'Could not update account status.'
-        });
-      }
-    });
+      });
   }
 
-  changeUserRole(user: User, newRole: string): void {
+  changeUserRole(user: User, newRole: string) {
     if (!this.isSuperAdmin()) return;
-    this.userService.updateUserRole(user.id, newRole).subscribe({
-      next: (updated) => {
-        const idx = this.users.findIndex(u => u.id === user.id);
-        if (idx !== -1) {
-          this.users[idx].role = updated.role;
+    this.userService.updateUserRole(user.id, newRole)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (updated) => {
+          const idx = this.users.findIndex(u => u.id === user.id);
+          if (idx !== -1) {
+            this.users[idx].role = updated.role;
+          }
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Role Changed',
+            detail: `User #${user.id} role updated to ${newRole.replace('_', ' ').toUpperCase()}.`
+          });
+        },
+        error: (err) => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Role Update Failed',
+            detail: err.error?.error || 'Could not change account role.'
+          });
         }
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Role Changed',
-          detail: `User #${user.id} role updated to ${newRole.replace('_', ' ').toUpperCase()}.`
-        });
-      },
-      error: (err) => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Role Update Failed',
-          detail: err.error?.error || 'Could not change account role.'
-        });
-      }
-    });
+      });
   }
 
   loadUsers() {
     this.loading = true;
     this.error = '';
-    this.userService.getUsers().subscribe({
-      next: (data) => {
-        const currentUser = this.authService.getCurrentUser();
-        if (currentUser) {
-          const foundSelf = data.find(u => Number(u.id) === Number(currentUser.id) || u.email === currentUser.email);
-          if (foundSelf && foundSelf.role !== currentUser.role) {
-            this.authService.updateCurrentUserSession(foundSelf);
+    this.userService.getUsers()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (data) => {
+          const currentUser = this.authService.getCurrentUser();
+          if (currentUser) {
+            const foundSelf = data.find(u => Number(u.id) === Number(currentUser.id) || u.email === currentUser.email);
+            if (foundSelf && foundSelf.role !== currentUser.role) {
+              this.authService.updateCurrentUserSession(foundSelf);
+            }
           }
+          if (this.authService.isAdmin() || !currentUser) {
+            this.users = data;
+          } else {
+            this.users = data.filter(u => Number(u.id) === Number(currentUser.id) || u.email === currentUser.email);
+          }
+          this.loading = false;
+        },
+        error: () => {
+          this.error = 'Failed to load user account list.';
+          this.loading = false;
         }
-        if (this.authService.isAdmin() || !currentUser) {
-          this.users = data;
-        } else {
-          this.users = data.filter(u => Number(u.id) === Number(currentUser.id) || u.email === currentUser.email);
-        }
-        this.loading = false;
-      },
-      error: () => {
-        this.error = 'Failed to load user account list.';
-        this.loading = false;
-      }
-    });
+      });
   }
 
   openEditModal(user: User) {
@@ -282,10 +295,12 @@ export class UserListComponent implements OnInit, OnDestroy {
     this.editError = '';
 
     this.userService.updateUser(id, {
-      username: this.editModel.username ? this.editModel.username.trim() : undefined,
+      username: this.editModel.username?.trim(),
       email: this.editModel.email,
       date_of_birth: this.editModel.date_of_birth
-    }).subscribe({
+    })
+    .pipe(takeUntil(this.destroy$))
+    .subscribe({
       next: (updatedUser) => {
         const index = this.users.findIndex(u => u.id === id);
         if (index !== -1) {
@@ -321,7 +336,10 @@ export class UserListComponent implements OnInit, OnDestroy {
 
   performDeleteUser(id: number) {
     this.userService.deleteUser(id)
-      .pipe(finalize(() => this.loadUsers()))
+      .pipe(
+        finalize(() => this.loadUsers()),
+        takeUntil(this.destroy$)
+      )
       .subscribe({
         next: () => {
           this.users = this.users.filter(u => u.id !== id);

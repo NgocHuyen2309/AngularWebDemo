@@ -23,24 +23,28 @@
 </div>
 
 <!-- Profile Edit Modal Overlay -->
-<div *ngIf="showProfileModal" class="profile-modal-overlay" tabindex="-1" role="dialog" aria-modal="true">
-  <div class="profile-modal-box fade-in-up" role="document">
-    <app-user-form
-      [isModal]="true"
-      [isEditMode]="true"
-      [editUserId]="currentUser ? currentUser.id : null"
-      (closeModalEvent)="setProfileModalState(false)"
-      (userUpdated)="onProfileUpdated($event)"
-    ></app-user-form>
+@if (showProfileModal) {
+  <div class="profile-modal-overlay" tabindex="-1" role="dialog" aria-modal="true">
+    <div class="profile-modal-box fade-in-up" role="document">
+      <app-user-form
+        [isModal]="true"
+        [isEditMode]="true"
+        [editUserId]="currentUser ? currentUser.id : null"
+        (closeModalEvent)="setProfileModalState(false)"
+        (userUpdated)="onProfileUpdated($event)"
+      ></app-user-form>
+    </div>
   </div>
-</div>
+}
 
 <!-- Change Password Modal Overlay -->
-<div *ngIf="showChangePasswordModal" class="profile-modal-overlay" tabindex="-1" role="dialog" aria-modal="true">
-  <div class="profile-modal-box fade-in-up" role="document">
-    <app-change-password-modal
-      [userId]="currentUser ? currentUser.id : null"
-      (closeModalEvent)="setChangePasswordModalState(false)"
-    ></app-change-password-modal>
+@if (showChangePasswordModal) {
+  <div class="profile-modal-overlay" tabindex="-1" role="dialog" aria-modal="true">
+    <div class="profile-modal-box fade-in-up" role="document">
+      <app-change-password-modal
+        [userId]="currentUser ? currentUser.id : null"
+        (closeModalEvent)="setChangePasswordModalState(false)"
+      ></app-change-password-modal>
+    </div>
   </div>
-</div>
+}

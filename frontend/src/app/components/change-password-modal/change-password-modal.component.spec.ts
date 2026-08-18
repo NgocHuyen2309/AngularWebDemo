@@ -3,6 +3,9 @@ import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
 import { MessageService } from 'primeng/api';
 import { ChangePasswordModalComponent } from './change-password-modal.component';
+import { FormlyModule } from '@ngx-formly/core';
+import { FormlyBootstrapModule } from '@ngx-formly/bootstrap';
+import { ReactiveFormsModule } from '@angular/forms';
 
 describe('ChangePasswordModalComponent', () => {
   let component: ChangePasswordModalComponent;
@@ -11,7 +14,7 @@ describe('ChangePasswordModalComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ChangePasswordModalComponent],
+      imports: [ChangePasswordModalComponent, FormlyModule.forRoot(), FormlyBootstrapModule, ReactiveFormsModule],
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
@@ -34,80 +37,79 @@ describe('ChangePasswordModalComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should toggle current password visibility', () => {
-    expect(component.showCurrentPassword).toBeFalse();
-    component.toggleCurrentPasswordVisibility();
-    expect(component.showCurrentPassword).toBeTrue();
-  });
 
-  it('should toggle new password visibility', () => {
-    expect(component.showNewPassword).toBeFalse();
-    component.toggleNewPasswordVisibility();
-    expect(component.showNewPassword).toBeTrue();
-  });
-
-  it('should toggle confirm password visibility', () => {
-    expect(component.showConfirmPassword).toBeFalse();
-    component.toggleConfirmPasswordVisibility();
-    expect(component.showConfirmPassword).toBeTrue();
-  });
 
   it('should validate missing current password', () => {
     component.model.current_password = '';
+    component.form.markAllAsTouched();
     component.onSubmit();
-    expect(component.errorMessage).toBe('Please enter your current password.');
+    expect(component.errorMessage).toBe('');
   });
 
   it('should validate missing new password', () => {
     component.model.current_password = 'OldPassword123!';
     component.model.new_password = '';
+    component.form.markAllAsTouched();
     component.onSubmit();
-    expect(component.errorMessage).toBe('New password is required.');
+    expect(component.errorMessage).toBe('');
   });
 
   it('should clear error message on new password change', () => {
     component.errorMessage = 'Some error';
-    component.onNewPasswordChange('123');
-    expect(component.errorMessage).toBe('');
+    component.model.new_password = '123';
+    expect(component.errorMessage).toBe('Some error'); // Not cleared by setting model anymore
   });
 
   it('should validate short new password', () => {
     component.model.current_password = 'OldPassword123!';
-    component.onNewPasswordChange('123');
+    component.model.new_password = '123';
+    component.checkPasswordStrength('123');
+    component.form.markAllAsTouched();
     component.onSubmit();
-    expect(component.errorMessage).toBe('New password is not strong enough. Please meet all the security requirements.');
+    expect(component.errorMessage).toBe('');
   });
 
   it('should validate mismatched confirmation', () => {
     component.model.current_password = 'OldPassword123!';
-    component.onNewPasswordChange('NewPassword123!');
+    component.model.new_password = 'NewPassword123!';
+    component.checkPasswordStrength('NewPassword123!');
     component.model.confirm_password = 'DiffPassword123!';
+    component.form.markAllAsTouched();
     component.onSubmit();
-    expect(component.errorMessage).toBe('New password and confirmation do not match.');
+    expect(component.errorMessage).toBe('');
   });
 
   it('should validate new password same as current password', () => {
     component.model.current_password = 'SamePassword123!';
-    component.onNewPasswordChange('SamePassword123!');
+    component.model.new_password = 'SamePassword123!';
+    component.checkPasswordStrength('SamePassword123!');
     component.model.confirm_password = 'SamePassword123!';
+    component.form.markAllAsTouched();
     component.onSubmit();
-    expect(component.errorMessage).toBe('New password cannot be the same as your current password.');
+    expect(component.errorMessage).toBe('');
   });
 
   it('should return error if userId is null on submit', () => {
     component.userId = null;
-    component.model.current_password = 'OldPassword123!';
-    component.onNewPasswordChange('NewPassword123!');
-    component.model.confirm_password = 'NewPassword123!';
+    component.form.patchValue({
+      current_password: 'OldPassword123!',
+      new_password: 'NewPassword123!',
+      confirm_password: 'NewPassword123!'
+    });
+    component.checkPasswordStrength('NewPassword123!');
+    component.form.markAllAsTouched();
     component.onSubmit();
     
     expect(component.errorMessage).toBe('User session not found. Please log in again.');
   });
 
   it('should submit successfully when all checks pass', () => {
-    component.model.current_password = 'OldPassword123!';
-    component.onNewPasswordChange('NewPassword123!');
-    component.model.confirm_password = 'NewPassword123!';
+    component.form.patchValue({
+      current_password: 'OldPassword123!',
+      new_password: 'NewPassword123!',
+      confirm_password: 'NewPassword123!'
+    });
+    component.checkPasswordStrength('NewPassword123!');
     
     spyOn(component.closeModalEvent, 'emit');
     component.onSubmit();
@@ -126,9 +128,12 @@ describe('ChangePasswordModalComponent', () => {
   });
 
   it('should handle API error when update fails', () => {
-    component.model.current_password = 'WrongPassword123!';
-    component.onNewPasswordChange('NewPassword123!');
-    component.model.confirm_password = 'NewPassword123!';
+    component.form.patchValue({
+      current_password: 'WrongPassword123!',
+      new_password: 'NewPassword123!',
+      confirm_password: 'NewPassword123!'
+    });
+    component.checkPasswordStrength('NewPassword123!');
     
     component.onSubmit();
 
@@ -140,28 +145,52 @@ describe('ChangePasswordModalComponent', () => {
   });
 
   it('should return empty strengthLabel for empty password', () => {
-    component.onNewPasswordChange('');
+    component.model.new_password = '';
+    component.checkPasswordStrength('');
     expect(component.strengthLabel).toBe('');
   });
 
   it('should return Weak label and text-danger class for score 1', () => {
-    component.onNewPasswordChange('123');
+    component.model.new_password = '123';
+    component.checkPasswordStrength('123');
     expect(component.strengthScore).toBe(1);
     expect(component.strengthLabel).toBe('Weak');
     expect(component.strengthColorClass).toBe('text-danger');
   });
 
   it('should return Good label and text-warning class for score 3', () => {
-    component.onNewPasswordChange('Abcdef');
+    component.model.new_password = 'Abcdef';
+    component.checkPasswordStrength('Abcdef');
     expect(component.strengthScore).toBe(3);
     expect(component.strengthLabel).toBe('Good');
     expect(component.strengthColorClass).toBe('text-warning');
   });
 
   it('should return Strong label and text-success class for score 5', () => {
-    component.onNewPasswordChange('Abcdef1!');
+    component.model.new_password = 'Abcdef1!';
+    component.checkPasswordStrength('Abcdef1!');
     expect(component.strengthScore).toBe(5);
     expect(component.strengthLabel).toBe('Strong');
     expect(component.strengthColorClass).toBe('text-success');
+  });
+
+  it('should call message functions of validators', () => {
+    const newPasswordField = component.fields.find(f => f.key === 'new_password');
+    expect((newPasswordField?.validators as any)?.['strength']?.message()).toBe('New password is not strong enough. Please meet all the security requirements.');
+    expect((newPasswordField?.validators as any)?.['notSameAsCurrent']?.message()).toBe('New password cannot be the same as your current password.');
+
+    const confirmPasswordField = component.fields.find(f => f.key === 'confirm_password');
+    expect((confirmPasswordField?.validators as any)?.['fieldMatch']?.message()).toBe('New password and confirmation do not match.');
+  });
+
+  it('should trigger password change event correctly', () => {
+    const newPasswordField = component.fields.find(f => f.key === 'new_password');
+    spyOn(component, 'checkPasswordStrength');
+    
+    (newPasswordField?.props as any)?.change?.({ formControl: { value: 'password123' } }, null);
+    expect(component.checkPasswordStrength).toHaveBeenCalledWith('password123');
+    
+    (newPasswordField?.props as any)?.change?.({ formControl: { value: null } }, null);
+    expect(component.checkPasswordStrength).toHaveBeenCalledWith('');
   });
 });
