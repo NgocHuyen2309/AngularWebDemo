@@ -196,7 +196,6 @@ $form-spacing: 1.2rem;
     display: block;
   }
 
-  p-button.user-form__submit-btn,
   &__submit-btn {
     border-radius: 0.65rem;
     font-weight: 750;
@@ -322,7 +321,6 @@ $form-spacing: 1.2rem;
       font-weight: 600;
     }
 
-    p-button.user-form__submit-btn,
     &__submit-btn {
       background: linear-gradient(135deg, var(--c-primary-blue) 0%, var(--c-deep-blue) 100%);
       color: var(--c-white);

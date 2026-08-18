@@ -265,8 +265,7 @@ body .form-select {
   padding: 0.5rem 1.25rem;
 }
 
-body .btn-primary,
-body .btn.btn-primary {
+body .btn-primary {
   background: var(--accent-gradient);
   border: none;
   color: var(--c-darker-bg);
@@ -283,8 +282,7 @@ body .btn.btn-primary {
   }
 }
 
-body .btn-outline-primary,
-body .btn.btn-outline-primary {
+body .btn-outline-primary {
   background: transparent;
   border: 1px solid var(--border);
   color: var(--text-secondary);
@@ -338,7 +336,6 @@ body .card-header {
   }
 }
 
-input[type="date"],
 body input[type="date"] {
   color-scheme: inherit;
 
@@ -367,8 +364,7 @@ body input[type="date"] {
   }
 }
 
-[data-theme="light"] input[type="date"]::-webkit-calendar-picker-indicator,
-:host-context([data-theme="light"]) input[type="date"]::-webkit-calendar-picker-indicator {
+[data-theme="light"] input[type="date"]::-webkit-calendar-picker-indicator {
   background-color: var(--c-dark-bg);
 
   &:hover {
@@ -376,7 +372,6 @@ body input[type="date"] {
   }
 }
 
-.btn-close,
 body .btn-close {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%236FB8E6' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 3l10 10M13 3L3 13'/%3E%3C/svg%3E");
   opacity: 0.9;
@@ -389,8 +384,7 @@ body .btn-close {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23F2E199' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 3l10 10M13 3L3 13'/%3E%3C/svg%3E");
   }
 
-  [data-theme="light"] &,
-  :host-context([data-theme="light"]) & {
+  [data-theme="light"] & {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23FFFFFF' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 3l10 10M13 3L3 13'/%3E%3C/svg%3E");
     opacity: 0.95;
 
@@ -401,7 +395,6 @@ body .btn-close {
   }
 }
 
-.password-group,
 body .password-group {
   position: relative;
   display: flex;
@@ -433,8 +426,7 @@ body .password-group {
     }
   }
 
-  .eye-btn,
-  button.eye-btn {
+  .eye-btn {
     border: none;
     box-shadow: none;
     background: transparent;
@@ -519,7 +511,6 @@ body .p-dropdown-panel {
 
 // Global PrimeNG Dark Theme High-Specificity Resets (Zero )
 html[data-theme="dark"] body .p-paginator,
-body[data-theme="dark"] .p-paginator,
 [data-theme="dark"] .p-paginator {
   background-color: transparent;
   color: var(--c-light-bg);
@@ -539,7 +530,6 @@ body[data-theme="dark"] .p-paginator,
 }
 
 html[data-theme="dark"] body .p-datatable,
-body[data-theme="dark"] .p-datatable,
 [data-theme="dark"] .p-datatable {
   background-color: var(--bg-card);
   color: var(--c-light-bg);

@@ -179,8 +179,7 @@
     }
   }
 
-  &__submit-btn,
-  &__submit-btn.btn {
+  &__submit-btn {
     border-radius: 0.65rem;
     font-weight: 750;
     transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
@@ -247,8 +246,7 @@
     box-shadow: 0 0 0 0.2rem rgba(42, 111, 219, 0.22);
   }
 
-  .login-card__submit-btn,
-  .login-card__submit-btn.btn {
+  .login-card__submit-btn {
     background: linear-gradient(135deg, var(--c-primary-blue) 0%, var(--c-deep-blue) 100%);
     color: var(--c-white);
 

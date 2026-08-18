@@ -14,8 +14,7 @@
   overflow: hidden;
   box-shadow: 0 8px 28px var(--shadow);
 
-  &__header,
-  &__header.card-header {
+  &__header {
     background: linear-gradient(135deg, #15284C 0%, #0F1E38 100%);
     border-bottom: 2px solid rgba(236, 180, 77, 0.5);
     padding: 1.6rem 2rem;
@@ -36,7 +35,6 @@
     }
   }
 
-  span.user-list__badge,
   &__badge {
     background: rgba(236, 180, 77, 0.25);
     border: 1px solid rgba(236, 180, 77, 0.5);
@@ -336,7 +334,6 @@
     }
   }
 
-  div.user-list__body,
   .user-list__body {
     .p-datatable.p-datatable {
       border-radius: 0.85rem;
@@ -556,7 +553,6 @@
     }
   }
 
-  div.user-list__body,
   .user-list__body {
     .p-datatable.p-datatable {
       border-radius: 0.85rem;

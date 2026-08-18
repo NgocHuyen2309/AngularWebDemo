@@ -33,8 +33,9 @@ export class UserService {
         if (user && user.id) {
           return { 'X-Requester-Id': user.id.toString() };
         }
-      } catch (e) {
-        // ignore
+      } catch (error) {
+        console.error('Failed to parse currentUser from localStorage. Clearing invalid data.', error);
+        localStorage.removeItem('currentUser');
       }
     }
     return {};

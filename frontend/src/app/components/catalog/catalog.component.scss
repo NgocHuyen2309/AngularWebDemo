@@ -48,8 +48,7 @@ $catalog-spacing: 1.8rem;
       transform: translateY(-2px);
     }
 
-    &--active,
-    p-button.catalog__filter-btn--active {
+    &--active {
       background: linear-gradient(135deg, var(--c-accent-gold) 0%, var(--c-light-gold) 100%);
       border-color: transparent;
       color: var(--c-dark-bg);
@@ -222,8 +221,7 @@ $catalog-spacing: 1.8rem;
 }
 
 :host-context([data-theme="light"]) {
-  .catalog__filter-btn--active,
-  p-button.catalog__filter-btn--active {
+  .catalog__filter-btn--active {
     background: linear-gradient(135deg, var(--c-primary-blue) 0%, var(--c-deep-blue) 100%);
     color: var(--c-white);
     box-shadow: 0 4px 14px rgba(42, 111, 219, 0.4);
