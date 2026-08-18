@@ -74,7 +74,7 @@ export class UserFormComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private messageService: MessageService,
     private elRef: ElementRef
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.initUserForm();
@@ -83,7 +83,7 @@ export class UserFormComponent implements OnInit, OnDestroy {
   initUserForm() {
     this.checkPasswordStrength('');
     this.buildFields();
-    
+
     if (this.isEditMode && this.editUserId) {
       this.loadUserDetails(this.editUserId);
     } else if (this.isEditMode && !this.editUserId) {
@@ -320,7 +320,7 @@ export class UserFormComponent implements OnInit, OnDestroy {
 
   onSubmit() {
     this.formSubmitted = true;
-    
+
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       this.autoFocusFirstInvalidInput();
@@ -341,46 +341,46 @@ export class UserFormComponent implements OnInit, OnDestroy {
         .pipe(takeUntil(this.destroy$))
         .subscribe({
           next: (updatedUser) => {
-          this.loading = false;
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Success',
-            detail: 'Profile updated successfully!'
-          });
-          const currentSession = this.authService.getCurrentUser();
-          if (currentSession && Number(currentSession.id) === Number(updatedUser.id)) {
-            const newAuthSession: AuthUser = {
-              ...currentSession,
-              ...updatedUser,
-              username: updatedUser.username || (updatedUser.email ? updatedUser.email.split('@')[0] : 'user'),
-              email: updatedUser.email,
-              date_of_birth: updatedUser.date_of_birth,
-              role: (updatedUser.role as 'admin' | 'user') || currentSession.role
-            };
-            this.authService.updateCurrentUserSession(newAuthSession);
-          }
-          this.userUpdated.emit(updatedUser);
-          this.userService.notifyUserAdded();
-          if (this.isModal) {
-            setTimeout(() => {
-              this.closeModalEvent.emit();
-            }, 1000);
-          }
-        },
-        error: (err) => {
-          this.loading = false;
-          this.errorMessage = err.error?.error || err.error?.message || 'Profile update failed.';
-          if (err.status >= 500) {
+            this.loading = false;
             this.messageService.add({
-              severity: 'error',
-              summary: 'Server Error',
-              detail: 'A global server error occurred while updating profile.'
+              severity: 'success',
+              summary: 'Success',
+              detail: 'Profile updated successfully!'
             });
-          } else {
-            this.autoFocusFirstInvalidInput();
+            const currentSession = this.authService.getCurrentUser();
+            if (currentSession && Number(currentSession.id) === Number(updatedUser.id)) {
+              const newAuthSession: AuthUser = {
+                ...currentSession,
+                ...updatedUser,
+                username: updatedUser.username || (updatedUser.email ? updatedUser.email.split('@')[0] : 'user'),
+                email: updatedUser.email,
+                date_of_birth: updatedUser.date_of_birth,
+                role: (updatedUser.role as 'admin' | 'user') || currentSession.role
+              };
+              this.authService.updateCurrentUserSession(newAuthSession);
+            }
+            this.userUpdated.emit(updatedUser);
+            this.userService.notifyUserAdded();
+            if (this.isModal) {
+              setTimeout(() => {
+                this.closeModalEvent.emit();
+              }, 1000);
+            }
+          },
+          error: (err) => {
+            this.loading = false;
+            this.errorMessage = err.error?.error || err.error?.message || 'Profile update failed.';
+            if (err.status >= 500) {
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Server Error',
+                detail: 'A global server error occurred while updating profile.'
+              });
+            } else {
+              this.autoFocusFirstInvalidInput();
+            }
           }
-        }
-      });
+        });
       return;
     }
 
@@ -392,35 +392,35 @@ export class UserFormComponent implements OnInit, OnDestroy {
       this.model.date_of_birth,
       this.model.username.trim()
     )
-    .pipe(takeUntil(this.destroy$))
-    .subscribe({
-      next: (user) => {
-        this.loading = false;
-        this.createdUser = user;
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Account Created',
-          detail: `User registered successfully! Username: ${user.username || user.email.split('@')[0]}`
-        });
-        this.model = { username: '', email: '', password: '', confirm_password: '', date_of_birth: '' };
-        this.form.reset();
-        this.formSubmitted = false;
-        this.checkPasswordStrength('');
-        this.userService.notifyUserAdded();
-      },
-      error: (err) => {
-        this.loading = false;
-        this.errorMessage = err.error?.error || err.error?.message || 'Registration failed.';
-        if (err.status >= 500) {
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (user) => {
+          this.loading = false;
+          this.createdUser = user;
           this.messageService.add({
-            severity: 'error',
-            summary: 'Server Error',
-            detail: 'A global server error occurred during registration.'
+            severity: 'success',
+            summary: 'Account Created',
+            detail: `User registered successfully! Username: ${user.username || user.email.split('@')[0]}`
           });
-        } else {
-          this.autoFocusFirstInvalidInput();
+          this.model = { username: '', email: '', password: '', confirm_password: '', date_of_birth: '' };
+          this.form.reset();
+          this.formSubmitted = false;
+          this.checkPasswordStrength('');
+          this.userService.notifyUserAdded();
+        },
+        error: (err) => {
+          this.loading = false;
+          this.errorMessage = err.error?.error || err.error?.message || 'Registration failed.';
+          if (err.status >= 500) {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Server Error',
+              detail: 'A global server error occurred during registration.'
+            });
+          } else {
+            this.autoFocusFirstInvalidInput();
+          }
         }
-      }
-    });
+      });
   }
 }

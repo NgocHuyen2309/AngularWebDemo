@@ -6,7 +6,7 @@ module.exports = {
     run: async ({ createJSDOMContext }) => {
       const dom = createJSDOMContext();
       const btn = dom.window.document.getElementById('launchModalBtn');
-      assert.ok(btn, 'Launch modal button should exist');
+      assert.ok(btn, 'Launch modal p-button should exist');
       
       btn.click();
       
@@ -30,7 +30,7 @@ module.exports = {
       const modal = dom.window.document.querySelector('.vanilla-modal');
       assert.ok(modal, 'Modal element should exist');
       assert.ok(modal.querySelector('.vanilla-modal__content'), 'Modal content element should exist');
-      assert.ok(modal.querySelector('.vanilla-modal__close-btn'), 'Modal close button should exist');
+      assert.ok(modal.querySelector('.vanilla-modal__close-btn'), 'Modal close p-button should exist');
       
       dom.window.close();
     }

@@ -1,6 +1,6 @@
 // =============================================
 // User Form Component Styles — Starry Night Van Gogh Theme
-// Reusable architecture: zero !important via selector specificity
+// Reusable architecture: zero  via selector specificity
 // =============================================
 
 $form-border-radius: 1.25rem;
@@ -36,19 +36,6 @@ $form-spacing: 1.2rem;
 
       &::after {
         border-color: var(--accent-copper);
-      }
-    }
-
-    :host-context([data-theme="light"]) & {
-      box-shadow: 0 0 28px rgba(27, 58, 104, 0.18), 0 8px 32px rgba(42, 111, 219, 0.22);
-
-      &:hover {
-        border-color: #2A6FDB;
-        box-shadow: 0 0 34px rgba(27, 58, 104, 0.22), 0 12px 36px rgba(42, 111, 219, 0.26);
-
-        &::after {
-          border-color: #2A6FDB;
-        }
       }
     }
   }
@@ -88,26 +75,18 @@ $form-spacing: 1.2rem;
     position: relative;
     z-index: 2;
 
-    h5, h4, h3, h5 .starry-gradient-text, h3 .starry-gradient-text {
-      color: #0A1128;
+    h5,
+    h4,
+    h3,
+    h5 .starry-gradient-text,
+    h3 .starry-gradient-text {
+      color: var(--c-dark-bg);
       background: none;
-      -webkit-text-fill-color: #0A1128;
+      -webkit-text-fill-color: var(--c-dark-bg);
       font-weight: 850;
       margin: 0;
       letter-spacing: -0.5px;
       text-shadow: 0 1px 2px rgba(255, 255, 255, 0.45);
-    }
-
-    :host-context([data-theme="light"]) & {
-      background: linear-gradient(135deg, #2A6FDB 0%, #4FA3F7 50%, #F2C14E 100%);
-      border-bottom-color: rgba(42, 111, 219, 0.45);
-
-      h5, h4, h3, h5 .starry-gradient-text, h3 .starry-gradient-text {
-        color: #FFFFFF;
-        background: none;
-        -webkit-text-fill-color: #FFFFFF;
-        text-shadow: 0 2px 6px rgba(16, 36, 72, 0.35);
-      }
     }
   }
 
@@ -134,11 +113,6 @@ $form-spacing: 1.2rem;
       border-color: var(--accent-copper);
       box-shadow: 0 0 0 0.2rem rgba(236, 180, 77, 0.22);
       outline: none;
-
-      :host-context([data-theme="light"]) & {
-        border-color: #2A6FDB;
-        box-shadow: 0 0 0 0.2rem rgba(42, 111, 219, 0.22);
-      }
     }
 
     &::placeholder {
@@ -149,10 +123,6 @@ $form-spacing: 1.2rem;
       border-color: #e69999;
       padding-right: 2.35rem;
       text-overflow: ellipsis;
-
-      :host-context([data-theme="light"]) & {
-        border-color: #DC2626;
-      }
     }
 
     &[type="date"] {
@@ -170,10 +140,6 @@ $form-spacing: 1.2rem;
 
         &:hover {
           transform: scale(1.15);
-        }
-
-        :host-context([data-theme="light"]) & {
-          filter: invert(0.12) sepia(0.9) saturate(8) hue-rotate(200deg) brightness(0.65);
         }
       }
     }
@@ -206,21 +172,12 @@ $form-spacing: 1.2rem;
 
       &:hover {
         color: var(--accent-copper);
-
-        :host-context([data-theme="light"]) & {
-          color: #2A6FDB;
-        }
       }
     }
 
     &:focus-within {
       border-color: var(--accent-copper);
       box-shadow: 0 0 0 0.2rem rgba(236, 180, 77, 0.22);
-
-      :host-context([data-theme="light"]) & {
-        border-color: #2A6FDB;
-        box-shadow: 0 0 0 0.2rem rgba(42, 111, 219, 0.22);
-      }
     }
   }
 
@@ -237,11 +194,6 @@ $form-spacing: 1.2rem;
     font-size: 0.83rem;
     margin-top: 0.3rem;
     display: block;
-
-    :host-context([data-theme="light"]) & {
-      color: #DC2626;
-      font-weight: 600;
-    }
   }
 
   p-button.user-form__submit-btn,
@@ -250,23 +202,13 @@ $form-spacing: 1.2rem;
     font-weight: 750;
     transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     background: var(--accent-gradient);
-    color: #0A1128;
+    color: var(--c-dark-bg);
     border: none;
 
     &:hover {
       background: var(--accent-gradient-hover);
       transform: translateY(-2px);
       box-shadow: 0 6px 18px rgba(236, 180, 77, 0.38);
-    }
-
-    :host-context([data-theme="light"]) & {
-      background: linear-gradient(135deg, #2A6FDB 0%, #1E40AF 100%);
-      color: #FFFFFF;
-
-      &:hover {
-        background: linear-gradient(135deg, #1E40AF 0%, #15328A 100%);
-        box-shadow: 0 6px 18px rgba(42, 111, 219, 0.38);
-      }
     }
   }
 }
@@ -317,6 +259,77 @@ $form-spacing: 1.2rem;
 
       svg {
         transform: scale(1.15);
+      }
+    }
+  }
+}
+
+:host-context([data-theme="light"]) {
+  .user-form:not(.user-form--embedded) {
+    box-shadow: 0 0 28px rgba(27, 58, 104, 0.18), 0 8px 32px rgba(42, 111, 219, 0.22);
+    &:hover {
+      border-color: var(--c-primary-blue);
+      box-shadow: 0 0 34px rgba(27, 58, 104, 0.22), 0 12px 36px rgba(42, 111, 219, 0.26);
+      &::after {
+        border-color: var(--c-primary-blue);
+      }
+    }
+  }
+
+  .user-form .card-header {
+    background: linear-gradient(135deg, var(--c-primary-blue) 0%, #4FA3F7 50%, #F2C14E 100%);
+    border-bottom-color: rgba(42, 111, 219, 0.45);
+    
+    h5, h4, h3,
+    h5 .starry-gradient-text,
+    h3 .starry-gradient-text {
+      color: var(--c-white);
+      -webkit-text-fill-color: var(--c-white);
+      text-shadow: 0 2px 6px rgba(16, 36, 72, 0.35);
+    }
+  }
+
+  .user-form {
+    &__input,
+    formly-form .form-control,
+    formly-form .form-select,
+    .form-control {
+      &:focus {
+        border-color: var(--c-primary-blue);
+        box-shadow: 0 0 0 0.2rem rgba(42, 111, 219, 0.22);
+      }
+      &.is-invalid {
+        border-color: #DC2626;
+      }
+      &[type="date"]::-webkit-calendar-picker-indicator {
+        filter: invert(0.12) sepia(0.9) saturate(8) hue-rotate(200deg) brightness(0.65);
+      }
+    }
+
+    .password-group {
+      .eye-btn:hover {
+        color: var(--c-primary-blue);
+      }
+      &:focus-within {
+        border-color: var(--c-primary-blue);
+        box-shadow: 0 0 0 0.2rem rgba(42, 111, 219, 0.22);
+      }
+    }
+
+    formly-validation-message,
+    .invalid-feedback {
+      color: #DC2626;
+      font-weight: 600;
+    }
+
+    p-button.user-form__submit-btn,
+    &__submit-btn {
+      background: linear-gradient(135deg, var(--c-primary-blue) 0%, var(--c-deep-blue) 100%);
+      color: var(--c-white);
+
+      &:hover {
+        background: linear-gradient(135deg, var(--c-deep-blue) 0%, #15328A 100%);
+        box-shadow: 0 6px 18px rgba(42, 111, 219, 0.38);
       }
     }
   }

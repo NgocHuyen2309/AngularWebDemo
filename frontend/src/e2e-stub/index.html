@@ -290,8 +290,10 @@
         <section class="user-form">
           <h3>User Management</h3>
           <form id="regForm" class="user-form__form">
-            <input class="user-form__input user-form__input-email" type="email" placeholder="Email Address" required>
-            <input class="user-form__input user-form__input-dob" type="date" placeholder="Date of Birth" required>
+            <formly-form>
+              <input class="user-form__input user-form__input-email" type="email" placeholder="Email Address" required>
+              <input class="user-form__input user-form__input-dob" type="date" placeholder="Date of Birth" required>
+            </formly-form>
             <p-button class="user-form__submit" type="submit">Register Profile</p-button>
           </form>
         </section>

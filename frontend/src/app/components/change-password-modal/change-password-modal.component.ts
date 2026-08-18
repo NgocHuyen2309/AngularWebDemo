@@ -77,7 +77,7 @@ export class ChangePasswordModalComponent implements OnInit, OnDestroy {
       },
       expressionProperties: {
         'validators.notSameAsCurrent.expression': (model: any) => {
-            return model.new_password !== model.current_password;
+          return model.new_password !== model.current_password;
         }
       }
     },
@@ -118,7 +118,7 @@ export class ChangePasswordModalComponent implements OnInit, OnDestroy {
   constructor(
     private userService: UserService,
     private messageService: MessageService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.initForm();
@@ -189,21 +189,21 @@ export class ChangePasswordModalComponent implements OnInit, OnDestroy {
       this.model.new_password,
       this.model.confirm_password
     )
-    .pipe(takeUntil(this.destroy$))
-    .subscribe({
-      next: (res) => {
-        this.loading = false;
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Password Changed',
-          detail: res.message || 'Your password has been updated successfully!'
-        });
-        this.closeModalEvent.emit();
-      },
-      error: (err) => {
-        this.loading = false;
-        this.errorMessage = err.error?.error || 'Could not update password. Please verify your current password.';
-      }
-    });
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (res) => {
+          this.loading = false;
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Password Changed',
+            detail: res.message || 'Your password has been updated successfully!'
+          });
+          this.closeModalEvent.emit();
+        },
+        error: (err) => {
+          this.loading = false;
+          this.errorMessage = err.error?.error || 'Could not update password. Please verify your current password.';
+        }
+      });
   }
 }

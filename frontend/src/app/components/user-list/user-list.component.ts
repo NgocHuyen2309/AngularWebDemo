@@ -85,21 +85,27 @@ export class UserListComponent implements OnInit, OnDestroy {
   get editingId(): number | null {
     return this.editingUser ? this.editingUser.id : null;
   }
+
   get editEmail(): string {
     return this.editModel.email || '';
   }
+
   set editEmail(val: string) {
     this.editModel.email = val;
   }
+
   get editDob(): string {
     return this.editModel.date_of_birth || '';
   }
+
   set editDob(val: string) {
     this.editModel.date_of_birth = val;
   }
+
   startEdit(user: User) {
     this.openEditModal(user);
   }
+
   cancelEdit() {
     this.closeEditModal();
   }
@@ -110,6 +116,7 @@ export class UserListComponent implements OnInit, OnDestroy {
     private messageService: MessageService,
     private router: Router
   ) {}
+
   ngOnInit() {
     this.initUserList();
   }

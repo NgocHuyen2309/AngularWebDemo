@@ -19,7 +19,7 @@ import { Subject, takeUntil } from 'rxjs';
     NavbarComponent,
     UserFormComponent,
     ChangePasswordModalComponent
-],
+  ],
   providers: [MessageService],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
@@ -37,7 +37,7 @@ export class AppComponent implements OnInit, OnDestroy {
   constructor(
     private authService: AuthService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.authService.currentUser$

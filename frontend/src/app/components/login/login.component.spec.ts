@@ -36,7 +36,7 @@ describe('LoginComponent', () => {
         { provide: ActivatedRoute, useValue: activatedRouteMock }
       ]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(LoginComponent);
     component = fixture.componentInstance;

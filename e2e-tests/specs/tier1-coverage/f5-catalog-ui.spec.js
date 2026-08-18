@@ -21,7 +21,7 @@ module.exports = {
       await waitForElement(dom, '.catalog__item');
       
       const filterBtn = dom.window.document.querySelector('.catalog__filter-btn[data-category="Electronics"]');
-      assert.ok(filterBtn, 'Electronics filter button should exist');
+      assert.ok(filterBtn, 'Electronics filter p-button should exist');
       
       filterBtn.click();
       await delay(50); // wait for rendering to update

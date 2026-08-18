@@ -37,8 +37,6 @@ describe('ChangePasswordModalComponent', () => {
     expect(component).toBeTruthy();
   });
 
-
-
   it('should validate missing current password', () => {
     component.model.current_password = '';
     component.form.markAllAsTouched();

@@ -50,27 +50,17 @@ $catalog-spacing: 1.8rem;
 
     &--active,
     p-button.catalog__filter-btn--active {
-      background: linear-gradient(135deg, #ECB44D 0%, #F2E199 100%);
+      background: linear-gradient(135deg, var(--c-accent-gold) 0%, var(--c-light-gold) 100%);
       border-color: transparent;
-      color: #0A1128;
+      color: var(--c-dark-bg);
       font-weight: 800;
       box-shadow: 0 4px 14px rgba(236, 180, 77, 0.45);
 
       &:hover {
-        background: linear-gradient(135deg, #F2E199 0%, #FFFBEB 100%);
-        color: #0A1128;
+        background: linear-gradient(135deg, var(--c-light-gold) 0%, var(--c-off-white) 100%);
+        color: var(--c-dark-bg);
       }
 
-      :host-context([data-theme="light"]) & {
-        background: linear-gradient(135deg, #2A6FDB 0%, #1E40AF 100%);
-        color: #FFFFFF;
-        box-shadow: 0 4px 14px rgba(42, 111, 219, 0.4);
-
-        &:hover {
-          background: linear-gradient(135deg, #3B82F6 0%, #2A6FDB 100%);
-          color: #FFFFFF;
-        }
-      }
     }
   }
 
@@ -136,7 +126,7 @@ $catalog-spacing: 1.8rem;
     position: relative;
     width: 100%;
     height: 240px;
-    background-color: #ffffff;
+    background-color: var(--c-white);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -170,18 +160,13 @@ $catalog-spacing: 1.8rem;
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.08rem;
-    background: linear-gradient(135deg, #ECB44D 0%, #F2E199 100%);
-    color: #0A1128;
+    background: linear-gradient(135deg, var(--c-accent-gold) 0%, var(--c-light-gold) 100%);
+    color: var(--c-dark-bg);
     padding: 0.4rem 0.9rem;
     border-radius: 1.25rem;
     margin-bottom: 0.95rem;
     box-shadow: 0 3px 10px rgba(236, 180, 77, 0.35);
 
-    :host-context([data-theme="light"]) & {
-      background: linear-gradient(135deg, #2A6FDB 0%, #1E40AF 100%);
-      color: #FFFFFF;
-      box-shadow: 0 3px 10px rgba(42, 111, 219, 0.35);
-    }
   }
 
   &__item-name {
@@ -235,3 +220,24 @@ $catalog-spacing: 1.8rem;
     }
   }
 }
+
+:host-context([data-theme="light"]) {
+  .catalog__filter-btn--active,
+  p-button.catalog__filter-btn--active {
+    background: linear-gradient(135deg, var(--c-primary-blue) 0%, var(--c-deep-blue) 100%);
+    color: var(--c-white);
+    box-shadow: 0 4px 14px rgba(42, 111, 219, 0.4);
+
+    &:hover {
+      background: linear-gradient(135deg, #3B82F6 0%, var(--c-primary-blue) 100%);
+      color: var(--c-white);
+    }
+  }
+
+  .catalog__item-category {
+    background: linear-gradient(135deg, var(--c-primary-blue) 0%, var(--c-deep-blue) 100%);
+    color: var(--c-white);
+    box-shadow: 0 3px 10px rgba(42, 111, 219, 0.35);
+  }
+}
+

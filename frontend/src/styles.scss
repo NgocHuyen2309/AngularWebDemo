@@ -1,23 +1,36 @@
+:root {
+  --c-white: var(--c-white);
+  --c-primary-blue: var(--c-primary-blue);
+  --c-accent-gold: var(--c-accent-gold);
+  --c-dark-bg: var(--c-dark-bg);
+  --c-light-bg: var(--c-light-bg);
+  --c-deep-blue: var(--c-deep-blue);
+  --c-dark-slate: var(--c-dark-slate);
+  --c-light-gold: var(--c-light-gold);
+  --c-darker-bg: var(--c-darker-bg);
+  --c-off-white: var(--c-off-white);
+}
+
 // =============================================
 // Global Styles — Crown & Velvet Dark Copper Theme (SCSS Migration)
 // =============================================
 
 // Variables (SCSS syntax — Starry Night Van Gogh Palette)
-$color-primary: #ECB44D;       // Crescent Moon (Primary Golden Accent)
-$color-primary-light: #F2E199; // Starlight (Luminous Pale Gold / Cream)
+$color-primary: var(--c-accent-gold);       // Crescent Moon (Primary Golden Accent)
+$color-primary-light: var(--c-light-gold); // Starlight (Luminous Pale Gold / Cream)
 $color-secondary: #6FB8E6;     // Blue Skies (Vibrant Cerulean Blue)
 $color-success: #6b8e6b;
 $color-danger: #c27878;
-$color-warning: #ECB44D;
+$color-warning: var(--c-accent-gold);
 $color-info: #6FB8E6;
-$color-light: #F5F0E8;
-$color-dark: #191939;          // Darkest Blue (Midnight Navy)
-$color-bg: #191939;            // Dark Mode Body Background
+$color-light: var(--c-light-bg);
+$color-dark: var(--c-dark-slate);          // Darkest Blue (Midnight Navy)
+$color-bg: var(--c-dark-slate);            // Dark Mode Body Background
 $color-bg-secondary: #14142B;  // Dark Mode Secondary Surface
 $color-card: #1B3A68;          // City at Night (Dark Mode Card Fill)
 $color-card-hover: #234880;
 $color-border: #2A4878;
-$color-text: #F5F0E8;
+$color-text: var(--c-light-bg);
 $color-text-muted: #A3B8D8;
 
 $spacing-xs: 0.25rem;
@@ -41,8 +54,8 @@ $font-family-base: 'Instrument Sans', -apple-system, BlinkMacSystemFont, 'Segoe 
   --accent-copper: #{$color-primary};
   --accent-copper-light: #{$color-primary-light};
   --accent-skies: #{$color-secondary};
-  --accent-gradient: linear-gradient(135deg, #ECB44D 0%, #F2E199 50%, #6FB8E6 100%);
-  --accent-gradient-hover: linear-gradient(135deg, #F2E199 0%, #ECB44D 50%, #83C5EE 100%);
+  --accent-gradient: linear-gradient(135deg, var(--c-accent-gold) 0%, var(--c-light-gold) 50%, #6FB8E6 100%);
+  --accent-gradient-hover: linear-gradient(135deg, var(--c-light-gold) 0%, var(--c-accent-gold) 50%, #83C5EE 100%);
   --text-primary: #{$color-text};
   --text-secondary: #C2D4EC;
   --text-muted: #{$color-text-muted};
@@ -52,7 +65,7 @@ $font-family-base: 'Instrument Sans', -apple-system, BlinkMacSystemFont, 'Segoe 
 
   --strength-box-bg: rgba(20, 20, 43, 0.65);
   --strength-box-border: rgba(111, 184, 230, 0.3);
-  --strength-title-color: #F5F0E8;
+  --strength-title-color: var(--c-light-bg);
   --strength-item-bg: rgba(255, 255, 255, 0.05);
   --strength-item-border: rgba(255, 255, 255, 0.1);
   --strength-item-color: #A3B8D8;
@@ -62,7 +75,7 @@ $font-family-base: 'Instrument Sans', -apple-system, BlinkMacSystemFont, 'Segoe 
   --strength-meter-bg: rgba(42, 72, 120, 0.6);
   --strength-weak-color: #f28b8b;
   --strength-weak-bg: rgba(194, 120, 120, 0.25);
-  --strength-med-color: #ECB44D;
+  --strength-med-color: var(--c-accent-gold);
   --strength-med-bg: rgba(236, 180, 77, 0.25);
   --strength-strong-color: #8fbc8f;
   --strength-strong-bg: rgba(107, 142, 107, 0.25);
@@ -70,20 +83,20 @@ $font-family-base: 'Instrument Sans', -apple-system, BlinkMacSystemFont, 'Segoe 
   --strength-vstrong-bg: rgba(111, 184, 230, 0.25);
 
   color-scheme: dark;
-  accent-color: #ECB44D;
+  accent-color: var(--c-accent-gold);
 }
 
 [data-theme="light"] {
   --bg-primary: #F2F6FA;
-  --bg-secondary: #FFFFFF;
-  --bg-card: #FFFFFF;
+  --bg-secondary: var(--c-white);
+  --bg-card: var(--c-white);
   --bg-card-hover: #EBF2FA;
   --accent-copper: #D4952B;
   --accent-copper-light: #E6AA45;
   --accent-skies: #3C8CC4;
   --accent-gradient: linear-gradient(135deg, #1B3A68 0%, #2A5298 60%, #D4952B 100%);
   --accent-gradient-hover: linear-gradient(135deg, #234880 0%, #3460A8 60%, #E6AA45 100%);
-  --text-primary: #191939;
+  --text-primary: var(--c-dark-slate);
   --text-secondary: #3A4A6B;
   --text-muted: #6C7D9B;
   --border: #DCE5F0;
@@ -92,8 +105,8 @@ $font-family-base: 'Instrument Sans', -apple-system, BlinkMacSystemFont, 'Segoe 
 
   --strength-box-bg: #EAEEF5;
   --strength-box-border: #CDD8E8;
-  --strength-title-color: #191939;
-  --strength-item-bg: #FFFFFF;
+  --strength-title-color: var(--c-dark-slate);
+  --strength-item-bg: var(--c-white);
   --strength-item-border: #CDD8E8;
   --strength-item-color: #3A4A6B;
   --strength-item-checked-bg: #E8F5E9;
@@ -122,7 +135,7 @@ $font-family-base: 'Instrument Sans', -apple-system, BlinkMacSystemFont, 'Segoe 
 
 ::selection {
   background-color: #d4945a;
-  color: #1c1c1e;
+  color: var(--c-darker-bg);
 }
 
 html {
@@ -180,7 +193,7 @@ body {
   }
 }
 
-// Form controls refinement for dark theme (Higher specificity without !important)
+// Form controls refinement for dark theme (Higher specificity without )
 body .form-control,
 body .form-select,
 body select {
@@ -256,7 +269,7 @@ body .btn-primary,
 body .btn.btn-primary {
   background: var(--accent-gradient);
   border: none;
-  color: #1c1c1e;
+  color: var(--c-darker-bg);
   font-weight: 700;
   box-shadow: 0 0.25rem 0.75rem rgba(184, 115, 51, 0.25);
 
@@ -264,7 +277,7 @@ body .btn.btn-primary {
   &:focus,
   &:active {
     background: var(--accent-gradient-hover);
-    color: #1c1c1e;
+    color: var(--c-darker-bg);
     transform: translateY(-0.0625rem);
     box-shadow: 0 0.375rem 1rem rgba(184, 115, 51, 0.35);
   }
@@ -288,7 +301,7 @@ body .btn.btn-outline-primary {
 // Global Bootstrap Utility Class Overrides for Crown & Velvet Theme
 body .bg-primary {
   background: var(--accent-gradient);
-  color: #1c1c1e;
+  color: var(--c-darker-bg);
 }
 
 body .bg-secondary {
@@ -298,7 +311,7 @@ body .bg-secondary {
 }
 
 body .bg-light {
-  background-color: #1c1c1e;
+  background-color: var(--c-darker-bg);
   color: var(--text-primary);
   border-color: var(--border);
 }
@@ -313,12 +326,12 @@ body .text-white {
 
 body .card-header {
   background: var(--accent-gradient);
-  color: #1c1c1e;
+  color: var(--c-darker-bg);
   border-bottom: 1px solid var(--border);
   padding: 1rem 1.25rem;
 
   h5, h4, h3, h2, h1 {
-    color: #1c1c1e;
+    color: var(--c-darker-bg);
     font-weight: 700;
     letter-spacing: 0.03125rem;
     margin: 0;
@@ -356,10 +369,10 @@ body input[type="date"] {
 
 [data-theme="light"] input[type="date"]::-webkit-calendar-picker-indicator,
 :host-context([data-theme="light"]) input[type="date"]::-webkit-calendar-picker-indicator {
-  background-color: #0A1128;
+  background-color: var(--c-dark-bg);
 
   &:hover {
-    background-color: #1E40AF;
+    background-color: var(--c-deep-blue);
   }
 }
 
@@ -452,7 +465,7 @@ body .form-select option {
   &:active {
     background-color: #daa57a;
     background: #daa57a;
-    color: #1c1c1e;
+    color: var(--c-darker-bg);
   }
 }
 
@@ -504,12 +517,12 @@ body .p-dropdown-panel {
   }
 }
 
-// Global PrimeNG Dark Theme High-Specificity Resets (Zero !important)
+// Global PrimeNG Dark Theme High-Specificity Resets (Zero )
 html[data-theme="dark"] body .p-paginator,
 body[data-theme="dark"] .p-paginator,
 [data-theme="dark"] .p-paginator {
   background-color: transparent;
-  color: #F5F0E8;
+  color: var(--c-light-bg);
   border-bottom-left-radius: inherit;
   border-bottom-right-radius: inherit;
   padding: 0.5rem 1.25rem;
@@ -529,28 +542,28 @@ html[data-theme="dark"] body .p-datatable,
 body[data-theme="dark"] .p-datatable,
 [data-theme="dark"] .p-datatable {
   background-color: var(--bg-card);
-  color: #F5F0E8;
+  color: var(--c-light-bg);
 
   .p-datatable-header,
   .p-datatable-footer {
     background-color: transparent;
-    color: #F5F0E8;
+    color: var(--c-light-bg);
   }
 
   .p-datatable-thead > tr > th {
     background-color: var(--bg-secondary);
-    color: #F5F0E8;
+    color: var(--c-light-bg);
     border-bottom: 2px solid var(--border);
   }
 
   .p-datatable-tbody > tr {
     background-color: transparent;
-    color: #F5F0E8;
+    color: var(--c-light-bg);
   }
 
   .p-datatable-tbody > tr > td {
     background-color: transparent;
-    color: #F5F0E8;
+    color: var(--c-light-bg);
     border-bottom: 1px solid var(--border);
   }
 
@@ -560,7 +573,7 @@ body[data-theme="dark"] .p-datatable,
 
   .p-datatable-tbody > tr:hover > td {
     background-color: rgba(236, 180, 77, 0.12);
-    color: #FFFBEB;
+    color: var(--c-off-white);
   }
 }
 
@@ -713,7 +726,7 @@ body .login-card__body small {
 
 // Shimmering Starry Gradient Typography (used on catalog title, login header, etc.)
 .starry-gradient-text {
-  background: linear-gradient(135deg, #ECB44D 0%, #FFFBEB 35%, #83C5EE 70%, #ECB44D 100%);
+  background: linear-gradient(135deg, var(--c-accent-gold) 0%, var(--c-off-white) 35%, #83C5EE 70%, var(--c-accent-gold) 100%);
   background-size: 250% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -725,7 +738,7 @@ body .login-card__body small {
 
 // Navbar brand logo — stop shimmer, use static gold gradient (dark mode)
 .navbar .starry-gradient-text {
-  background: linear-gradient(135deg, #ECB44D 0%, #F2E199 60%, #FFFBEB 100%);
+  background: linear-gradient(135deg, var(--c-accent-gold) 0%, var(--c-light-gold) 60%, var(--c-off-white) 100%);
   background-size: 100% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -737,7 +750,7 @@ body .login-card__body small {
 
 // In Light mode: navbar brand logo — stop shimmer, bright white static
 [data-theme="light"] .navbar .starry-gradient-text {
-  background: linear-gradient(135deg, #FFFFFF 0%, #E8F0FE 60%, #BAE6FD 100%);
+  background: linear-gradient(135deg, var(--c-white) 0%, #E8F0FE 60%, #BAE6FD 100%);
   background-size: 100% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -751,7 +764,7 @@ body .login-card__body small {
 [data-theme="light"] .login-card__header .starry-gradient-text,
 [data-theme="light"] .user-list__header .starry-gradient-text,
 [data-theme="light"] .card-header .starry-gradient-text {
-  background: linear-gradient(135deg, #FFFFFF 0%, #FEF3C7 45%, #FDE047 100%);
+  background: linear-gradient(135deg, var(--c-white) 0%, #FEF3C7 45%, #FDE047 100%);
   background-size: 250% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -760,7 +773,7 @@ body .login-card__body small {
 }
 
 [data-theme="light"] .starry-gradient-text {
-  background: linear-gradient(135deg, #D4952B 0%, #1E40AF 50%, #2A6FDB 100%);
+  background: linear-gradient(135deg, #D4952B 0%, var(--c-deep-blue) 50%, var(--c-primary-blue) 100%);
   background-size: 250% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -836,22 +849,22 @@ body .login-card__body small {
     .p-toast-message-success {
       background-color: #143324;
       border-left: 6px solid #40916c;
-      color: #ffffff;
+      color: var(--c-white);
     }
     .p-toast-message-error {
       background-color: #3b1418;
       border-left: 6px solid #e63946;
-      color: #ffffff;
+      color: var(--c-white);
     }
     .p-toast-message-info {
       background-color: #12284c;
       border-left: 6px solid #6FB8E6;
-      color: #ffffff;
+      color: var(--c-white);
     }
     .p-toast-message-warn {
       background-color: #382810;
-      border-left: 6px solid #ECB44D;
-      color: #ffffff;
+      border-left: 6px solid var(--c-accent-gold);
+      color: var(--c-white);
     }
   }
 
@@ -879,4 +892,3 @@ body .login-card__body small {
     }
   }
 }
-
